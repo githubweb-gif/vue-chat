@@ -1,0 +1,68 @@
+* {
+  margin: 0;
+  padding: 0;
+  font-family: 'AvenirNext-Medium', 'PingFangSC-Regular', 'Microsoft YaHei';
+}
+
+html,
+body,
+#app {
+  width: 100%;
+  height: 100%;
+}
+
+a {
+  text-decoration: none;
+  color: #222222;
+  display: inline-block;
+}
+
+li {
+  list-style: none;
+}
+i {
+  font-style: normal;
+}
+/* ----------------------------------------- */
+/* 登录页 */
+.login .el-input__inner,
+.dym .el-input__inner,
+.qn .el-input__inner {
+  border: 0;
+  border-bottom: 1px solid #dcdfe6;
+  border-radius: 0;
+  font-weight: 600;
+}
+/* ----------------------------------------- */
+
+/* 截图背景 */
+.cropper-box {
+  background-color: #605e5e;
+}
+
+.el-upload {
+  width: 100%;
+}
+
+/* 时间选择器 */
+.el-picker-panel {
+  position: fixed !important;
+  top: auto !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+}
+.el-picker-panel__content {
+  width: 100% !important;
+  margin: 0 !important;
+}
+
+/* 消息弹框 */
+.el-message {
+  min-width: 90% !important;
+}
+
+/* 处理下textarea右下三角 */
+textarea {
+  resize: none !important;
+}

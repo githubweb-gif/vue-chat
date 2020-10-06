@@ -31,6 +31,7 @@
         <el-form-item prop="code">
           <el-input
             v-model="loginForm.code"
+            type="text"
             placeholder="请输入验证码"
             @blur="validate('code')"
           />

@@ -1,27 +1,37 @@
 <template>
-  <div class="box">
-    <footer :style="{height: changeHeight}">
-      <div ref="event" class="event">
-        <div class="iconfont icon-yuyin" @click.stop="show('sound')" />
-        <div class="msg">
-          <el-input
-            ref="text"
-            v-model="message"
-            :autosize="{ minRows: 1, maxRows: 5}"
-            type="textarea"
-            @input="inputMsg"
-          />
-        </div>
-        <div class="iconfont icon-biaoqing-xue" @click.stop="show('emoji')" />
-        <div v-if="message===''" class="icon el-icon-circle-plus-outline" @click.stop="show('other')" />
-        <div v-if="message!==''?true:false" ref="send" class="send">
-          <p>发送</p>
-        </div>
+  <footer>
+    <div class="input">
+      <div class="iconfont icon-yuyin" />
+      <div class="msg">
+        <el-input
+          ref="text"
+          v-model="message"
+          :autosize="{ minRows: 1, maxRows: 5 }"
+          type="textarea"
+          @input="scroll"
+          @focus="scroll"
+        />
       </div>
-      <component :is="currentTabComponent" ref="height" class="features" @emojis="emoji" />
-      <!-- 功能区 -->
-    </footer>
-  </div>
+      <div class="iconfont icon-biaoqing-xue" @click.stop="show('emoji')" />
+      <div
+        v-if="message === ''"
+        class="icon el-icon-circle-plus-outline"
+        @click.stop="show('other')"
+      />
+      <div v-if="message !== '' ? true : false" class="send" @click="sendMsg">
+        <p>发送</p>
+      </div>
+    </div>
+    <!-- 功能区 -->
+    <div class="components">
+      <component
+        :is="currentTabComponent"
+        ref="components"
+        class="features"
+        @emojis="emoji"
+      />
+    </div>
+  </footer>
 </template>
 
 <script>
@@ -34,9 +44,9 @@ export default {
     emoji
   },
   props: {
-    changeHeight: {
-      type: String,
-      default: ''
+    isComponet: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -45,34 +55,55 @@ export default {
       currentTabComponent: ''
     }
   },
-  computed: {},
+  computed: {
+    componentWidth() {
+      if (this.currentTabComponent === '') {
+        return 0
+      }
+      const b = this.$refs.components.$el.offsetHeight
+      return b
+    }
+  },
   watch: {
-    // message() {
-    //   this.initHeight()
-    // }
+    currentTabComponent(value) {
+      if (value === '' && value) {
+        this.$emit('IntoView', this.componentWidth)
+      }
+    },
+    isComponet() {
+      this.currentTabComponent = ''
+    }
   },
-  mounted() {
-    this.initHeight()
-  },
+  mounted() {},
   methods: {
     show(value) {
+      if (
+        this.currentTabComponent !== '' &&
+        this.currentTabComponent === value
+      ) {
+        this.currentTabComponent = ''
+        return
+      }
       this.currentTabComponent = value
       this.$nextTick(() => {
-        const b = this.$refs.height.$el.offsetHeight
-        const a = this.$refs.event.offsetHeight
-        this.$emit('IntoView', { a, b })
+        this.$emit('IntoView', this.componentWidth)
       })
-    },
-    initHeight() {
-      this.$nextTick(() => {
-        const a = this.$refs.event.offsetHeight
-        this.$emit('height', a)
-      })
-    },
-    inputMsg() {
     },
     emoji(value) {
       this.message += value
+    },
+    scroll() {
+      this.currentTabComponent = ''
+      this.$nextTick(() => {
+        this.$emit('IntoView', this.componentWidth)
+      })
+    },
+    sendMsg() {
+      console.log('000')
+      this.$emit('addMsg', this.message)
+      this.$nextTick(() => {
+        this.$emit('IntoView', this.componentWidth)
+      })
     }
   }
 }
@@ -80,54 +111,28 @@ export default {
 
 <style lang="scss" scoped>
 footer {
-  transition: height 0.3s;
-  box-sizing: border-box;
-  background-color: #f4f4f4;
-  overflow: hidden;
-  //  box-shadow: 0px -2px 1px -1px #d1d8d8;
-  .event {
+  border-top: 1px solid #d6d6d6;
+  .input {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 4px 16px;
-    position: relative;
-    overflow: hidden;
+    padding: 3px 16px;
     .msg {
       flex: 1;
-      padding-right: 10px;
-      .el-input {
-        caret-color: #08af0b;
-      }
-    }
-    .iconfont {
-      padding-right: 10px;
+      padding: 0 10px;
     }
     .iconfont,
     .icon {
-      font-size: 29px;
+      font-size: 1.8rem;
+    }
+    .icon {
+      padding-left: 10px;
     }
     .send {
-      background-color: #24c222;
-      border-radius: 6px;
-      transition: width 0.3s;
-      box-sizing: border-box;
-      overflow: hidden;
-      p {
-        padding: 3px 10px;
-        white-space: nowrap;
-        overflow: hidden;
-      }
+      background-color: #37d237;
+      border-radius: 5px;
+      padding: 3px 10px;
     }
   }
 }
-// .fade-enter-active,
-// .fade-leave-active {
-//   transition: all 0.2s;
-// }
-// .fade-enter {
-//   opacity: 0;
-// }
-// .fade-leave-active {
-//  opacity: 1;
-// }
 </style>

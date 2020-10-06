@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="other">
     <!-- 功能区 -->
     <div class="more">
       <div class="index">
@@ -41,6 +41,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.other {
+  border-top: 1px solid #d6d6d6;
+  padding: 0 16px;
+}
 .more,
 .last {
   display: flex;

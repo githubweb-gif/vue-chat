@@ -1,28 +1,37 @@
 <template>
   <div class="box">
-    <header @click="height = initH">
+    <header @click="initHeight = !initHeight">
       <div class="link el-icon-arrow-left" @click="$router.go(-1)" />
       <div class="name">马里奥</div>
       <router-link :to="`/details?id=${id}`">
         <span class="el-icon-more" />
       </router-link>
     </header>
-    <main ref="main" @click="height = initH">
-      <div v-for="(item) in msgList" :key="item.id" class="user">
+    <main ref="main" @click="initHeight = !initHeight">
+      <div v-for="item in msgList" :key="item.id" class="user">
         <div class="time">{{ item.time | chatDate }}</div>
-        <div class="info" :class="item.uid==='user'? 'friend': 'oneself'">
+        <div class="info" :class="item.uid === 'user' ? 'friend' : 'oneself'">
           <div class="avatar">
             <img v-if="userInfo.avatar" :src="item.avatar" alt>
           </div>
-          <div v-if="item.types===0" class="content">{{ item.message }}</div>
-          <div v-if="item.types===1" class="content" @click="show(item.message)">
+          <div v-if="item.types === 0" class="content">{{ item.message }}</div>
+          <div
+            v-if="item.types === 1"
+            class="content"
+            @click="show(item.message)"
+          >
             <img :src="item.message" alt>
           </div>
         </div>
       </div>
       <div ref="last" class="last" />
     </main>
-    <footer-vue class="footer" :change-height="height" @height="initHeight" @IntoView="scrollFooter" />
+    <footer-vue
+      class="footer"
+      :is-componet="initHeight"
+      @IntoView="scrollFooter"
+      @addMsg="addMsg"
+    />
   </div>
 </template>
 
@@ -43,8 +52,7 @@ export default {
       },
       msgList: [],
       images: [],
-      height: '',
-      initH: ''
+      initHeight: false
     }
   },
   computed: {
@@ -106,16 +114,9 @@ export default {
         startPosition: index
       })
     },
-    scrollFooter(obj) {
-      this.$refs.last.style.height = obj.b + 'px'
-      const value = obj.a + obj.b
-      this.initH = obj.a + 'px'
+    scrollFooter(b) {
+      this.$refs.last.style.height = b + 'px'
       this.scroll().then(() => {
-        if (this.height === (value + 'px')) {
-          this.height = obj.a + 'px'
-        } else {
-          this.height = value + 'px'
-        }
         this.$refs.last.style.height = 0
       })
     },
@@ -126,13 +127,8 @@ export default {
         resolve()
       })
     },
-    // footer初始化高度
-    initHeight(value) {
-      if (this.height === '') {
-        this.$refs.last.style.height = value + 'px'
-      }
-      this.initH = value + 'px'
-      this.height = value + 'px'
+    addMsg(value) {
+      this.msgList.push({ types: 0, message: value })
     }
   }
 }
@@ -160,45 +156,49 @@ header {
   }
 }
 main {
-    flex: 1;
-    padding: 0 16px;
-    overflow-x: hidden;
-    overflow-y: scroll;
-    .user {
-      .time {
-        text-align: center;
-        margin: 15px 0 20px;
-        font-size: 14px;
-        color: rgba(39, 40, 50, 0.3);
-      }
-      .info {
-        display: flex;
-        .avatar {
-          img {
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
-          }
-        }
-        .content {
-          flex: 1;
-          max-width: 217px;
-          margin: 0 8px;
-          padding: 8px 11px;
-          font-size: 16px;
-          background-color: #ffffff;
-          border-radius: 0 10px 10px 10px;
-          letter-spacing: 1px;
-          max-width: 70%;
-          overflow: hidden;
-          img {
-            width: 100%;
-          }
-        }
-      }
+  flex: 1;
+  padding: 0 16px;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  .user {
+    .time {
+      text-align: center;
+      margin: 15px 0 20px;
+      font-size: 14px;
+      color: rgba(39, 40, 50, 0.3);
     }
-    .oneself {
-      flex-direction: row-reverse;
+    .info {
+      display: flex;
+      .avatar {
+        img {
+          width: 40px;
+          height: 40px;
+          border-radius: 10px;
+        }
+      }
+      .content {
+        flex: 1;
+        max-width: 217px;
+        margin: 0 8px;
+        padding: 8px 11px;
+        font-size: 16px;
+        background-color: #ffffff;
+        border-radius: 0 10px 10px 10px;
+        letter-spacing: 1px;
+        max-width: 70%;
+        overflow: hidden;
+        img {
+          width: 100%;
+        }
+      }
     }
   }
+  .oneself {
+    flex-direction: row-reverse;
+  }
+}
+.fade-leave-active,
+.fade-enter-active {
+  transition: all 0.3s;
+}
 </style>

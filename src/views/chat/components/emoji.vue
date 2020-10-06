@@ -6,8 +6,14 @@
     <div class="data">
       <div class="title">所有表情</div>
       <div class="list">
-        <span v-for=" (item,index) in email" :key="index" class="icon" @click.stop="copy">{{ item }}</span>
+        <span
+          v-for="(item, index) in email"
+          :key="index"
+          class="icon"
+          @click.stop="copy"
+        >{{ item }}</span>
       </div>
+      <div class="el-icon-close close" @click="pop" />
     </div>
   </div>
 </template>
@@ -103,6 +109,8 @@ export default {
   methods: {
     copy(e) {
       this.$emit('emojis', e.target.innerHTML)
+    },
+    pop() {
     }
   }
 }
@@ -119,9 +127,20 @@ export default {
   }
   .data {
     padding: 0 16px;
+    position: relative;
     .title {
       font-size: 16px;
       padding: 10px 0;
+    }
+    .close {
+      position: absolute;
+      bottom: 0px;
+      right: 16px;
+      font-size: 25px;
+      width: 80px;
+      height: 30px;
+      line-height: 30px;
+      background-color: #7d837d;
     }
     .list {
       height: 120px;
@@ -131,6 +150,8 @@ export default {
       display: flex;
       justify-content: flex-start;
       flex-wrap: wrap;
+      box-sizing: border-box;
+      padding-bottom: 15px;
       span {
         display: flex;
         align-items: center;

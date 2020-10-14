@@ -2,10 +2,12 @@
   <div class="other">
     <!-- 功能区 -->
     <div class="more">
-      <div class="index">
-        <div class="iconfont icon-image" />
-        <div class="name">照片</div>
-      </div>
+      <van-uploader :after-read="afterRead">
+        <div class="index">
+          <div class="iconfont icon-image" />
+          <div class="name">照片</div>
+        </div>
+      </van-uploader>
       <div class="index">
         <div class="iconfont icon-xiangji" />
         <div class="name">拍摄</div>
@@ -30,13 +32,27 @@
 
 <script>
 // import { getInfo } from '@/api/user'
+import { Uploader } from 'vant'
 export default {
+  components: {
+    vanUploader: Uploader
+  },
   data() {
     return {}
   },
   watch: {},
   mounted() {},
-  methods: {}
+  methods: {
+    afterRead(file) {
+      // 此时可以自行将文件上传至服务器
+      console.log(file)
+      const data = {
+        message: file.content,
+        types: 1
+      }
+      this.$store.commit('ACCEPT_DATA', data)
+    }
+  }
 }
 </script>
 

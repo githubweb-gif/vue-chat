@@ -56,7 +56,7 @@ export default {
     }
   },
   computed: {
-    componentWidth() {
+    componentHeight() {
       if (this.currentTabComponent === '') {
         return 0
       }
@@ -67,7 +67,7 @@ export default {
   watch: {
     currentTabComponent(value) {
       if (value === '' && value) {
-        this.$emit('IntoView', this.componentWidth)
+        this.$emit('IntoView', this.componentHeight)
       }
     },
     isComponet() {
@@ -86,23 +86,29 @@ export default {
       }
       this.currentTabComponent = value
       this.$nextTick(() => {
-        this.$emit('IntoView', this.componentWidth)
+        this.$emit('IntoView', this.componentHeight)
       })
     },
     emoji(value) {
-      this.message += value
+      if (value) {
+        this.message += value
+      } else {
+        const index = this.message.length
+        const num = this.message.substring(index - 2, index).search(/(\ud83c[\udf00-\udfff])|(\ud83d[\udc00-\ude4f])|(\ud83d[\ude80-\udeff])/i) === -1 ? 1 : 2
+        this.message = this.message.substring(0, index - num)
+      }
     },
     scroll() {
       this.currentTabComponent = ''
       this.$nextTick(() => {
-        this.$emit('IntoView', this.componentWidth)
+        this.$emit('IntoView', this.componentHeight)
       })
     },
     sendMsg() {
       console.log('000')
-      this.$emit('addMsg', this.message)
+      this.$emit('addMsg', { types: 0, message: this.message })
       this.$nextTick(() => {
-        this.$emit('IntoView', this.componentWidth)
+        this.$emit('IntoView', this.componentHeight)
       })
     }
   }

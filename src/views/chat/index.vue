@@ -52,7 +52,8 @@ export default {
       },
       msgList: [],
       images: [],
-      initHeight: false
+      initHeight: false,
+      componetHight: ''
     }
   },
   computed: {
@@ -61,6 +62,20 @@ export default {
     },
     oneSelf() {
       return this.$store.getters.userInfo
+    },
+    othersMsg() {
+      return this.$store.state.user.otherTypes
+    }
+  },
+  watch: {
+    othersMsg(value) {
+      if (value) {
+        this.addMsg(value)
+      }
+    },
+    componetHight(value) {
+      this.$refs.last.style.height = value
+      console.log(this.$refs.last.style.height)
     }
   },
   created() {
@@ -115,12 +130,12 @@ export default {
       })
     },
     scrollFooter(b) {
-      this.$refs.last.style.height = b + 'px'
+      this.componetHight = b + 'px'
       this.scroll().then(() => {
         this.$refs.last.style.height = 0
       })
     },
-    scroll(value) {
+    scroll() {
       return new Promise((resolve, reject) => {
         const scroll = this.$refs.main
         scroll.scrollTop = scroll.scrollHeight
@@ -128,7 +143,21 @@ export default {
       })
     },
     addMsg(value) {
-      this.msgList.push({ types: 0, message: value })
+      if (value.types === 0) {
+        this.msgList.push(value)
+        return
+      }
+      if (value.types === 1) {
+        this.images.push(value.message)
+      }
+      this.msgList.push(value)
+      setTimeout(() => {
+        this.$nextTick(() => {
+          this.scroll().then(() => {
+            this.initHeight = !this.initHeight
+          })
+        })
+      }, 200)
     }
   }
 }

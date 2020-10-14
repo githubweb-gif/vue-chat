@@ -111,6 +111,7 @@ export default {
       this.$emit('emojis', e.target.innerHTML)
     },
     pop() {
+      this.$emit('emojis', false)
     }
   }
 }

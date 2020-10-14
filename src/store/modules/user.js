@@ -10,7 +10,8 @@ const state = {
   email: '',
   phone: '',
   token: getToken(),
-  birth: ''
+  birth: '',
+  otherTypes: null
 }
 
 const mutations = {
@@ -51,6 +52,9 @@ const mutations = {
   // 生日
   SET_BIRTH: (state, birth) => {
     state.birth = birth
+  },
+  ACCEPT_DATA: (state, data) => {
+    state.otherTypes = data
   }
 }
 

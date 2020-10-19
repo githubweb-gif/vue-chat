@@ -8,10 +8,11 @@ const routes = [
     path: '/',
     redirect: '/home',
     component: () => import('../layout/index.vue'),
+    meta: { keepAlive: true },
     children: [
       {
         path: 'home',
-        meta: { index: 2 },
+        meta: { index: 2, keepAlive: true },
         component: () => import('../views/home/index.vue')
       }
     ]
@@ -29,19 +30,19 @@ const routes = [
   // 搜索页
   {
     path: '/search',
-    meta: { index: 3, title: 'search' },
+    meta: { index: 3, title: 'search', keepAlive: true },
     component: () => import('../views/search/index.vue')
   },
   // 个人详情页
   {
     path: '/details',
-    meta: { index: 4 },
+    meta: { index: 4, keepAlive: true },
     component: () => import('../views/Details/index.vue')
   },
   // 个人信息页
   {
     path: '/userInfo',
-    meta: { index: 5 },
+    meta: { index: 5, keepAlive: true },
     component: () => import('../views/userInfo/index.vue')
   },
   // 添加好友页

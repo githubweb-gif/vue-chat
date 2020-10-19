@@ -15,7 +15,7 @@
     <div class="main">
       <div class="avatar">
         <div :style="animation" class="border">
-          <img v-if="userInfo.avatar" :class="{ size: height }" :src="baseUrl+userInfo.avatar" alt>
+          <img v-if="userInfo.avatar" :class="{ size: height }" :src="userInfo.avatar | avatar" alt>
           <!-- icon-xingbie icon-xingbienan icon-xingbie-nv -->
           <span :style="{ backgroundColor: sex.bc }" :class="['sex', 'iconfont', sex.icon]" />
         </div>
@@ -42,15 +42,17 @@
     </div>
     <!-- 底部 -->
     <div v-if="id === uid ? false : true" class="footer">
-      <span v-if="validFriend.state">发送消息</span>
-      <span v-if="!validFriend.state" @click="ani">加为好友</span>
+      <span v-if="validFriend.state" @click="toChat">发送消息</span>
+      <span v-if="!validFriend.state && id" @click="ani">加为好友</span>
     </div>
     <!-- 背景 -->
-    <div
+    <!-- <div
       v-if="userInfo.avatar"
       class="filter"
-      :style="[{background: `url(${baseUrl+backgroundImg})center center / cover no-repeat fixed`}]"
-    />
+      :style="[{backgroundImage: `url(${baseUrl+backgroundImg})`}]"
+    >
+      <div class="white" /> -->
+  <!-- </div> -->
   </div>
 </template>
 
@@ -181,6 +183,16 @@ export default {
         this.ani()
         this.getUserInfo()
       })
+    },
+    toChat() {
+      console.log(this.userInfo)
+      const item = this.userInfo
+      this.$router.push({
+        path: '/chat',
+        query: {
+          id: item._id
+        }
+      })
     }
   }
 }
@@ -189,8 +201,12 @@ export default {
 <style lang="scss" scoped>
 @import "../../style/header.scss";
 .box {
-  background-color: rgba(255, 255, 255, 0.6);
+  background-color: rgba(255, 255, 255, 1);
   position: absolute;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
 }
 .background {
   background-color: rgba(245, 228, 120, 1);
@@ -201,8 +217,19 @@ export default {
   position: absolute;
   top: 0;
   left: 0;
-  z-index: -1;
-  filter: blur(2px);
+  filter: blur(6px);
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+  .white {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.5);
+  }
 }
 header {
   border: 0;
@@ -223,6 +250,7 @@ header {
 .main {
   text-align: center;
   padding-top: 74px;
+  flex: 1;
   .avatar {
     position: relative;
     padding: 0 28px;
@@ -257,6 +285,8 @@ header {
   }
   .info {
     font-size: 14px;
+    position: relative;
+    z-index: 100;
     span {
       margin-bottom: 10px;
       display: inline-block;
@@ -271,6 +301,11 @@ header {
   }
 }
 .footer {
+  padding: 0 16px;
+  bottom: 4px;
+  left: 0;
+  width: 100%;
+  box-sizing: border-box;
   span {
     padding-top: 9px;
     padding-bottom: 9px;
@@ -280,12 +315,6 @@ header {
     background-color: #ffe431;
     border-radius: 5px;
   }
-  padding: 0 16px;
-  position: fixed;
-  bottom: 4px;
-  left: 0;
-  width: 100%;
-  box-sizing: border-box;
 }
 .addFriend {
   position: fixed;

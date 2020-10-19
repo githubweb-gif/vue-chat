@@ -23,7 +23,7 @@
                   class="link"
                   :to="`/details?id=${item.friendID._id}`"
                 ><img
-                  :src="baseUrl + item.friendID.avatar"
+                  :src="item.friendID.avatar | avatar"
                   alt=""
                 ></router-link>
               </div>
@@ -34,7 +34,7 @@
           <router-link v-if="stranger !== null" class="link" :to="`/details?id=${stranger._id}`">
             <div class="stranger">
               <div class="avatar">
-                <img :src="baseUrl+stranger.avatar" alt="">
+                <img :src="stranger.avatar | avatar" alt="">
               </div>
               <div class="name" v-html="stranger.name" />
             </div>

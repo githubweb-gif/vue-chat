@@ -41,6 +41,9 @@ Vue.filter('dateFormat', function(time) {
 
 // 头像
 Vue.filter('avatar', function(value) {
+  if (value && value.indexOf('http') !== -1) {
+    return value
+  }
   return `http://localhost:3000/${value}`
 })
 

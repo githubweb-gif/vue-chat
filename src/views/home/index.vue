@@ -16,11 +16,11 @@
         </li></router-link>
       <li v-for="item in friendList" :key="item.id" @click="toChat(item)">
         <div class="avatar">
-          <img v-if="item.friendID.avatar" :src="baseUrl+item.friendID.avatar" alt="">
+          <img v-if="item.friendID.avatar" :src="item.friendID.avatar | avatar" alt="">
           <i v-if="item.tip > 0 ? true : false">{{ item.tip }}</i>
         </div>
         <div class="info">
-          <div class="name">{{ item.markName }}</div>
+          <div class="name">{{ item.friendID.name }}</div>
           <p class="msg">{{ item.news }}</p>
         </div>
         <div class="date">
@@ -63,6 +63,7 @@ export default {
       }
       getFriends(data)
         .then((res) => {
+          console.log(res)
           this.friendList = res.data
         })
         .catch((err) => {

@@ -142,3 +142,46 @@ export function uploadImg(data) {
     data
   })
 }
+
+// 获取一对一消息
+export function oppositeMessage(data) {
+  return request({
+    url: '/user/getMessage',
+    method: 'get',
+    params: data
+  })
+}
+
+// 发送消息
+export function sendMessage(data) {
+  return request({
+    url: '/user/sendMsg',
+    method: 'post',
+    data
+  })
+}
+
+// 获取最新消息一条
+export function getNewMsg(data) {
+  return request({
+    url: '/user/getNewMsg',
+    method: 'get',
+    params: data
+  })
+}
+
+// if (value.types === 0) {
+//   this.msgList.push(value)
+//   return
+// }
+// if (value.types === 1) {
+//   this.images.push(value.message)
+// }
+// this.msgList.push(value)
+// setTimeout(() => {
+//   this.$nextTick(() => {
+//     this.scroll().then(() => {
+//       this.initHeight = !this.initHeight
+//     })
+//   })
+// }, 200)

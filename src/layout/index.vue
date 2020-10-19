@@ -2,7 +2,7 @@
   <div class="box" @touchstart="menu = false">
     <header>
       <div class="avatar">
-        <img v-if="user.avatar" :src="baseUrl+user.avatar" alt="" @click="infoPage">
+        <img v-if="user.avatar" :src="user.avatar | avatar" alt="" @click="infoPage">
       </div>
       <div class="logo">
         <img src="../assets/img/火.png" alt="">

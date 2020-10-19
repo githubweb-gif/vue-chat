@@ -1,29 +1,31 @@
 <template>
   <div class="box">
     <header @click="initHeight = !initHeight">
-      <div class="link el-icon-arrow-left" @click="$router.go(-1)" />
+      <div class="link el-icon-arrow-left" @click="$router.push('/')" />
       <div class="name">马里奥</div>
       <router-link :to="`/details?id=${id}`">
         <span class="el-icon-more" />
       </router-link>
     </header>
     <main ref="main" @click="initHeight = !initHeight">
-      <div v-for="item in msgList" :key="item.id" class="user">
-        <div class="time">{{ item.time | chatDate }}</div>
-        <div class="info" :class="item.uid === 'user' ? 'friend' : 'oneself'">
-          <div class="avatar">
-            <img v-if="userInfo.avatar" :src="item.avatar" alt>
-          </div>
-          <div v-if="item.types === 0" class="content">{{ item.message }}</div>
-          <div
-            v-if="item.types === 1"
-            class="content"
-            @click="show(item.message)"
-          >
-            <img :src="item.message" alt>
+      <van-pull-refresh v-model="isLoading" :disabled="disabled" @refresh="onRefresh">
+        <div v-for="(item,index) in msgList" :id="index===0?'lastItem': ''" :key="item._id" class="user">
+          <div class="time">{{ item.time | chatDate }}</div>
+          <div class="info" :class="item.userID._id === oneSelf.id ? 'oneself' : 'friend'">
+            <div class="avatar">
+              <img :src="(item.userID._id === oneSelf.id ? oneSelf.avatar : item.userID.avatar) | avatar" alt>
+            </div>
+            <div v-if="item.types === '0'" class="content">{{ item.message }}</div>
+            <div
+              v-if="item.types === '1'"
+              class="content"
+              @click="show(item.message)"
+            >
+              <img :src="item.message" alt>
+            </div>
           </div>
         </div>
-      </div>
+      </van-pull-refresh>
       <div ref="last" class="last" />
     </main>
     <footer-vue
@@ -36,24 +38,33 @@
 </template>
 
 <script>
-import { getInfo } from '@/api/user'
-import datas from '@/data/chat'
-import { ImagePreview } from 'vant'
+import { getInfo, oppositeMessage, getNewMsg } from '@/api/user'
+import { ImagePreview, PullRefresh } from 'vant'
 import FooterVue from './components/footer.vue'
 export default {
   components: {
-    FooterVue
+    FooterVue,
+    vanPullRefresh: PullRefresh
   },
   data() {
     return {
-      userInfo: {},
+      friendInfo: {},
       options: {
         movable: false
       },
       msgList: [],
       images: [],
       initHeight: false,
-      componetHight: ''
+      componetHight: '',
+      // 当前页
+      page: 1,
+      // 总页数
+      pages: '',
+      isLoading: false,
+      scrollHeight: '',
+      // 判断dom更新
+      n: false,
+      disabled: false
     }
   },
   computed: {
@@ -87,16 +98,20 @@ export default {
       const scroll = this.$refs.main
       if (scroll.scrollHeight > scroll.clientHeight) {
         scroll.scrollTop = scroll.scrollHeight
+        this.scrollHeight = scroll.scrollHeight
         this.$refs.last.style.height = 0
       }
     }, 100)
+  },
+  updated() {
+    this.n = false
   },
   methods: {
     // 获取用户信息
     getUserInfo() {
       getInfo(this.id)
         .then((res) => {
-          this.userInfo = res.data
+          this.friendInfo = res.data
         })
         .catch((err) => {
           console.log(err)
@@ -104,7 +119,8 @@ export default {
     },
     // 初始化
     init() {
-      const list = datas.message()
+      this.getMessage()
+      const list = this.msgList
       list.forEach((item, index) => {
         if (item.types === 1) {
           this.images.push(item.message)
@@ -119,6 +135,18 @@ export default {
         }
       })
       this.msgList = list
+    },
+    // 获取消息
+    async getMessage() {
+      const data = {
+        userID: this.oneSelf.id,
+        friendID: this.id,
+        page: this.page
+      }
+      const { data: res } = await oppositeMessage(data)
+      this.msgList = this.msgList.reverse()
+      this.msgList = this.msgList.concat(res.records).reverse()
+      this.pages = res.pages
     },
     show(images) {
       const index = this.images.indexOf(images)
@@ -143,21 +171,36 @@ export default {
       })
     },
     addMsg(value) {
-      if (value.types === 0) {
-        this.msgList.push(value)
-        return
-      }
-      if (value.types === 1) {
-        this.images.push(value.message)
-      }
-      this.msgList.push(value)
-      setTimeout(() => {
-        this.$nextTick(() => {
-          this.scroll().then(() => {
-            this.initHeight = !this.initHeight
-          })
+      if (value) {
+        getNewMsg({ userID: this.oneSelf.id, friendID: this.id }).then((res) => {
+          console.log(res)
+          this.msgList.push(res.data[0])
+          setTimeout(() => {
+            this.scroll().then(() => {
+              this.initHeight = !this.initHeight
+            })
+          }, 200)
         })
-      }, 200)
+      }
+    },
+    onRefresh() {
+      this.n = true
+      this.page++
+      if (this.page >= this.pages) {
+        this.disabled = true
+      }
+      setTimeout(() => {
+        this.$refs.main.scrollTop = 10
+        this.init()
+        this.isLoading = false
+        this.$nextTick(() => {
+          if (!this.n) {
+            setTimeout(() => {
+              this.$refs.main.scrollTo(0, this.scrollHeight - 30)// -30是为了露出最新加载的一行数据
+            }, 30)
+          }
+        })
+      }, 500)
     }
   }
 }
@@ -189,6 +232,8 @@ main {
   padding: 0 16px;
   overflow-x: hidden;
   overflow-y: scroll;
+  background-color: #f4f4f4;
+  position: relative;
   .user {
     .time {
       text-align: center;
@@ -206,16 +251,16 @@ main {
         }
       }
       .content {
-        flex: 1;
-        max-width: 217px;
         margin: 0 8px;
         padding: 8px 11px;
         font-size: 16px;
         background-color: #ffffff;
-        border-radius: 0 10px 10px 10px;
+        border-radius: 5px;
         letter-spacing: 1px;
         max-width: 70%;
-        overflow: hidden;
+        display: flex;
+        align-items: center;
+        position: relative;
         img {
           width: 100%;
         }
@@ -224,6 +269,35 @@ main {
   }
   .oneself {
     flex-direction: row-reverse;
+    .content {
+      text-align: right;
+      background-color: #0bbe06 !important;
+    }
+    .content::after {
+        content: '';
+        display: inline-block;
+        border: 6px solid;
+        position: absolute;
+        top: 50%;
+        right: 0;
+        transform: translate(100%,-50%);
+        border-color: transparent transparent transparent #0bbe06;
+      }
+  }
+  .friend {
+    .content{
+       text-align: left;
+    }
+        .content::after {
+        content: '';
+        display: inline-block;
+        border: 6px solid;
+        position: absolute;
+        top: 50%;
+        left: 0;
+        transform: translate(-100%,-50%);
+        border-color: transparent #ffffff transparent transparent ;
+      }
   }
 }
 .fade-leave-active,

@@ -35,7 +35,7 @@
 </template>
 
 <script>
-// import { getInfo } from '@/api/user'
+import { sendMessage } from '@/api/user'
 import other from './other.vue'
 import emoji from './emoji.vue'
 export default {
@@ -62,6 +62,12 @@ export default {
       }
       const b = this.$refs.components.$el.offsetHeight
       return b
+    },
+    id() {
+      return this.$route.query.id
+    },
+    oneSelf() {
+      return this.$store.getters.userInfo
     }
   },
   watch: {
@@ -105,8 +111,10 @@ export default {
       })
     },
     sendMsg() {
-      console.log('000')
-      this.$emit('addMsg', { types: 0, message: this.message })
+      // this.$emit('addMsg', { types: 0, message: this.message })
+      sendMessage({ types: 0, message: this.message, uid: this.oneSelf.id, friendID: this.id }).then(() => {
+        this.$emit('addMsg', true)
+      })
       this.$nextTick(() => {
         this.$emit('IntoView', this.componentHeight)
       })

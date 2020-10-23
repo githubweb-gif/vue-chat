@@ -53,6 +53,7 @@ const mutations = {
   SET_BIRTH: (state, birth) => {
     state.birth = birth
   },
+  // 接受其他类型聊天数据
   ACCEPT_DATA: (state, data) => {
     state.otherTypes = data
   }

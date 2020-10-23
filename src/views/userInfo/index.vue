@@ -174,6 +174,8 @@ export default {
       const fileName = file.name
       const regex = /(.jpg|.jpeg|.gif|.png|.bmp)$/
       if (regex.test(fileName.toLowerCase())) {
+        console.log(file)
+        console.log(URL.createObjectURL(file.raw))
         this.cropimg = URL.createObjectURL(file.raw)
         this.isCrop = true
       } else {

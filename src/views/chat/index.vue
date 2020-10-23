@@ -15,13 +15,24 @@
             <div class="avatar">
               <img :src="(item.userID._id === oneSelf.id ? oneSelf.avatar : item.userID.avatar) | avatar" alt>
             </div>
-            <div v-if="item.types === '0'" class="content">{{ item.message }}</div>
+            <div v-if="item.types - 0 === 0" class="content text">{{ item.message }}</div>
             <div
-              v-if="item.types === '1'"
-              class="content"
+              v-else-if="item.types - 0 === 1"
+              class="image content"
               @click="show(item.message)"
             >
               <img :src="item.message" alt>
+            </div>
+            <div
+              v-else-if="item.types - 0 === 3"
+              class="map"
+              @click="mapApp(item.message)"
+            >
+              <div class="place">
+                <div class="title"> {{ item.message.split('&')[1] }} </div>
+                <p>{{ item.message.split('&')[2] }}</p>
+              </div>
+              <img src="https://tse4-mm.cn.bing.net/th/id/OIP.MENcIlW1vtk-uNV5bxjZxgAAAA?w=206&h=193&c=7&o=5&dpr=1.25&pid=1.7" alt>
             </div>
           </div>
         </div>
@@ -38,7 +49,7 @@
 </template>
 
 <script>
-import { getInfo, oppositeMessage, getNewMsg } from '@/api/user'
+import { getInfo, oppositeMessage } from '@/api/user'
 import { ImagePreview, PullRefresh } from 'vant'
 import FooterVue from './components/footer.vue'
 export default {
@@ -74,24 +85,23 @@ export default {
     oneSelf() {
       return this.$store.getters.userInfo
     },
-    othersMsg() {
+    otherMsg() {
       return this.$store.state.user.otherTypes
     }
   },
   watch: {
-    othersMsg(value) {
-      if (value) {
-        this.addMsg(value)
-      }
-    },
     componetHight(value) {
       this.$refs.last.style.height = value
       console.log(this.$refs.last.style.height)
+    },
+    otherMsg() {
+      this.addMsg(this.otherMsg)
     }
   },
   created() {
     this.getUserInfo()
     this.init()
+    this.acceptMessage()
   },
   mounted() {
     setTimeout(() => {
@@ -122,9 +132,6 @@ export default {
       this.getMessage()
       const list = this.msgList
       list.forEach((item, index) => {
-        if (item.types === 1) {
-          this.images.push(item.message)
-        }
         const next = index + 1
         if (next > list.length - 1) {
           item.time = ''
@@ -146,9 +153,16 @@ export default {
       const { data: res } = await oppositeMessage(data)
       this.msgList = this.msgList.reverse()
       this.msgList = this.msgList.concat(res.records).reverse()
+      this.msgList.map((x) => {
+        if (x.types - 0 === 1) {
+          this.images.push(x.message)
+        }
+        return x
+      })
       this.pages = res.pages
     },
     show(images) {
+      console.log(images)
       const index = this.images.indexOf(images)
       ImagePreview({
         images: this.images,
@@ -165,24 +179,14 @@ export default {
     },
     scroll() {
       return new Promise((resolve, reject) => {
-        const scroll = this.$refs.main
-        scroll.scrollTop = scroll.scrollHeight
-        resolve()
+        this.$nextTick(() => {
+          const scroll = this.$refs.main
+          scroll.scrollTop = scroll.scrollHeight
+          resolve()
+        })
       })
     },
-    addMsg(value) {
-      if (value) {
-        getNewMsg({ userID: this.oneSelf.id, friendID: this.id }).then((res) => {
-          console.log(res)
-          this.msgList.push(res.data[0])
-          setTimeout(() => {
-            this.scroll().then(() => {
-              this.initHeight = !this.initHeight
-            })
-          }, 200)
-        })
-      }
-    },
+    // 滚动加载
     onRefresh() {
       this.n = true
       this.page++
@@ -201,6 +205,52 @@ export default {
           }
         })
       }, 500)
+    },
+    addMsg(data) {
+      if (data) {
+        this.msgList.push(data)
+        if (data.types - 0 === 1) {
+          this.images.push(data.message)
+        }
+        setTimeout(() => {
+          this.scroll().then(() => {
+            this.initHeight = !this.initHeight
+          })
+        }, 200)
+      }
+    },
+    // 接收友发来的信息
+    acceptMessage() {
+      this.socket.on('msg', (data) => {
+        if (data.length && data.length === 1) {
+          this.addMsg(data[0])
+        }
+      })
+    },
+    // 判断设备
+    equipment() {
+      // 移动端
+      const Agents = ['Android', 'iPhone',
+        'SymbianOS', 'Windows Phone',
+        'iPad', 'iPod']
+      const userAgentInfo = navigator.userAgent
+      console.log(userAgentInfo)
+      let flag = false
+      for (let i = 0; i < Agents.length; i++) {
+        if (userAgentInfo.indexOf(Agents[i]) !== -1) {
+          flag = true
+          return flag
+        }
+      }
+    },
+    // 调用地图组件
+    mapApp(data) {
+      const arr = data.split('&')
+      if (this.equipment()) {
+        window.location.href = `androidamap://navi?sourceApplication=appname&amp;poiname=fangheng&amp;lat=${arr[0].split(',')[0]}&amp;lon=${arr[0].split(',')[1]}&amp;dev=1&amp;style=2`
+      } else {
+        window.location.href = `https://uri.amap.com/marker?position=${arr[0].split(',')[0]},${arr[0].split(',')[1]}&name=${arr[1]}`
+      }
     }
   }
 }
@@ -243,6 +293,7 @@ main {
     }
     .info {
       display: flex;
+      align-items: center;
       .avatar {
         img {
           width: 40px;
@@ -265,15 +316,38 @@ main {
           width: 100%;
         }
       }
+      .map {
+         width: 70%;
+         margin: 0 8px;
+         position: relative;
+         background-color: #ffffff;
+         .place {
+          padding: 8px 5px 5px;
+         }
+         .title {
+           width: 100%;
+           overflow: hidden;
+           white-space: nowrap;
+           text-overflow: ellipsis;
+           margin-bottom: 5px;
+         }
+         p {
+           font-size: 12px;
+           color: #a5a59d;
+         }
+         img {
+           width: 100%;
+         }
+      }
     }
   }
   .oneself {
     flex-direction: row-reverse;
-    .content {
+    .text {
       text-align: right;
       background-color: #0bbe06 !important;
     }
-    .content::after {
+    .map::after, .content::after {
         content: '';
         display: inline-block;
         border: 6px solid;
@@ -285,10 +359,10 @@ main {
       }
   }
   .friend {
-    .content{
+    .text{
        text-align: left;
     }
-        .content::after {
+    .map::after,.content::after {
         content: '';
         display: inline-block;
         border: 6px solid;

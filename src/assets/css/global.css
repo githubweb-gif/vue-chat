@@ -2,6 +2,7 @@
   margin: 0;
   padding: 0;
   font-family: 'AvenirNext-Medium', 'PingFangSC-Regular', 'Microsoft YaHei';
+  box-sizing: border-box;
 }
 
 html,
@@ -65,4 +66,10 @@ i {
 /* 处理下textarea右下三角 */
 textarea {
   resize: none !important;
+}
+
+/* 地图搜索栏 */
+.search-tips ul {
+  max-height: 200px;
+  overflow-x: auto;
 }

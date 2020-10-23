@@ -84,6 +84,9 @@ export default {
     },
     baseUrl() {
       return this.$store.getters.baseUrl
+    },
+    name() {
+      return this.$store.getters.userInfo.name
     }
   },
   created() {
@@ -103,11 +106,12 @@ export default {
     }, 500),
     // 搜索陌生人
     addFriend: debounce(function() {
+      console.log('000000000')
       if (this.keyWords.trim() === '') {
         return
       }
       console.log(this.keyWords)
-      searchStranger({ key: this.keyWords }).then((res) => {
+      searchStranger({ key: this.keyWords, uname: this.name }).then((res) => {
         const { data } = res
         console.log(data)
         this.stranger = data

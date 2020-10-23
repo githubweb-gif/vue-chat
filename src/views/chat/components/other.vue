@@ -39,8 +39,9 @@
 </template>
 
 <script>
-// import { getInfo } from '@/api/user'
+import { sendMessage, uploadImg } from '@/api/user'
 import { Uploader } from 'vant'
+import dataURLtoFile from '@/until/base64&img'
 import vueAmap from './map'
 export default {
   components: {
@@ -51,6 +52,14 @@ export default {
     return {
       mapShow: false,
       componentShow: false
+    }
+  },
+  computed: {
+    id() {
+      return this.$route.query.id
+    },
+    oneSelf() {
+      return this.$store.getters.userInfo
     }
   },
   watch: {
@@ -66,13 +75,22 @@ export default {
   methods: {
     afterRead(file) {
       // 此时可以自行将文件上传至服务器
-      console.log(file)
-      const data = {
-        message: file.content,
-        types: 1
-      }
-      // 用store不合理
-      this.$store.commit('ACCEPT_DATA', data)
+      const imgFile = dataURLtoFile(file.content)
+      const formData = new FormData()
+      formData.append('upload', imgFile)
+      uploadImg(formData).then((res) => {
+        const { imgUrl } = res
+        console.log(imgUrl)
+        const data = { types: 1, message: 'http://localhost:3000' + imgUrl, userID: this
+          .oneSelf.id, friendID: this.id }
+        sendMessage(data).then((res) => {
+          const { data: { data, user }} = res
+          data.userID = user
+          this.$store.commit('ACCEPT_DATA', data)
+          this.socket.emit('msg', { fromID: this
+            .oneSelf.id, toID: this.id, msg: data })
+        })
+      })
     },
     getMap() {
       this.$refs.sendButton.style.bottom = 0
@@ -84,7 +102,7 @@ export default {
     },
     show(value) {
       console.log(value)
-      this.componentShow = value
+      this.componentShow = false
     }
   }
 }

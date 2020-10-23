@@ -162,13 +162,13 @@ export function sendMessage(data) {
 }
 
 // 获取最新消息一条
-export function getNewMsg(data) {
-  return request({
-    url: '/user/getNewMsg',
-    method: 'get',
-    params: data
-  })
-}
+// export function getNewMsg(data) {
+//   return request({
+//     url: '/user/getNewMsg',
+//     method: 'get',
+//     params: data
+//   })
+// }
 
 // if (value.types === 0) {
 //   this.msgList.push(value)

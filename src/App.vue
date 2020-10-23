@@ -17,10 +17,14 @@ export default {
       transitionName: ''
     }
   },
+  computed: {
+    id() {
+      return this.$store.getters.userInfo.id
+    }
+  },
   watch: {
     // 使用watch 监听$router的变化
     $route(to, from) {
-      console.log(this.$route.meta.keepAlive)
       // 如果to索引大于from索引,判断为前进状态,反之则为后退状态
       if (to.meta.index > from.meta.index) {
         // 设置动画名称
@@ -28,6 +32,15 @@ export default {
       } else {
         this.transitionName = 'slide-right'
       }
+    }
+  },
+  created() {
+    this.join()
+  },
+  methods: {
+    // socket登录
+    join() {
+      this.socket.emit('login', this.id)
     }
   }
 }

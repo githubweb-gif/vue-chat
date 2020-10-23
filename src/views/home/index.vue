@@ -13,7 +13,8 @@
           <div class="date">
             上午7:45
           </div>
-        </li></router-link>
+        </li>
+      </router-link>
       <li v-for="item in friendList" :key="item.id" @click="toChat(item)">
         <div class="avatar">
           <img v-if="item.friendID.avatar" :src="item.friendID.avatar | avatar" alt="">
@@ -21,10 +22,10 @@
         </div>
         <div class="info">
           <div class="name">{{ item.friendID.name }}</div>
-          <p class="msg">{{ item.news }}</p>
+          <p class="msg">{{ item.newMessage }}</p>
         </div>
         <div class="date">
-          {{ item.time | dateFormat }}
+          {{ item.MsgTime | dateFormat }}
         </div>
       </li>
     </ul>
@@ -54,8 +55,33 @@ export default {
   },
   created() {
     this.getFriendList()
+    this.acceptMessage()
   },
   methods: {
+    // 根据数据类型返回不同的数据
+    types(data) {
+      const list = data.map((x) => {
+        if (x.types - 0 === 0) {
+          return x
+        } else if (x.types - 0 === 1) {
+          if (x.message) {
+            x.message = '[图片]'
+            return x
+          }
+          x.newMessage = '[图片]'
+          return x
+        } else if (x.types - 0 === 3) {
+          if (x.message) {
+            x.message = '[地图]'
+            return x
+          }
+          x.newMessage = '[地图]'
+          return x
+        }
+        return x
+      })
+      return list
+    },
     getFriendList() {
       const data = {
         id: this.id,
@@ -63,8 +89,9 @@ export default {
       }
       getFriends(data)
         .then((res) => {
-          console.log(res)
-          this.friendList = res.data
+          this.flashbackTime(res.data)
+          console.log(res.data)
+          this.friendList = this.types(res.data)
         })
         .catch((err) => {
           console.log(err)
@@ -75,6 +102,30 @@ export default {
         path: '/chat',
         query: {
           id: item.friendID._id
+        }
+      })
+    },
+    // 数据按时间倒序排序
+    // 从大到小
+    flashbackTime(data) {
+      data.sort((a, b) => {
+        return new Date(b.MsgTime) - new Date(a.MsgTime)
+      })
+    },
+    acceptMessage() {
+      this.socket.on('msg', (data) => {
+        if (data.length && data.length === 1) {
+          console.log(this.friendList)
+          this.friendList.forEach((item, index) => {
+            const res = this.types(data)
+            if (item.friendID._id === res[0].userID._id) {
+              const e = item
+              e.MsgTime = res[0].time
+              e.newMessage = res[0].message
+              this.friendList.splice(index, 1)
+              this.friendList.unshift(e)
+            }
+          })
         }
       })
     }

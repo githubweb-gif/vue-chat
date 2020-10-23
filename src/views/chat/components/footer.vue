@@ -111,12 +111,17 @@ export default {
       })
     },
     sendMsg() {
-      // this.$emit('addMsg', { types: 0, message: this.message })
-      sendMessage({ types: 0, message: this.message, uid: this.oneSelf.id, friendID: this.id }).then(() => {
-        this.$emit('addMsg', true)
-      })
-      this.$nextTick(() => {
-        this.$emit('IntoView', this.componentHeight)
+      const data = { types: 0, message: this.message, userID: this
+        .oneSelf.id, friendID: this.id }
+      sendMessage(data).then(() => {
+        data.userID = {
+          _id: this.oneSelf.id,
+          avatar: this.oneSelf.avatar
+        }
+        data.state = 1
+        this.$emit('addMsg', data)
+        this.socket.emit('msg', { fromID: this
+          .oneSelf.id, toID: this.id, msg: this.message })
       })
     }
   }

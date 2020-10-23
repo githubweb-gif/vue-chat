@@ -23,6 +23,7 @@
 
 <script>
 import { uploadImg } from '@/api/user'
+import dataURLtoFile from '@/until/base64&img'
 export default {
   props: {
     imgurl: {
@@ -66,19 +67,8 @@ export default {
       })
     },
     // 把base64位图片转换为图片文件
-    dataURLtoFile(dataurl, filename = 'file') {
-      const arr = dataurl.split(',')
-      const mime = arr[0].match(/:(.*?);/)[1]
-      const suffix = mime.split('/')[1]
-      const bstr = atob(arr[1])
-      let n = bstr.length
-      const u8arr = new Uint8Array(n)
-      while (n--) {
-        u8arr[n] = bstr.charCodeAt(n)
-      }
-      return new File([u8arr], `${filename}.${suffix}`, {
-        type: mime
-      })
+    dataURLtoFile(dataurl) {
+      return dataURLtoFile(dataurl)
     },
     // 关闭截图容器
     closeBox() {

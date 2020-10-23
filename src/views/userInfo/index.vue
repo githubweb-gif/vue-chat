@@ -90,6 +90,7 @@
     <div class="footer">
       <span @click="logout">退出应用</span>
     </div>
+    <footer-bar />
     <!-- 裁剪图片 -->
     <div v-if="isCrop" class="crop">
       <vue-cropper :imgurl="cropimg" @close="closeBox" @upload="uploadImg" />
@@ -112,6 +113,7 @@
 
 <script>
 import { getInfo, modifyUserInfo } from '@/api/user'
+import footerBar from '@/components/footer.vue'
 import VueCropper from '@/components/cropper.vue'
 import InfoCard from './components/infoCard.vue'
 import QnCard from './components/qn.vue'
@@ -120,7 +122,8 @@ export default {
   components: {
     VueCropper,
     InfoCard,
-    QnCard
+    QnCard,
+    footerBar
   },
   data() {
     return {

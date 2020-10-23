@@ -113,13 +113,10 @@ export default {
     sendMsg() {
       const data = { types: 0, message: this.message, userID: this
         .oneSelf.id, friendID: this.id }
-      sendMessage(data).then(() => {
-        data.userID = {
-          _id: this.oneSelf.id,
-          avatar: this.oneSelf.avatar
-        }
-        data.state = 1
-        this.$emit('addMsg', data)
+      sendMessage(data).then((res) => {
+        const a = res.data.data
+        a.userID = res.data.user
+        this.$emit('addMsg', a)
         this.socket.emit('msg', { fromID: this
           .oneSelf.id, toID: this.id, msg: this.message })
       })

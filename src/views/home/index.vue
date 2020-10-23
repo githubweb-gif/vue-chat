@@ -8,11 +8,10 @@
           </div>
           <div class="info">
             <div class="name">好友请求</div>
-            <p class="msg">张三</p>
           </div>
-          <div class="date">
+          <!-- <div class="date">
             上午7:45
-          </div>
+          </div> -->
         </li>
       </router-link>
       <li v-for="item in friendList" :key="item.id" @click="toChat(item)">

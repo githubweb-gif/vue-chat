@@ -1,11 +1,8 @@
 <template>
-  <div class="box" @touchstart="menu = false">
+  <div class="layout" @touchstart="menu = false">
     <header>
       <div class="avatar">
         <img v-if="user.avatar" :src="user.avatar | avatar" alt="" @click="infoPage">
-      </div>
-      <div class="logo">
-        <img src="../assets/img/火.png" alt="">
       </div>
       <div class="right">
         <router-link to="/search"><span class="search el-icon-search" /></router-link>
@@ -23,11 +20,14 @@
     <main @mousewheel="menu = false">
       <router-view />
     </main>
+    <footer-bar />
   </div>
 </template>
 
 <script>
+import footerBar from '@/components/footer.vue'
 export default {
+  components: { footerBar },
   data() {
     return {
       menu: false
@@ -56,12 +56,18 @@ export default {
 
 <style lang="scss" scoped>
 @import '../style/header.scss';
-.box {
+.layout {
   height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 main {
   padding-top: 53px;
   padding-bottom: 20px;
+  flex: 1;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 header {
   img {
@@ -76,12 +82,6 @@ header {
       width: 34px;
       border-radius: 8px;
     }
-  }
-  .logo {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
   }
   .right {
     height: 100%;
@@ -122,6 +122,21 @@ header {
     border-left: 15px solid transparent;
     border-right: 15px solid transparent;
     border-bottom: 20px solid rgba(62, 62, 64, 1);
+  }
+}
+footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 24px;
+  background-color: #fcfcfc;
+  box-shadow:  0px -1px 0px #e7e2e2;
+  span {
+    display: block;
+    text-align: center;
+  }
+  .icon {
+    font-size: 24px;
   }
 }
 </style>

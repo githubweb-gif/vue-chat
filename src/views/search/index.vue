@@ -124,8 +124,12 @@ export default {
 <style lang="scss" scoped>
 @import '../../style/header.scss';
 header {
-  padding-top: 7px;
-  padding-bottom: 7px;
+  padding: 7px 16px;
+  height: 44px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #ede8e8;
   form {
     flex: 2;
     height: 100%;
@@ -157,9 +161,6 @@ header {
     margin-left: 15px;
     font-size: 14px;
   }
-}
-.main {
-  padding-top: 58px;
 }
 .link {
   width: 100%;

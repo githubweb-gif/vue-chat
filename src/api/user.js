@@ -161,6 +161,24 @@ export function sendMessage(data) {
   })
 }
 
+// 阅读消息，清空tip
+export function clearTip(data) {
+  return request({
+    url: '/user/clearTip',
+    method: 'put',
+    data
+  })
+}
+
+// 获取全部好友
+export function getAllFriend(data) {
+  return request({
+    url: '/user/getAllFriend',
+    method: 'get',
+    params: data
+  })
+}
+
 // 获取最新消息一条
 // export function getNewMsg(data) {
 //   return request({

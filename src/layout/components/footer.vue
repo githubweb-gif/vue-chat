@@ -4,7 +4,7 @@
       <span class="icon el-icon-chat-round" />
       <span>chat</span>
     </div>
-    <div class="address" @click="$router.push('/')">
+    <div class="address" @click="$router.push('/addressBook')">
       <span class="icon el-icon-user" />
       <span>通讯录</span>
     </div>
@@ -31,7 +31,7 @@ footer {
   justify-content: space-between;
   align-items: center;
   padding: 5px 24px;
-  background-color: #fcfcfc;
+ background-color: rgba(244, 244, 244, 1);
   box-shadow:  0px -1px 0px #e7e2e2;
   span {
     display: block;

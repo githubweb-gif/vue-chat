@@ -1,12 +1,14 @@
 <template>
-  <div class="box">
-    <header @click="initHeight = !initHeight">
-      <div class="link el-icon-arrow-left" @click="$router.push('/')" />
-      <div class="name">马里奥</div>
-      <router-link :to="`/details?id=${id}`">
-        <span class="el-icon-more" />
-      </router-link>
-    </header>
+  <div class="chat">
+    <header-bar @click="initHeight = !initHeight">
+      <template v-slot:details>
+        <div class="name">{{ friendInfo.name }}</div>
+        <router-link :to="`/details?id=${id}`">
+          <span class="el-icon-more" />
+        </router-link>
+      </template>
+    </header-bar>
+    <header />
     <main ref="main" @click="initHeight = !initHeight">
       <van-pull-refresh v-model="isLoading" :disabled="disabled" @refresh="onRefresh">
         <div v-for="(item,index) in msgList" :id="index===0?'lastItem': ''" :key="item._id" class="user">
@@ -49,13 +51,15 @@
 </template>
 
 <script>
-import { getInfo, oppositeMessage } from '@/api/user'
+import { getInfo, oppositeMessage, clearTip } from '@/api/user'
 import { ImagePreview, PullRefresh } from 'vant'
 import FooterVue from './components/footer.vue'
+import headerBar from '@/components/header'
 export default {
   components: {
     FooterVue,
-    vanPullRefresh: PullRefresh
+    vanPullRefresh: PullRefresh,
+    headerBar
   },
   data() {
     return {
@@ -130,6 +134,7 @@ export default {
     // 初始化
     init() {
       this.getMessage()
+      clearTip({ userID: this.oneSelf.id, friendID: this.id })
       const list = this.msgList
       list.forEach((item, index) => {
         const next = index + 1
@@ -258,24 +263,10 @@ export default {
 
 <style lang="scss" scoped>
 @import "../../style/header.scss";
-.box {
+.chat {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-}
-header {
-  background-color: #f4f4f4;
-  position: relative;
-  .link {
-    font-size: 24px;
-  }
-  .name {
-    flex: 1;
-    padding-left: 10px;
-  }
-  .info {
-    font-size: 20px;
-  }
 }
 main {
   flex: 1;

@@ -1,11 +1,11 @@
 <template>
   <div id="map">
-    <header>
+    <div class="header">
       <div class="close" @click="sendMap('取消')">取消</div>
       <div class="sendmap" @click="sendMap">
         发送
       </div>
-    </header>
+    </div>
     <el-amap ref="map" :zoom="zoom" vid="amap" :events="events" :plugin="plugin" class="amap-demo" :center="center">
       <template>
         <el-amap-marker v-for="(marker, index) in markers" :key="index" :position="marker.position" :events="marker.events" :visible="marker.visible" :draggable="marker.draggable" :vid="index" />
@@ -199,7 +199,11 @@ export default {
 
 <style lang="scss" scoped>
 @import '../../../style/header.scss';
-header {
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 999;
   background-color: rgba($color: #ffffff, $alpha: 0);
 }
 #map {
@@ -255,7 +259,6 @@ header {
 }
 
 .sendmap {
-    position: fixed;
     top: 2%;
     right: 5%;
     padding: 5px 10px;

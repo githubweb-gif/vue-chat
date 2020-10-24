@@ -1,14 +1,6 @@
 <template>
   <div>
-    <header>
-      <div class="back">
-        <router-link to="/">
-          <span class="link el-icon-arrow-left" />
-        </router-link>
-      </div>
-      <div class="right">好友请求</div>
-      <span />
-    </header>
+    <header-bar />
     <main>
       <ul>
         <li v-for="item of reqList" :key="item._id">
@@ -33,7 +25,9 @@
 </template>
 <script>
 import { getRequest, refuseRequest, agreeRequest } from '@/api/user'
+import headerBar from '@/components/header.vue'
 export default {
+  components: { headerBar },
   data() {
     return {
       reqList: []

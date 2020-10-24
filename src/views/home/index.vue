@@ -113,12 +113,14 @@ export default {
     },
     acceptMessage() {
       this.socket.on('msg', (data) => {
+        console.log(data)
         if (data.length && data.length === 1) {
           console.log(this.friendList)
           this.friendList.forEach((item, index) => {
             const res = this.types(data)
             if (item.friendID._id === res[0].userID._id) {
               const e = item
+              e.tip += 1
               e.MsgTime = res[0].time
               e.newMessage = res[0].message
               this.friendList.splice(index, 1)

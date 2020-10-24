@@ -1,11 +1,5 @@
 <template>
-  <div class="box">
-    <header>
-      <div class="back">
-        <span class="link el-icon-arrow-left" @click="$router.go(-1)" />
-      </div>
-      <div class="right">详细</div>
-    </header>
+  <div id="userInfo">
     <div class="main">
       <ul>
         <li class="avatar">
@@ -86,11 +80,10 @@
           <span class="link el-icon-arrow-right" />
         </li>
       </ul>
+      <div class="logout">
+        <span @click="logout">退出应用</span>
+      </div>
     </div>
-    <div class="footer">
-      <span @click="logout">退出应用</span>
-    </div>
-    <footer-bar />
     <!-- 裁剪图片 -->
     <div v-if="isCrop" class="crop">
       <vue-cropper :imgurl="cropimg" @close="closeBox" @upload="uploadImg" />
@@ -113,7 +106,6 @@
 
 <script>
 import { getInfo, modifyUserInfo } from '@/api/user'
-import footerBar from '@/components/footer.vue'
 import VueCropper from '@/components/cropper.vue'
 import InfoCard from './components/infoCard.vue'
 import QnCard from './components/qn.vue'
@@ -122,8 +114,7 @@ export default {
   components: {
     VueCropper,
     InfoCard,
-    QnCard,
-    footerBar
+    QnCard
   },
   data() {
     return {
@@ -264,11 +255,12 @@ export default {
 
 <style lang="scss" scoped>
 @import "../../style/header.scss";
-.box {
+#userInfo {
   display: flex;
   position: relative;
   flex-direction: column;
   justify-content: space-between;
+  background-color: #f4f4f4;
   .qn,
   .dym {
     background-color: #ffff;
@@ -306,8 +298,12 @@ header {
   }
 }
 .main {
-  flex: 3;
-  padding: 20px 16px 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  .avatar,.registered{
+    margin-bottom: 8px;
+  }
   .avatar-uploader {
     width: 100%;
   }
@@ -325,20 +321,18 @@ header {
   .mid {
     flex: 1;
     margin-left: 16px;
+    display: flex;
   }
   .select {
     position: absolute;
     opacity: 0;
   }
-  ul {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-  }
   ul li {
     display: flex;
-    flex: 1;
+    border-bottom: 1px solid #f4f4f4;
+    height: 52px;
+    padding: 0 16px 0;
+    background-color: #ffff;
     justify-content: space-between;
     align-items: center;
     position: relative;
@@ -355,24 +349,19 @@ header {
     font-weight: 600;
     color: #222222;
   }
-  .registered {
-    border-bottom: 1px solid #eeeeee;
-  }
-  .pwd {
-    border-top: 1px solid #eeeeee;
-    border-bottom: 1px solid #eeeeee;
-  }
 }
-.footer {
-  flex: 1;
+.logout {
+  margin-top: 8px;
+  background-color: #ffff;
+  padding: 0 16px 0;
+  height: 52px;
   display: flex;
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
   width: 100%;
-  color: #ff5d5b;
 }
-.footer:hover {
+.logout:hover {
   color: rgb(8, 68, 107);
 }
 </style>

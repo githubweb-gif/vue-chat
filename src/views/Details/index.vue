@@ -1,16 +1,15 @@
 <template>
   <div :class="['box', { background: height }]">
     <!-- 导航 -->
-    <header>
-      <div class="back">
-        <span class="link el-icon-arrow-left" @click="$router.go(-1)" />
-      </div>
-      <div v-if="validFriend.state || id === uid" class="right">
-        <router-link v-if="uid === id" :to="`/userInfo?id=${uid}`">
-          <span class="el-icon-more" />
-        </router-link>
-      </div>
-    </header>
+    <header-bar>
+      <template v-slot:details>
+        <div v-if="validFriend.state || id === uid">
+          <router-link v-if="uid === id" :to="`/userInfo?id=${uid}`">
+            <span class="el-icon-more" />
+          </router-link>
+        </div>
+      </template>
+    </header-bar>
     <!-- 主体 -->
     <div class="main">
       <div class="avatar">
@@ -58,7 +57,11 @@
 
 <script>
 import { getInfo, isFriend, friendRequest } from '@/api/user'
+import headerBar from '@/components/header'
 export default {
+  components: {
+    headerBar
+  },
   data() {
     return {
       height: false,

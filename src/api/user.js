@@ -179,6 +179,51 @@ export function getAllFriend(data) {
   })
 }
 
+// 创建群
+export function setGroup(data) {
+  return request({
+    url: '/user/Group',
+    method: 'post',
+    data
+  })
+}
+
+// 获取群
+export function getGroup(data) {
+  return request({
+    url: '/user/Group',
+    method: 'get',
+    params: data
+  })
+}
+
+// 获取全部群
+export function getAllGroup(data) {
+  return request({
+    url: '/user/getAllGroup',
+    method: 'get',
+    params: data
+  })
+}
+
+// 获取群消息
+export function getGroupMsg(data) {
+  return request({
+    url: '/user/GroupMessage',
+    method: 'get',
+    params: data
+  })
+}
+
+// 发送群消息
+export function sendGroupMsg(data) {
+  return request({
+    url: '/user/GroupMessage',
+    method: 'post',
+    data
+  })
+}
+
 // 获取最新消息一条
 // export function getNewMsg(data) {
 //   return request({

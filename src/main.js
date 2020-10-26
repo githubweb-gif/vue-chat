@@ -7,6 +7,7 @@ import 'element-ui/lib/theme-chalk/index.css'
 import elementUi from 'element-ui'
 import './until/date'
 import './assets/font/iconfont.css'
+import './vantComponents'
 // 截图
 import VueCropper from 'vue-cropper'
 import './permission'

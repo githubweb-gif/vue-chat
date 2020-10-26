@@ -40,12 +40,10 @@
 
 <script>
 import { sendMessage, uploadImg } from '@/api/user'
-import { Uploader } from 'vant'
 import dataURLtoFile from '@/until/base64&img'
 import vueAmap from './map'
 export default {
   components: {
-    vanUploader: Uploader,
     vueAmap
   },
   data() {

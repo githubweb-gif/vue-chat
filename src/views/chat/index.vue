@@ -2,8 +2,11 @@
   <div class="chat">
     <header-bar @click="initHeight = !initHeight">
       <template v-slot:details>
-        <div class="name">{{ friendInfo.name }}</div>
-        <router-link :to="`/details?id=${id}`">
+        <div class="name">{{ chatInfo.name }}</div>
+        <router-link v-if="$route.path === '/chat'" :to="`/details?id=${id}`">
+          <span class="el-icon-more" />
+        </router-link>
+        <router-link v-else :to="`/groupDetails?id=${id}`">
           <span class="el-icon-more" />
         </router-link>
       </template>
@@ -13,9 +16,10 @@
       <van-pull-refresh v-model="isLoading" :disabled="disabled" @refresh="onRefresh">
         <div v-for="(item,index) in msgList" :id="index===0?'lastItem': ''" :key="item._id" class="user">
           <div class="time">{{ item.time | chatDate }}</div>
-          <div class="info" :class="item.userID._id === oneSelf.id ? 'oneself' : 'friend'">
+          <div class="info" :class="[item.userID._id === oneSelf.id ? 'oneself' : 'friend', item.GroupID ? 'group': '']">
             <div class="avatar">
-              <img :src="(item.userID._id === oneSelf.id ? oneSelf.avatar : item.userID.avatar) | avatar" alt>
+              <img v-if="$route.path === '/chat'" :src="(item.userID._id === oneSelf.id ? oneSelf.avatar : item.userID.avatar) | avatar" alt>
+              <img v-else :src="item.userID.avatar | avatar" alt>
             </div>
             <div v-if="item.types - 0 === 0" class="content text">{{ item.message }}</div>
             <div
@@ -51,19 +55,19 @@
 </template>
 
 <script>
-import { getInfo, oppositeMessage, clearTip } from '@/api/user'
-import { ImagePreview, PullRefresh } from 'vant'
+import { getInfo, oppositeMessage, clearTip, getGroup, getGroupMsg } from '@/api/user'
+import { ImagePreview } from 'vant'
 import FooterVue from './components/footer.vue'
 import headerBar from '@/components/header'
 export default {
   components: {
     FooterVue,
-    vanPullRefresh: PullRefresh,
     headerBar
   },
   data() {
     return {
-      friendInfo: {},
+      // 好友聊天时是好友信息， 群聊时是群信息
+      chatInfo: {},
       options: {
         movable: false
       },
@@ -79,18 +83,25 @@ export default {
       scrollHeight: '',
       // 判断dom更新
       n: false,
-      disabled: false
+      disabled: false,
+      // 群数据
+      GroupData: {}
     }
   },
   computed: {
+    // 好友ID或者群ID
     id() {
       return this.$route.query.id
     },
+    // 登录用户ID
     oneSelf() {
       return this.$store.getters.userInfo
     },
     otherMsg() {
       return this.$store.state.user.otherTypes
+    },
+    route() {
+      return this.$route.path
     }
   },
   watch: {
@@ -103,9 +114,16 @@ export default {
     }
   },
   created() {
-    this.getUserInfo()
-    this.init()
-    this.acceptMessage()
+    if (this.route === '/chat') {
+      console.log('123')
+      this.getUserInfo()
+      this.init()
+      this.acceptMessage()
+    } else if (this.route === '/groupChat') {
+      this.getGroup()
+      this.getGroupMsg()
+      this.joinGroup()
+    }
   },
   mounted() {
     setTimeout(() => {
@@ -125,13 +143,13 @@ export default {
     getUserInfo() {
       getInfo(this.id)
         .then((res) => {
-          this.friendInfo = res.data
+          this.chatInfo = res.data
         })
         .catch((err) => {
           console.log(err)
         })
     },
-    // 初始化
+    // 初始化获取一对一消息
     init() {
       this.getMessage()
       clearTip({ userID: this.oneSelf.id, friendID: this.id })
@@ -165,6 +183,54 @@ export default {
         return x
       })
       this.pages = res.pages
+    },
+    // 接收好友发来的信息
+    acceptMessage() {
+      this.socket.on('msg', (data) => {
+        if (data.length && data.length === 1) {
+          this.addMsg(data[0])
+        }
+      })
+    },
+    // 添加消息
+    addMsg(data) {
+      if (data) {
+        this.msgList.push(data)
+        if (data.types - 0 === 1) {
+          this.images.push(data.message)
+        }
+        setTimeout(() => {
+          this.scroll().then(() => {
+            this.initHeight = !this.initHeight
+          })
+        }, 200)
+      }
+    },
+    // 获取群信息
+    getGroup() {
+      getGroup({ GroupID: this.id }).then((res) => {
+        this.chatInfo = res.data
+      })
+    },
+    // 获取群聊消息
+    getGroupMsg() {
+      getGroupMsg({ GroupID: this.id }).then((res) => {
+        this.msgList = res.data
+      })
+    },
+    // 接收群消息
+    acceptGroupMessage() {
+      this.socket.on('groupMsg', (data) => {
+        console.log('---------')
+        console.log(data)
+        // if (data.length && data.length === 1) {
+        //   this.addMsg(data[0])
+        // }
+      })
+    },
+    // 加入群聊房间
+    joinGroup() {
+      this.socket.emit('joinToRoom', this.id)
     },
     show(images) {
       console.log(images)
@@ -210,27 +276,6 @@ export default {
           }
         })
       }, 500)
-    },
-    addMsg(data) {
-      if (data) {
-        this.msgList.push(data)
-        if (data.types - 0 === 1) {
-          this.images.push(data.message)
-        }
-        setTimeout(() => {
-          this.scroll().then(() => {
-            this.initHeight = !this.initHeight
-          })
-        }, 200)
-      }
-    },
-    // 接收友发来的信息
-    acceptMessage() {
-      this.socket.on('msg', (data) => {
-        if (data.length && data.length === 1) {
-          this.addMsg(data[0])
-        }
-      })
     },
     // 判断设备
     equipment() {
@@ -363,6 +408,22 @@ main {
         transform: translate(-100%,-50%);
         border-color: transparent #ffffff transparent transparent ;
       }
+  }
+  .group {
+    flex-direction: row !important;
+    .text {
+       text-align: left;
+    }
+    .map::after,.content::after {
+        content: '';
+        display: inline-block;
+        border: 6px solid;
+        position: absolute;
+        top: 50%;
+        left: 0;
+        transform: translate(-100%,-50%);
+        border-color: transparent #ffffff transparent transparent ;
+    }
   }
 }
 .fade-leave-active,

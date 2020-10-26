@@ -35,7 +35,7 @@
 </template>
 
 <script>
-import { sendMessage } from '@/api/user'
+import { sendMessage, sendGroupMsg } from '@/api/user'
 import other from './other.vue'
 import emoji from './emoji.vue'
 export default {
@@ -68,6 +68,10 @@ export default {
     },
     oneSelf() {
       return this.$store.getters.userInfo
+    },
+    route() {
+      console.log(this.$route.path)
+      return this.$route.path
     }
   },
   watch: {
@@ -80,7 +84,6 @@ export default {
       this.currentTabComponent = ''
     }
   },
-  mounted() {},
   methods: {
     show(value) {
       if (
@@ -110,15 +113,33 @@ export default {
         this.$emit('IntoView', this.componentHeight)
       })
     },
+    // 发送一对一消息或群消息
     sendMsg() {
+      if (this.route === '/chat') {
+        this.sendMessage()
+      } else if (this.route === '/groupChat') {
+        this.sendGroupMsg()
+      }
+    },
+    // 发送一对一消息
+    sendOneMsg() {
       const data = { types: 0, message: this.message, userID: this
         .oneSelf.id, friendID: this.id }
       sendMessage(data).then((res) => {
         const a = res.data.data
         a.userID = res.data.user
         this.$emit('addMsg', a)
-        this.socket.emit('msg', { fromID: this
-          .oneSelf.id, toID: this.id, msg: this.message })
+        this.socket.emit('msg', { fromID: this.oneSelf.id, toID: this.id, msg: this.message })
+      })
+    },
+    // 发送群消息
+    sendGroupMsg() {
+      // GroupID, userID, message, types
+      const data = { types: 0, message: this.message, GroupID: this.id, userID: this.oneSelf.id }
+      sendGroupMsg(data).then((res) => {
+        console.log(res)
+        this.$emit('addMsg', res.data)
+        this.socket.emit('groupMsg', { GroupID: this.id, msg: this.message })
       })
     }
   }

@@ -10,7 +10,7 @@
         <span class="add el-icon-circle-plus-outline" @touchstart.stop.prevent="isMenu = !isMenu" />
       </div>
       <div v-if="isMenu" class="options">
-        <div><span class="el-icon-chat-round" /><i>发起群聊</i></div>
+        <div @touchstart.stop.prevent="$router.push('/setGroup')"><span class="el-icon-chat-round" /><i>发起群聊</i></div>
         <div @touchstart.stop.prevent="$router.push('/addFriend')">
           <span class="el-icon-user" />添加朋友<i />
         </div>
@@ -26,6 +26,7 @@
       <div v-if="$route.path === '/friendReq'" class="right">好友请求</div>
       <slot name="details" />
     </div>
+    <div v-show="isMenu" class="shadow" />
   </div>
 </template>
 
@@ -137,5 +138,15 @@ export default {
         flex: 1;
         padding-left: 10px;
     }
+}
+
+.shadow {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
 }
 </style>

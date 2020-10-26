@@ -1,12 +1,12 @@
 <template>
-  <div class="box">
-    <header>
+  <div v-if="bol" class="crop">
+    <div class="header">
       <div class="back">
         <span class="link el-icon-arrow-left" @click="closeBox" />
       </div>
       <!-- 最好上传后禁止再次点击 -->
       <div class="cropData" @click="startCrop">完成</div>
-    </header>
+    </div>
     <vue-cropper
       ref="cropper"
       :img="option.img"
@@ -28,7 +28,11 @@ export default {
   props: {
     imgurl: {
       type: String,
-      required: true
+      default: ''
+    },
+    isCrop: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -41,7 +45,8 @@ export default {
         centerBox: true, // 截图框是否被限制在图片里面
         canMove: false // 上传图片是否可以移动
       },
-      url: ''
+      url: '',
+      bol: this.isCrop
     }
   },
   watch: {
@@ -50,7 +55,14 @@ export default {
       handler(val) {
         this.option.img = !val ? '' : val
       }
+    },
+    isCrop(value) {
+      console.log(value)
+      this.bol = true
     }
+  },
+  created() {
+    console.log(this.isCrop)
   },
   methods: {
     // 截图并上传图片
@@ -63,6 +75,7 @@ export default {
         uploadImg(formData).then((res) => {
           const { imgUrl } = res
           this.$emit('upload', imgUrl)
+          this.bol = false
         })
       })
     },
@@ -72,7 +85,7 @@ export default {
     },
     // 关闭截图容器
     closeBox() {
-      this.$emit('close', true)
+      this.bol = false
     }
   }
 }
@@ -80,8 +93,15 @@ export default {
 
 <style lang="scss" scoped>
 @import '@/style/header.scss';
-.box {
-  height: 100%;
+.crop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: 2000;
+    background-color: #ffffff;
 }
   .link {
     font-size: 24px;

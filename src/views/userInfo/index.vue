@@ -85,8 +85,8 @@
       </div>
     </div>
     <!-- 裁剪图片 -->
-    <div v-if="isCrop" class="crop">
-      <vue-cropper :imgurl="cropimg" @close="closeBox" @upload="uploadImg" />
+    <div>
+      <vue-cropper :is-crop="isCrop" :imgurl="cropimg" @upload="uploadImg" />
     </div>
     <!-- 信息修改框 电话，邮箱，密码 -->
     <div :style="isdym" class="dym dialog">
@@ -136,7 +136,7 @@ export default {
       content: {}, // 签名/昵称绑定的内容
       birthday: '1995-11-24',
       cropimg: '', // 截图url
-      isCrop: false, // 裁剪容器是否显示
+      isCrop: false,
       isdym: {
         right: '-100%'
       }, // 修改电话，邮箱，密码容器是否显示
@@ -173,7 +173,7 @@ export default {
         this.cropimg = URL.createObjectURL(file.raw)
         this.isCrop = true
       } else {
-        this.isCrop = 'false'
+        this.isCrop = false
         this.$message.error('请选择图片文件')
       }
     },
@@ -273,16 +273,6 @@ export default {
     top: 0;
     box-sizing: border-box;
     overflow: hidden;
-  }
-  .crop {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    z-index: 2000;
-    background-color: #ffffff;
   }
 }
 header {

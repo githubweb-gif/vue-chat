@@ -1,7 +1,7 @@
 <template>
-  <div class="layout" @touchstart="menu = !menu">
+  <div class="layout" @click="menu = !menu">
     <header-bar :menu="menu" :user="user" />
-    <main @mousewheel="!menu">
+    <main @mousewheel="menu === false">
       <router-view class="main" />
     </main>
     <footer-bar />

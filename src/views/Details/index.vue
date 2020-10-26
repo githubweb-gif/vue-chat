@@ -202,7 +202,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "../../style/header.scss";
 .box {
   background-color: rgba(255, 255, 255, 1);
   position: absolute;

@@ -73,6 +73,23 @@ const routes = [
     path: '/chat',
     meta: { index: 3 },
     component: () => import('../views/chat/index.vue')
+  },
+  // 创建群聊
+  {
+    path: '/setGroup',
+    meta: { index: 3 },
+    component: () => import('../views/groupChat/index.vue')
+  },
+  {
+    path: '/groupChat',
+    meta: { index: 3 },
+    component: () => import('../views/chat/index.vue')
+  },
+  // 群详情页
+  {
+    path: '/groupDetails',
+    meta: { index: 4 },
+    component: () => import('../views/groupDetails/index.vue')
   }
 ]
 

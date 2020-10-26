@@ -1,7 +1,7 @@
 <template>
   <div id="addressBook">
     <div class="box">
-      <div class="group item">
+      <div class="group item" @click="showGroup = !showGroup">
         <div class="icon">
           <img src="../../assets/img/OIP.jpg" alt="">
         </div>
@@ -21,17 +21,21 @@
         </div>
       </div>
     </div>
+    <group-vue :show-group="showGroup" />
   </div>
 </template>
 
 <script>
 import { getAllFriend } from '@/api/user'
+import group from './components/group.vue'
 export default {
   components: {
+    groupVue: group
   },
   data() {
     return {
-      dataList: []
+      dataList: [],
+      showGroup: false
     }
   },
   computed: {
@@ -55,39 +59,43 @@ export default {
 
 <style lang="scss" scoped>
 #addressBook {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    background-color: rgb(244, 244, 244);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background-color: rgb(244, 244, 244);
+}
+
+.friendList,
+.groupList {
+  flex: 1;
+  .box {
+    .letter {
+      padding-top: 5px;
+      padding-bottom: 5px;
+      background-color: rgb(244, 244, 244);
+      margin-left: -16px;
+      padding-left: 16px;
+    }
+  }
 }
 .box {
-background-color: #ffffff;
+   background-color: #ffffff;
     padding-left: 16px;
 }
 .item {
-    display: flex;
-    align-items: center;
-    border-bottom: 1px solid #16be74;
-    padding: 5px 0;
-    .name {
-        margin-left: 10px;
-    }
-}
-.item:last-child {
-   border-bottom: none;
-}
-.friendList {
-    flex: 1;
-    .letter {
-        padding-top: 5px;
-        padding-bottom: 5px;
-        background-color: rgb(244, 244, 244);
-        margin-left: -16px;
-        padding-left: 16px;
-    }
-}
-img {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #16be74;
+  padding: 5px 0;
+  .name {
+    margin-left: 10px;
+  }
+  img {
     width: 52px;
     height: 52px;
+  }
+}
+.item:last-child {
+  border-bottom: none;
 }
 </style>

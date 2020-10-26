@@ -29,7 +29,7 @@ service.interceptors.response.use(
       Message({
         message: res.message || 'Error',
         type: 'error',
-        duration: 5 * 1000
+        duration: 1 * 1000
       })
       // token503
       if (res.status === 503) {

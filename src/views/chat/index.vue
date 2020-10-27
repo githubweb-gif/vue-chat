@@ -220,7 +220,7 @@ export default {
     },
     // 接收群消息
     acceptGroupMessage() {
-      this.socket.on('groupMsg', (data) => {
+      this.socket.on('sendGroupMsg', (data) => {
         console.log('---------')
         console.log(data)
         // if (data.length && data.length === 1) {

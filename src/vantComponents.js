@@ -1,7 +1,7 @@
 import Vue from 'vue'
-import { PullRefresh, Uploader, Form, Button } from 'vant'
+import { PullRefresh, Uploader, Button, Switch } from 'vant'
 
 Vue.use(PullRefresh)
 Vue.use(Uploader)
-Vue.use(Form)
 Vue.use(Button)
+Vue.use(Switch)

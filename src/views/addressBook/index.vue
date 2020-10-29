@@ -1,11 +1,11 @@
 <template>
   <div id="addressBook">
     <div class="box">
-      <div class="group item" @click="showGroup = !showGroup">
+      <div class="group item">
         <div class="icon">
           <img src="../../assets/img/OIP.jpg" alt="">
         </div>
-        <div class="name">群聊</div>
+        <div class="name" @click="$router.push('/groupList')">群聊</div>
       </div>
     </div>
     <div class="friendList">
@@ -21,21 +21,15 @@
         </div>
       </div>
     </div>
-    <group-vue :show-group="showGroup" />
   </div>
 </template>
 
 <script>
 import { getAllFriend } from '@/api/user'
-import group from './components/group.vue'
 export default {
-  components: {
-    groupVue: group
-  },
   data() {
     return {
-      dataList: [],
-      showGroup: false
+      dataList: []
     }
   },
   computed: {

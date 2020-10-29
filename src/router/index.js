@@ -80,16 +80,23 @@ const routes = [
     meta: { index: 3 },
     component: () => import('../views/groupChat/index.vue')
   },
+  // 群聊聊天页
   {
     path: '/groupChat',
-    meta: { index: 3 },
+    meta: { index: 5 },
     component: () => import('../views/chat/index.vue')
   },
   // 群详情页
   {
     path: '/groupDetails',
-    meta: { index: 4 },
+    meta: { index: 6 },
     component: () => import('../views/groupDetails/index.vue')
+  },
+  // 群列表页
+  {
+    path: '/groupList',
+    meta: { index: 4 },
+    component: () => import('../views/groupList/index.vue')
   }
 ]
 

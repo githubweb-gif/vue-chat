@@ -197,6 +197,15 @@ export function getGroup(data) {
   })
 }
 
+// 修改群信息
+export function putGroup(data) {
+  return request({
+    url: '/user/Group',
+    method: 'put',
+    data
+  })
+}
+
 // 获取全部群
 export function getAllGroup(data) {
   return request({
@@ -224,27 +233,29 @@ export function sendGroupMsg(data) {
   })
 }
 
-// 获取最新消息一条
-// export function getNewMsg(data) {
-//   return request({
-//     url: '/user/getNewMsg',
-//     method: 'get',
-//     params: data
-//   })
-// }
+// 获取群成员
+export function getGroupPepole(data) {
+  return request({
+    url: '/user/GroupPepole',
+    method: 'get',
+    params: data
+  })
+}
 
-// if (value.types === 0) {
-//   this.msgList.push(value)
-//   return
-// }
-// if (value.types === 1) {
-//   this.images.push(value.message)
-// }
-// this.msgList.push(value)
-// setTimeout(() => {
-//   this.$nextTick(() => {
-//     this.scroll().then(() => {
-//       this.initHeight = !this.initHeight
-//     })
-//   })
-// }, 200)
+// 获取群内个人信息
+export function getGroupPepoleInfo(data) {
+  return request({
+    url: '/user/getGroupPepoleInfo',
+    method: 'get',
+    params: data
+  })
+}
+
+// 修改群内个人信息
+export function putGroupPepoleInfo(data) {
+  return request({
+    url: '/user/getGroupPepoleInfo',
+    method: 'put',
+    data
+  })
+}

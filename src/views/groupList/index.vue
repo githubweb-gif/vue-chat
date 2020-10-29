@@ -1,8 +1,8 @@
 <template>
-  <div v-if="isGroup" class="groups">
+  <div class="groups">
     <div class="header">
       <div class="back">
-        <span class="link el-icon-arrow-left" @click="isGroup = false" />
+        <span class="link el-icon-arrow-left" @click="$router.go(-1)" />
       </div>
       <div class="title">群聊</div>
       <div class="right el-icon-search" />
@@ -26,15 +26,8 @@
 <script>
 import { getAllGroup } from '@/api/user'
 export default {
-  props: {
-    showGroup: {
-      type: Boolean,
-      default: false
-    }
-  },
   data() {
     return {
-      isGroup: this.showGroup,
       dataList: []
     }
   },
@@ -43,21 +36,13 @@ export default {
       return this.$store.getters.userInfo
     }
   },
-  watch: {
-    showGroup() {
-      this.isGroup = true
-    },
-    isGroup() {
-      if (this.isGroup) {
-        this.getGroup()
-      }
-    }
+  created() {
+    this.getGroup()
   },
   methods: {
     getGroup() {
       getAllGroup({ userID: this.oneSelf.id }).then((res) => {
         this.dataList = res.data
-        console.log(res.data)
       })
     }
   }

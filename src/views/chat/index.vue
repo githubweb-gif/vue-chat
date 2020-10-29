@@ -14,7 +14,7 @@
     <header />
     <main ref="main" @click="initHeight = !initHeight">
       <van-pull-refresh v-model="isLoading" :disabled="disabled" @refresh="onRefresh">
-        <div v-for="(item,index) in msgList" :id="index===0?'lastItem': ''" :key="item._id" class="user">
+        <div v-for="(item,index) in msgList" :id="index===0?'lastItem': ''" :key="item._id" :class="['user', item.scroll]">
           <div class="time">{{ item.time | chatDate }}</div>
           <div class="info" :class="[item.userID._id === oneSelf.id ? 'oneself' : 'friend', item.GroupID ? 'group': '']">
             <div class="avatar">
@@ -83,7 +83,6 @@ export default {
       scrollHeight: '',
       // 判断dom更新
       n: false,
-      disabled: false,
       // 群数据
       GroupData: {}
     }
@@ -101,25 +100,34 @@ export default {
       return this.$store.state.user.otherTypes
     },
     route() {
-      return this.$route.path
+      if (this.$route.path === '/chat') {
+        return true
+      } else if (this.$route.path === '/groupChat') {
+        return false
+      }
+      return true
+    },
+    disabled() {
+      if (this.page >= this.pages) {
+        return true
+      }
+      return false
     }
   },
   watch: {
     componetHight(value) {
       this.$refs.last.style.height = value
-      console.log(this.$refs.last.style.height)
     },
     otherMsg() {
       this.addMsg(this.otherMsg)
     }
   },
   created() {
-    if (this.route === '/chat') {
-      console.log('123')
+    if (this.route) {
       this.getUserInfo()
-      this.init()
+      this.getOneMsg()
       this.acceptMessage()
-    } else if (this.route === '/groupChat') {
+    } else {
       this.getGroup()
       this.getGroupMsg()
       this.joinGroup()
@@ -130,7 +138,6 @@ export default {
       const scroll = this.$refs.main
       if (scroll.scrollHeight > scroll.clientHeight) {
         scroll.scrollTop = scroll.scrollHeight
-        this.scrollHeight = scroll.scrollHeight
         this.$refs.last.style.height = 0
       }
     }, 100)
@@ -150,39 +157,68 @@ export default {
         })
     },
     // 初始化获取一对一消息
-    init() {
-      this.getMessage()
-      clearTip({ userID: this.oneSelf.id, friendID: this.id })
-      const list = this.msgList
-      list.forEach((item, index) => {
-        const next = index + 1
-        if (next > list.length - 1) {
-          item.time = ''
-          return
-        }
-        if (list[next].time - item.time <= 1000 * 60 * 5) {
-          item.time = ''
-        }
-      })
-      this.msgList = list
-    },
-    // 获取消息
-    async getMessage() {
+    async getOneMsg() {
       const data = {
         userID: this.oneSelf.id,
         friendID: this.id,
         page: this.page
       }
-      const { data: res } = await oppositeMessage(data)
-      this.msgList = this.msgList.reverse()
-      this.msgList = this.msgList.concat(res.records).reverse()
-      this.msgList.map((x) => {
+      const msg = await this.getMessage(data)
+      clearTip({ userID: this.oneSelf.id, friendID: this.id })
+      if (this.page === 1) {
+        this.msgList = msg
+        return
+      }
+      return msg
+      // const list = this.msgList
+      // list.forEach((item, index) => {
+      //   const next = index + 1
+      //   if (next > list.length - 1) {
+      //     item.time = ''
+      //     return
+      //   }
+      //   if (list[next].time - item.time <= 1000 * 60 * 5) {
+      //     item.time = ''
+      //   }
+      // })
+      // this.msgList = list
+    },
+    // 分页消息处理
+    Pagination(data) {
+      let msg = this.msgList.slice()
+      msg = msg.reverse()
+      msg = msg.concat(data.records).reverse()
+      msg.map((x, index) => {
         if (x.types - 0 === 1) {
           this.images.push(x.message)
         }
+        if (index === 0) {
+          x.scroll = 's' + data.page
+        }
         return x
       })
-      this.pages = res.pages
+      this.pages = data.pages
+      return msg
+    },
+    // 获取消息
+    getMessage(data) {
+      // const that = this
+      if (this.route) {
+        return new Promise((resolve, reject) => {
+          oppositeMessage(data).then((res) => {
+            const msg = this.Pagination(res.data)
+            resolve(msg)
+          })
+        })
+      } else {
+        return new Promise((resolve, reject) => {
+          getGroupMsg(data).then((res) => {
+            console.log(this.msgList)
+            const msg = this.Pagination(res.data)
+            resolve(msg)
+          })
+        })
+      }
     },
     // 接收好友发来的信息
     acceptMessage() {
@@ -213,24 +249,33 @@ export default {
       })
     },
     // 获取群聊消息
-    getGroupMsg() {
-      getGroupMsg({ GroupID: this.id }).then((res) => {
-        this.msgList = res.data
-      })
+    async getGroupMsg() {
+      const data = {
+        GroupID: this.id,
+        page: this.page
+      }
+      const msg = await this.getMessage(data)
+      if (this.page === 1) {
+        this.msgList = msg
+        return
+      }
+      return msg
     },
-    // 接收群消息
+    // socket接收群消息
     acceptGroupMessage() {
+      this.socket.on('joinToRoom', (data) => {
+        console.log(data)
+      })
       this.socket.on('sendGroupMsg', (data) => {
         console.log('---------')
         console.log(data)
-        // if (data.length && data.length === 1) {
-        //   this.addMsg(data[0])
-        // }
+        this.addMsg(data.msg)
       })
     },
     // 加入群聊房间
     joinGroup() {
       this.socket.emit('joinToRoom', this.id)
+      this.acceptGroupMessage()
     },
     show(images) {
       console.log(images)
@@ -261,21 +306,31 @@ export default {
     onRefresh() {
       this.n = true
       this.page++
-      if (this.page >= this.pages) {
-        this.disabled = true
-      }
-      setTimeout(() => {
-        this.$refs.main.scrollTop = 10
-        this.init()
-        this.isLoading = false
-        this.$nextTick(() => {
-          if (!this.n) {
-            setTimeout(() => {
-              this.$refs.main.scrollTo(0, this.scrollHeight - 30)// -30是为了露出最新加载的一行数据
-            }, 30)
-          }
-        })
-      }, 500)
+      new Promise((resolve) => {
+        if (this.route) {
+          const data = this.getOneMsg()
+          resolve(data)
+        } else {
+          const data = this.getGroupMsg()
+          resolve(data)
+        }
+      }).then((data) => {
+        setTimeout(() => {
+          this.msgList = data
+          this.isLoading = false
+          this.$nextTick(() => {
+            if (!this.n) {
+              const name = 's' + (this.page - 1)
+              console.log(name)
+              const ss = document.querySelector(`.${name}`)
+              console.log(ss.offsetTop)
+              setTimeout(() => {
+                this.$refs.main.scrollTo(0, ss.offsetTop - 30)// -30是为了露出最新加载的一行数据
+              }, 30)
+            }
+          })
+        }, 500)
+      })
     },
     // 判断设备
     equipment() {
@@ -341,7 +396,6 @@ main {
         margin: 0 8px;
         padding: 8px 11px;
         font-size: 16px;
-        background-color: #ffffff;
         border-radius: 5px;
         letter-spacing: 1px;
         max-width: 70%;
@@ -381,7 +435,7 @@ main {
     flex-direction: row-reverse;
     .text {
       text-align: right;
-      background-color: #0bbe06 !important;
+      background-color: #0bbe06;
     }
     .map::after, .content::after {
         content: '';
@@ -397,6 +451,7 @@ main {
   .friend {
     .text{
        text-align: left;
+      background-color: #ffffff;
     }
     .map::after,.content::after {
         content: '';
@@ -413,6 +468,7 @@ main {
     flex-direction: row !important;
     .text {
        text-align: left;
+       background-color: #ffffff;
     }
     .map::after,.content::after {
         content: '';

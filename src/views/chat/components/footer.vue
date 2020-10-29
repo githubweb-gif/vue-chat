@@ -116,7 +116,7 @@ export default {
     // 发送一对一消息或群消息
     sendMsg() {
       if (this.route === '/chat') {
-        this.sendMessage()
+        this.sendOneMsg()
       } else if (this.route === '/groupChat') {
         this.sendGroupMsg()
       }
@@ -139,7 +139,7 @@ export default {
       sendGroupMsg(data).then((res) => {
         console.log(res)
         this.$emit('addMsg', res.data)
-        this.socket.emit('groupMsg', { GroupID: this.id, msg: this.message })
+        this.socket.emit('groupMsg', { GroupID: this.id, msg: res.data })
       })
     }
   }

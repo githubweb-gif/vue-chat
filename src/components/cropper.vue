@@ -14,7 +14,7 @@
       :output-type="option.outputType"
       :info="option.info"
       :auto-crop="option.autoCrop"
-      :fixed="option.fixed"
+      :fixed="fixed"
       :center-box="option.centerBox"
       :can-move="option.canMove"
     />
@@ -33,6 +33,10 @@ export default {
     isCrop: {
       type: Boolean,
       default: false
+    },
+    isFixed: {
+      type: Boolean,
+      default: true
     }
   },
   data() {
@@ -40,13 +44,21 @@ export default {
       option: {
         img: '',
         outputType: 'png', // 裁剪生成图片格式
-        fixed: true, // 是否开启截图框宽高固定比例
         autoCrop: true, // 是否默认生成截图框
         centerBox: true, // 截图框是否被限制在图片里面
         canMove: false // 上传图片是否可以移动
       },
       url: '',
       bol: this.isCrop
+    }
+  },
+  computed: {
+    fixed() {
+      // 是否开启截图框宽高固定比例
+      if (!this.isFixed) {
+        return this.isFixed
+      }
+      return true
     }
   },
   watch: {
@@ -57,12 +69,8 @@ export default {
       }
     },
     isCrop(value) {
-      console.log(value)
       this.bol = true
     }
-  },
-  created() {
-    console.log(this.isCrop)
   },
   methods: {
     // 截图并上传图片
@@ -104,7 +112,7 @@ export default {
     background-color: #ffffff;
 }
   .link {
-    font-size: 24px;
+    font-size: 0.64rem;
     font-weight: 600;
   }
 </style>

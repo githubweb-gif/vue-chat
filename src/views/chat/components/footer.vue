@@ -148,27 +148,29 @@ export default {
 
 <style lang="scss" scoped>
 footer {
-  border-top: 1px solid #d6d6d6;
+  border-top: 0.03rem solid #d6d6d6;
   .input {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 3px 16px;
+    padding: 0.08rem 0.43rem;
     .msg {
       flex: 1;
-      padding: 0 10px;
+      padding: 0 0.27rem;
+      display: flex;
+      align-items: center;
     }
     .iconfont,
     .icon {
-      font-size: 1.8rem;
+      font-size: 0.8rem;
     }
     .icon {
       padding-left: 10px;
     }
     .send {
       background-color: #37d237;
-      border-radius: 5px;
-      padding: 3px 10px;
+      border-radius: 0.14rem;
+      padding: 0.08rem 0.27rem;
     }
   }
 }

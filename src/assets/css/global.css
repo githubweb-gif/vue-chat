@@ -27,13 +27,20 @@ i {
 }
 /* ----------------------------------------- */
 /* 登录页 */
-.login .el-input__inner,
+.submit .el-input__inner,
 .dym .el-input__inner,
 .qn .el-input__inner {
   border: 0;
   border-bottom: 1px solid #dcdfe6;
   border-radius: 0;
   font-weight: 600;
+}
+#login .el-form-item__content {
+  line-height: 1.066667rem;
+font-size: 0.373333rem;
+}
+#login .el-form-item__error {
+  font-size: 0.32rem !important;
 }
 /* ----------------------------------------- */
 

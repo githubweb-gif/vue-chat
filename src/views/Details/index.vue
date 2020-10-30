@@ -219,7 +219,7 @@ export default {
   position: absolute;
   top: 0;
   left: 0;
-  filter: blur(6px);
+  filter: blur(0.16rem);
   background-repeat: no-repeat;
   background-position: center center;
   background-size: cover;
@@ -239,24 +239,27 @@ header {
   .back {
     .link {
       display: block;
-      font-size: 24px;
+      font-size: 0.64rem;
       font-weight: 600;
     }
   }
   .right {
     span {
-      font-size: 26px;
+      font-size: 0.64rem;
     }
   }
 }
 .main {
   text-align: center;
-  padding-top: 74px;
+  padding-top: 1.97rem;
   flex: 1;
   .avatar {
     position: relative;
-    padding: 0 28px;
-    margin-bottom: 10px;
+    padding: 0 0.75rem;
+    margin-bottom: 0.27rem;
+    h3 {
+      font-size: 0.5rem;
+    }
     .border {
       display: inline-block;
       transition: all 0.3s;
@@ -267,55 +270,56 @@ header {
         bottom: 8%;
         right: 8%;
         border-radius: 50%;
-        font-size: 18px;
-        padding: 5px;
+        font-size: 0.48rem;
+        padding: 0.14rem;
         color: #ffffff;
       }
     }
     img {
-      width: 200px;
-      height: 200px;
+      width: 5.3rem;
+      height: 5.3rem;
       padding: 2px;
       background-color: #ffffff;
       border-radius: 24px;
       transition: all 0.3s;
     }
     .size {
-      width: 120px;
-      height: 120px;
+      width: 3.2rem;
+      height: 3.2rem;
     }
   }
   .info {
-    font-size: 14px;
+    font-size: 0.37rem;
     position: relative;
     z-index: 100;
     span {
-      margin-bottom: 10px;
+      margin-bottom: 0.27rem;
       display: inline-block;
-      font-size: 16px;
+      font-size: 0.43rem;
     }
     .motto {
       color: #272832;
-      letter-spacing: -0.48px;
-      line-height: 24px;
-      padding: 0 50px;
+      letter-spacing: -0.0128rem;
+      line-height: 0.64rem;
+      padding: 0 1.33rem;
     }
   }
 }
 .footer {
-  padding: 0 16px;
-  bottom: 4px;
+  padding: 0 0.47rem;
+  bottom: 0.11rem;
   left: 0;
   width: 100%;
   box-sizing: border-box;
+  font-size: 0.533333rem;
   span {
-    padding-top: 9px;
-    padding-bottom: 9px;
+    padding-top: 0.24rem;
+    padding-bottom: 0.24rem;
     display: inline-block;
     width: 100%;
     text-align: center;
     background-color: #ffe431;
-    border-radius: 5px;
+    border-radius: 0.13rem;
   }
 }
 .addFriend {
@@ -326,16 +330,16 @@ header {
   width: 100%;
   height: 0;
   background-color: #ffffff;
-  border-radius: 20px 20px 0 0;
+  border-radius: 0.53rem 0.53rem 0 0;
   transition: all 0.3s;
   overflow: hidden;
   .text {
     position: absolute;
-    top: 120px;
-    left: 0px;
+    top: 3.2rem;
+    left: 0;
     width: 100%;
     height: 50%;
-    padding: 0 28px;
+    padding: 0 0.75rem;
     box-sizing: border-box;
     #area {
       background-color: #f3f4f6;
@@ -343,34 +347,34 @@ header {
       border-radius: 10px;
       border: 0;
       outline: none;
-      padding: 10px;
+      padding: 0.27rem;
       box-sizing: border-box;
       resize: none;
     }
   }
   .whether {
     position: absolute;
-    bottom: 4px;
-    left: 28px;
-    right: 28px;
+    bottom: 0.11rem;
+    left: 0.75rem;
+    right: 0.75rem;
     display: flex;
-    height: 40px;
-    line-height: 40px;
+    height: 1.1rem;
+    line-height: 1.1rem;
     justify-content: space-between;
     .send,
     .cancel {
       text-align: center;
       height: 100%;
-      border-radius: 5px;
+      border-radius: 0.133rem;
     }
     .send {
       flex: 1;
       background-color: #ffe431;
-      margin-left: 16px;
+      margin-left: 0.427rem;
     }
     .cancel {
       background-color: rgba(39, 40, 50, 0.1);
-      padding: 0 21px;
+      padding: 0 0.56rem;
     }
   }
 }

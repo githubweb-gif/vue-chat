@@ -30,15 +30,16 @@ footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 5px 24px;
- background-color: rgba(244, 244, 244, 1);
-  box-shadow:  0px -1px 0px #e7e2e2;
+  padding: 0.135rem 0.64rem;
+  background-color: rgba(244, 244, 244, 1);
+  box-shadow:  0 -0.023rem 0 #e7e2e2;
   span {
     display: block;
     text-align: center;
+    font-size: 0.5rem;
   }
   .icon {
-    font-size: 24px;
+    font-size: 0.64rem;
   }
 }
 </style>

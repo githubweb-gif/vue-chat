@@ -259,3 +259,22 @@ export function putGroupPepoleInfo(data) {
     data
   })
 }
+
+// 退出群聊
+export function deleteGroupUser(data) {
+  return request({
+    url: '/user/GroupUser',
+    method: 'delete',
+    data
+  })
+}
+
+// 添加群友
+export function addGroupUser(data) {
+  return request({
+    url: '/user/GroupUser',
+    method: 'post',
+    data
+  })
+}
+

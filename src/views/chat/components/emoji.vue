@@ -120,44 +120,44 @@ export default {
 <style lang="scss" scoped>
 .emoji {
   header {
-    padding: 0 16px;
+    padding: 0 0.43rem;
     .iconfont {
-      font-size: 29px;
+      font-size: 0.8rem;
     }
-    border-bottom: 1px solid #c3c3c3;
+    border-bottom: 0.03rem solid #c3c3c3;
   }
   .data {
-    padding: 0 16px;
+    padding: 0 0.43rem;
     position: relative;
     .title {
-      font-size: 16px;
-      padding: 10px 0;
+      font-size: 0.43rem;
+      padding: 0.27rem 0;
     }
     .close {
       position: absolute;
       bottom: 0px;
-      right: 16px;
-      font-size: 25px;
-      width: 80px;
-      height: 30px;
-      line-height: 30px;
+      right: 0.43rem;
+      font-size: 0.67rem;
+      width: 2.1rem;
+      height: 0.8rem;
+      line-height: 0.8rem;
       background-color: #7d837d;
     }
     .list {
-      height: 120px;
-      font-size: 22px;
+      height: 3.2rem;
+      font-size: 0.59rem;
       overflow-x: hidden;
       overflow-y: auto;
       display: flex;
       justify-content: flex-start;
       flex-wrap: wrap;
       box-sizing: border-box;
-      padding-bottom: 15px;
+      padding-bottom: 0.4rem;
       span {
         display: flex;
         align-items: center;
-        padding: 0 6px;
-        margin-bottom: 15px;
+        padding: 0 0.16rem;
+        margin-bottom: 0.4rem;
       }
     }
   }

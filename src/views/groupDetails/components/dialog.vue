@@ -62,22 +62,22 @@ export default {
 }
 .header {
     position: relative !important;
-    padding: 0 16px;
+    padding: 0 0.426667rem;
     background-color: #ffff;
-    margin-bottom: 20px;
+    margin-bottom: 0.53rem;
     .link {
-    font-size: 24px;
+    font-size: 0.64rem;
     font-weight: 600;
   }
   .ok {
-    padding: 5px 12px;
+    padding: 0.133rem 0.32rem;
     background-color: #24b410;
     border-radius: 4px;
     color: #ffff;
   }
 }
 .van-cell-group {
-    padding: 0 16px;
+    padding: 0 0.426667rem;
     .van-cell {
         border-radius: 5%;
     background-color: #f3f4f6;

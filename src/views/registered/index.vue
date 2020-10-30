@@ -8,7 +8,7 @@
     <div class="logo">
       <img src="../../assets/img/火.png" alt="">
     </div>
-    <div class="login">
+    <div class="submit">
       <div class="hello">
         <p>注册</p>
       </div>
@@ -213,27 +213,27 @@ export default {
 <style lang="scss" scoped>
 header {
   width: 100%;
-  height: 44px;
-  margin-bottom: 40px;
+  height:1.173333rem;
+  margin-bottom: 1.066667rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 30px;
-  padding: 0 16px;
+  font-size: 0.8rem;
+  padding: 0 0.426667rem;
   box-sizing: border-box;
 }
 .logo {
   text-align: center;
   img {
-    width: 96px;
+    width: 2.56rem;
   }
 }
-.login {
-  padding: 27px 31px 0;
+.submit {
+  padding: 0.72rem 0.826667rem 0;
   .hello {
-    margin-bottom: 36px;
+    margin-bottom: 0.96rem;
     p {
-      font-size: 28px;
+      font-size: 0.746667rem;
       font-weight: 600;
     }
   }
@@ -241,16 +241,16 @@ header {
 
 .el-form {
   .btn {
-    padding: 40px 27px 0;
+    padding: 1.066667rem 0.72rem 0;
     box-sizing: border-box;
     .el-button {
       width: 100%;
-      height: 48px;
+      height: 1.28rem;
       background-color: #ffe431;
       border: 0;
-      border-radius: 24px;
+      border-radius: 0.64rem;
       color: #222;
-      font-size: 16px;
+      font-size: 0.426667rem;
       font-weight: 600;
     }
   }
@@ -263,9 +263,9 @@ header {
     }
     .code {
       background-color: #81afd3;
-      padding: 4px 10px;
-      border-radius: 14px;
-      line-height: 25px;
+      padding: 0.106667rem 0.266667rem;
+      border-radius: 0.373333rem;
+      line-height: 0.666667rem;
     }
     .code:hover {
       background-color: rgb(89, 131, 117);

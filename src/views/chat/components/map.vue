@@ -205,6 +205,7 @@ export default {
   left: 0;
   z-index: 999;
   background-color: rgba($color: #ffffff, $alpha: 0);
+  font-size: 0.43rem;
 }
 #map {
     width: 100%;
@@ -226,7 +227,7 @@ export default {
 }
 
 .mapList {
-    padding: 10px 10px;
+    padding: 0.27rem;
     flex: 1;
     display: flex;
     justify-content: space-between;
@@ -234,7 +235,8 @@ export default {
     overflow: hidden;
     .search-box {
       width: 100%;
-      margin-bottom: 10px;
+      margin-bottom: 0.27rem;
+      font-size: 0.5rem;
     }
     .main {
       flex: 1;
@@ -242,17 +244,18 @@ export default {
       overflow-y: auto;
     }
     .item {
-        padding-bottom: 8px;
-        margin: 0 8px;
+        padding-bottom: 0.21rem;
+        margin: 0 0.21rem;
         cursor: pointer;
         .name {
-            margin-bottom: 10px;
+            margin-bottom: 0.27rem;
+            font-size: 0.5rem;
         }
         .distance {
-            font-size: 14px;
+            font-size: 0.37rem;
             color: #797673;
         .fenge {
-            padding: 0 4px;
+            padding: 0 0.11rem;
         }
         }
     }
@@ -261,7 +264,7 @@ export default {
 .sendmap {
     top: 2%;
     right: 5%;
-    padding: 5px 10px;
+    padding: 0.135rem 0.27rem;
     background-color: rgb(35, 194, 33);
     border-radius: 10%;
 }

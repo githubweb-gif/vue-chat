@@ -149,37 +149,37 @@ li {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 9px 16px;
+  padding: 0.24rem 0.427rem;
   .avatar {
-    width: 48px;
-    height: 48px;
-    margin-right: 16px;
+    width: 1.28rem;
+    height: 1.28rem;
+    margin-right: 0.427rem;
     position: relative;
     img {
-      width: 48px;
+      width: 1.28rem;
       height: 100%;
       border-radius: 12px;
     }
     span {
-      width: 48px;
+      width: 1.28rem;
       height: 100%;
       display: flex;
       justify-content: center;
       align-items: center;
       background-color: #ffe431;
-      font-size: 25px;
-      border-radius: 12px;
+      font-size: 0.66rem;
+      border-radius: 0.32rem;
     }
     i {
       display: inline-block;
-      min-width: 12px;
-      padding: 1px 4px;
+      min-width: 0.32rem;
+      padding: 0.0267rem 0.106rem;
       text-align: center;
-      line-height: 18px;
+      line-height: 0.48rem;
       font-style: normal;
       position: absolute;
-      top: -4px;
-      right: -4px;
+      top: -0.1067rem;
+      right: -0.1067rem;
       background-color: #ed3e3c;
       border-radius: 50%;
       color: #fff;
@@ -188,13 +188,13 @@ li {
   .info {
     flex: 1;
     align-self: flex-start;
-    padding-top: 4px;
+    padding-top:0.1067rem;
     overflow: hidden;
     .name {
-      font-size: 18px;
+      font-size: 0.48rem;
     }
     .msg {
-      font-size: 14px;
+      font-size: 0.373rem;
       color: #aeafb3;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -202,11 +202,11 @@ li {
     }
   }
   .date {
-    font-size: 12px;
+    font-size: 0.32rem;
     align-self: flex-start;
-    padding-top: 5px;
+    padding-top: 0.133rem;
     color: rgba(39, 40, 50, 0.4);
-    letter-spacing: -0.41px;
+    letter-spacing: -0.01093rem;
   }
 }
 </style>

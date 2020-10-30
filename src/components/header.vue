@@ -6,7 +6,7 @@
       </div>
       <div v-else class="title">{{ $route.meta.title }}</div>
       <div class="right">
-        <router-link to="/search"><span class="search el-icon-search" /></router-link>
+        <span class="search el-icon-search" @click="$router.push('/search')" />
         <span class="add el-icon-circle-plus-outline" @touchstart.stop.prevent="isMenu = !isMenu" />
       </div>
       <div v-if="isMenu" class="options">
@@ -20,7 +20,8 @@
     </div>
     <div v-else class="other header">
       <div class="back">
-        <span class="link el-icon-arrow-left" @click="$router.go(-1)" />
+        <span v-if="$route.path==='/chat' || $route.path==='/groupChat'" class="link el-icon-arrow-left" @click="$router.push('/')" />
+        <span v-else class="link el-icon-arrow-left" @click="$router.go(-1)" />
       </div>
       <div v-if="$route.path === '/userInfo'" class="right">个人信息</div>
       <div v-if="$route.path === '/friendReq'" class="right">好友请求</div>
@@ -67,77 +68,74 @@ export default {
 
 <style lang="scss" scoped>
 @import '../style/header.scss';
-.top .home {
-    width: 100%;
-    position: relative;
-  img {
-    vertical-align: middle;
-  }
+.top {
+  position: relative;
   .avatar {
-    .link {
-      display: block;
-    }
     img {
-      height: 34px;
-      width: 34px;
-      border-radius: 8px;
+      height: 0.906667rem;
+      width: 0.906667rem;
+      border-radius: 0.213333rem;
     }
   }
   .right {
     height: 100%;
+    display: flex;
+    align-items: center;
+    .search {
+      margin-right: 0.5rem;
+    }
     .search,
     .add {
-      font-size: 26px;
-      padding: 10px;
+      font-size: 0.693333rem;
     }
   }
   .options {
-    width: 150px;
+    width: 4rem;
     box-sizing: border-box;
-    font-size: 16px;
+    font-size: 0.426667rem;
     position: absolute;
     top: 100%;
     right: 3%;
     z-index: 999;
     background-color: rgba(62, 62, 64, 1);
-    border-radius: 6px;
-    margin-top: 10px;
+    border-radius: 0.16rem;
+    margin-top: 0.266667rem;
     span {
-      font-size: 24px;
-      padding: 0 10px;
+      font-size: 0.64rem;
+      padding: 0 0.2rem;
     }
     div {
       display: flex;
       align-items: center;
       color: #ffffff;
-      padding: 10px 0;
+      padding: 0.27rem 0;
     }
   }
   .options::after {
-    content: '';
+    content: "";
     display: inline-block;
     position: absolute;
-    top: -10px;
-    right: 10px;
-    border-left: 15px solid transparent;
-    border-right: 15px solid transparent;
-    border-bottom: 20px solid rgba(62, 62, 64, 1);
+    top: -0.27rem;
+    right: 0.27rem;
+    border-left: 0.4rem solid transparent;
+    border-right: 0.4rem solid transparent;
+    border-bottom: 0.4rem solid rgba(62, 62, 64, 1);
   }
-      .title {
-        font-weight: 600;
-    }
+  .title {
+    font-weight: 600;
+  }
 }
 
 .other {
-    font-size: 18px;
-      .name {
+  font-size: 0.48rem;
+  .name {
     flex: 1;
-    padding-left: 10px;
+    padding-left: 0.266667rem;
   }
-    .right {
-        flex: 1;
-        padding-left: 10px;
-    }
+  .right {
+    flex: 1;
+    padding-left: 0.266667rem;
+  }
 }
 
 .shadow {

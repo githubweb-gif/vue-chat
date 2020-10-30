@@ -65,10 +65,10 @@ export default {
 }
 .title {
   flex: 1;
-  margin-left: 10px;
+  margin-left: 0.267rem;
 }
 .right {
-  font-size: 20px;
+  font-size: 0.53rem;
 }
 
 .groupList {
@@ -77,25 +77,27 @@ export default {
   flex: 1;
   .box {
     background-color: #ffffff;
-    padding-left: 16px;
+    padding-left: 0.426667rem;
     .letter {
-      padding-top: 5px;
-      padding-bottom: 5px;
+      padding-top: 0.133333rem;
+      padding-bottom: 0.133333rem;
       background-color: rgb(244, 244, 244);
-      margin-left: -16px;
-      padding-left: 16px;
+      margin-left: -0.426667rem;
+      padding-left: 0.426667rem;
+      font-size: 0.5rem;
     }
     .item {
       display: flex;
       align-items: center;
-      border-bottom: 1px solid #16be74;
-      padding: 5px 0;
+      border-bottom: 0.026667rem solid #16be74;
+      padding: 0.133333rem 0;
+      font-size: 0.5rem;
       .name {
-        margin-left: 10px;
+        margin-left: 0.266667rem;
       }
       img {
-        width: 52px;
-        height: 52px;
+        width: 1.386667rem;
+        height: 1.386667rem;
       }
     }
     .item:last-child {

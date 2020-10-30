@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="login">
     <header>
       <p class="registered">
         <router-link to="/registered">注册</router-link>
@@ -8,7 +8,7 @@
     <div class="logo">
       <img src="../../assets/img/火.png" alt="">
     </div>
-    <div class="login">
+    <div class="submit">
       <div class="hello">
         <p>登录</p>
         <span>你好，欢迎来到火火</span>
@@ -96,35 +96,43 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+#login {
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
 header {
   width: 100%;
-  height: 44px;
-  line-height: 44px;
-  margin-bottom: 40px;
+  height: 1.173333rem;
+  line-height: 1.173333rem;
+  margin-bottom: 1.066667rem;
   p {
     float: right;
-    font-size: 18px;
-    margin-right: 28px;
+    font-size: 0.48rem;
+    margin-right: 0.746667rem;
     font-weight: 600;
   }
 }
 .logo {
   text-align: center;
+  margin-bottom: 0.72rem;
   img {
-    width: 96px;
+    width: 2.56rem;
   }
 }
-.login {
-  padding: 27px 31px 0;
+.submit {
+  flex: 1;
+  padding: 0 0.826667rem;
   .hello {
-    margin-bottom: 36px;
+    margin-bottom: 0.96rem;
     p {
-      font-size: 28px;
-      margin-bottom: 7px;
+      font-size: 0.746667rem;
+      margin-bottom: 0.186667rem;
       font-weight: 600;
     }
     span {
-      font-size: 20px;
+      font-size: 0.533333rem;
       color: rgba(39, 40, 50, 0.5);
     }
   }
@@ -132,25 +140,31 @@ header {
 
 .el-form {
   .message {
-    margin-left: 15px;
-    font-size: 14px;
+    margin-left: 0.4rem;
+    font-size: 0.373333rem;
+  }
+  .iconfont {
+    font-size: 0.32rem;
   }
   .btn {
-    padding: 40px 27px 0;
     box-sizing: border-box;
     .el-button {
       width: 100%;
-      height: 48px;
+      height: 1.28rem;
       background-color: #ffe431;
       border: 0;
-      border-radius: 24px;
+      border-radius: 0.64rem;
       color: #222;
-      font-size: 16px;
+      font-size: 0.426667rem;
       font-weight: 600;
     }
   }
   .el-form-item {
     position: relative;
+    margin-bottom: 0.586667rem;
+    .el-input {
+      font-size: 0.373333rem;
+    }
     span {
       position: absolute;
       top: 0;

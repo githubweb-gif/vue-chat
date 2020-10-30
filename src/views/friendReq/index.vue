@@ -78,40 +78,40 @@ export default {
 header {
   background-color: #ffffff;
   .right {
-    font-size: 20px;
+    font-size: 0.5rem;
   }
 }
 .link {
-  font-size: 24px;
+  font-size: 0.64rem;
   font-weight: 600;
 }
 main {
-  padding: 100px 16px 0;
+  padding: 2.67rem 0.426rem 0;
   li {
     position: relative;
-    margin-bottom: 60px;
+    margin-bottom: 1.6rem;
     .header {
       text-align: center;
       position: absolute;
       left: 50%;
       transform: translate(-50%, -50%);
       img {
-        width: 80px;
-        height: 80px;
+        width: 2.13rem;
+        height: 2.13rem;
         border-radius: 50%;
       }
     }
     .main {
       background-color: #ffffff;
-      box-shadow: 0 0 10px #c8bec3;
-      padding: 20px 15px 15px;
-      border-radius: 15px;
+      box-shadow: 0 0 0.27rem #c8bec3;
+      padding: 0.5rem 0.4rem 0.4rem;
+      border-radius: 0.4rem;
       .operating {
         display: flex;
         justify-content: space-between;
         div {
-          padding: 6px 20px;
-          border-radius: 20px 20px 20px;
+          padding: 0.16rem 0.53rem;
+          border-radius: 0.53rem;
         }
         .refuse {
           background-color: rgba(255, 239, 239, 1);
@@ -123,12 +123,12 @@ main {
       }
       .info {
         text-align: center;
-        padding: 20px;
+        padding: 0.53rem;
       }
       .leave {
-        border-radius: 10px;
+        border-radius: 0.0267rem;
         background-color: #f0f2f4;
-        padding: 12px 20px;
+        padding:0.32rem;
       }
     }
   }

@@ -140,7 +140,7 @@ export default {
         scroll.scrollTop = scroll.scrollHeight
         this.$refs.last.style.height = 0
       }
-    }, 100)
+    }, 50)
   },
   updated() {
     this.n = false
@@ -370,7 +370,7 @@ export default {
 }
 main {
   flex: 1;
-  padding: 0 16px;
+  padding: 0 0.43rem;
   overflow-x: hidden;
   overflow-y: scroll;
   background-color: #f4f4f4;
@@ -378,8 +378,8 @@ main {
   .user {
     .time {
       text-align: center;
-      margin: 15px 0 20px;
-      font-size: 14px;
+      margin: 0.4rem 0 0.53rem;
+      font-size: 0.37rem;
       color: rgba(39, 40, 50, 0.3);
     }
     .info {
@@ -387,17 +387,17 @@ main {
       align-items: center;
       .avatar {
         img {
-          width: 40px;
-          height: 40px;
-          border-radius: 10px;
+          width: 1.1rem;
+          height: 1.1rem;
+          border-radius: 0.27rem;
         }
       }
       .content {
-        margin: 0 8px;
-        padding: 8px 11px;
-        font-size: 16px;
-        border-radius: 5px;
-        letter-spacing: 1px;
+        margin: 0 0.22rem;
+        padding: 0.22rem 0.29rem;
+        font-size: 0.43rem;
+        border-radius: 0.14rem;
+        letter-spacing: 0.027rem;
         max-width: 70%;
         display: flex;
         align-items: center;
@@ -408,21 +408,22 @@ main {
       }
       .map {
          width: 70%;
-         margin: 0 8px;
+         margin: 0 0.22rem;
          position: relative;
          background-color: #ffffff;
          .place {
-          padding: 8px 5px 5px;
+          padding: 0.22rem 0.14rem 0.14rem;
          }
          .title {
            width: 100%;
            overflow: hidden;
            white-space: nowrap;
            text-overflow: ellipsis;
-           margin-bottom: 5px;
+           margin-bottom: 0.14rem;
+           font-size: 0.5rem;
          }
          p {
-           font-size: 12px;
+           font-size: 0.32rem;
            color: #a5a59d;
          }
          img {
@@ -440,7 +441,7 @@ main {
     .map::after, .content::after {
         content: '';
         display: inline-block;
-        border: 6px solid;
+        border: 0.16rem solid;
         position: absolute;
         top: 50%;
         right: 0;
@@ -456,7 +457,7 @@ main {
     .map::after,.content::after {
         content: '';
         display: inline-block;
-        border: 6px solid;
+        border: 0.16rem solid;
         position: absolute;
         top: 50%;
         left: 0;
@@ -473,7 +474,7 @@ main {
     .map::after,.content::after {
         content: '';
         display: inline-block;
-        border: 6px solid;
+        border: 0.16rem solid;
         position: absolute;
         top: 50%;
         left: 0;

@@ -1,6 +1,6 @@
 <template>
   <div class="search">
-    <header>
+    <div class="header">
       <form>
         <div class="ss">
           <input v-if="title === 'search'" v-model="keyWords" type="text" @input="search">
@@ -9,7 +9,7 @@
         </div>
       </form>
       <div class="cancel"><router-link to="/">取消</router-link></div>
-    </header>
+    </div>
     <div class="main">
       <div class="user">
         <div v-if="friendList.length > 0 ? true : false" class="title">
@@ -21,14 +21,14 @@
               <div class="avatar">
                 <router-link
                   class="link"
-                  :to="`/details?id=${item.friendID._id}`"
+                  :to="`/details?id=${item.userID._id}`"
                 ><img
-                  :src="item.friendID.avatar | avatar"
+                  :src="item.userID.avatar | avatar"
                   alt=""
                 ></router-link>
               </div>
               <div class="name" v-html="item.markName" />
-              <div class="info">发消息</div>
+              <div class="info" @click="$router.push({path:'/chat',query: {id: item.userID._id}})">发消息</div>
             </li>
           </ul>
           <router-link v-if="stranger !== null" class="link" :to="`/details?id=${stranger._id}`">
@@ -106,7 +106,6 @@ export default {
     }, 500),
     // 搜索陌生人
     addFriend: debounce(function() {
-      console.log('000000000')
       if (this.keyWords.trim() === '') {
         return
       }
@@ -123,43 +122,44 @@ export default {
 
 <style lang="scss" scoped>
 @import '../../style/header.scss';
-header {
-  padding: 7px 16px;
-  height: 44px;
+.header {
+  padding: 0.186667rem 0.426667rem;
+  height: 1.173333rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid #ede8e8;
+  border-bottom: 0.026667rem solid #ede8e8;
+  background-color: #ffffff;
   form {
     flex: 2;
     height: 100%;
     .ss {
       display: flex;
       height: 100%;
-      border-radius: 5px;
+      border-radius: 0.133333rem;
       input {
         border: 0;
         flex: 1;
         height: 100%;
-        border-radius: 5px;
+        border-radius: 0.133333rem;
         outline: none;
-        padding: 0 4px;
+        padding: 0 0.106667rem;
         background-color: #f3f4f6;
       }
     }
     button {
       height: 100%;
       border: 0;
-      border-radius: 5px;
+      border-radius: 0.133333rem;
       background-color: #f3f4f6;
-      font-size: 18px;
-      padding-right: 5px;
+      font-size: 0.48rem;
+      padding-right: 0.133333rem;
       outline: none;
     }
   }
   .cancel {
-    margin-left: 15px;
-    font-size: 14px;
+    margin-left: 0.4rem;
+    font-size: 0.373333rem;
   }
 }
 .link {
@@ -167,36 +167,36 @@ header {
   height: 100%;
 }
 .title {
-  padding: 0 16px 10px;
-  font-size: 22px;
+  padding: 0 0.426667rem 0.266667rem;
+  font-size: 0.586667rem;
   font-weight: 600;
 }
 .list {
   li,
   .stranger {
     display: flex;
-    padding: 9px 16px;
+    padding: 0.24rem 0.426667rem;
     justify-content: space-between;
     align-items: center;
     overflow: hidden;
     .avatar {
-      width: 40px;
-      height: 40px;
+      width: 1.066667rem;
+      height: 1.066667rem;
       img {
         width: 100%;
         height: 100%;
-        border-radius: 10px;
+        border-radius: 0.266667rem;
       }
     }
     .name {
       flex: 1;
-      padding-left: 16px;
-      font-size: 18px;
+      padding-left: 0.426667rem;
+      font-size: 0.48rem;
     }
     .info {
-      font-size: 12px;
-      padding: 4px 13px;
-      border-radius: 12px;
+      font-size: 0.32rem;
+      padding: 0.106667rem 0.346667rem;
+      border-radius: 0.32rem;
       background-color: #ffe431;
     }
     .bc {
@@ -209,6 +209,6 @@ li:hover {
   background-color: #f3f4f6;
 }
 .user {
-  margin-bottom: 21px;
+  margin-bottom: 0.56rem;
 }
 </style>

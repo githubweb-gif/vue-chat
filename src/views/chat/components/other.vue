@@ -108,38 +108,38 @@ export default {
 
 <style lang="scss" scoped>
 .other {
-  border-top: 1px solid #d6d6d6;
-  padding: 0 16px;
+  border-top: 0.023rem solid #d6d6d6;
+  padding: 0 0.43rem;
 }
 .more,
 .last {
   display: flex;
-  padding: 0 25px 0;
+  padding: 0 0.67rem 0;
   justify-content: space-between;
   .index {
     position: relative;
     .iconfont {
       background-color: #ffffff;
-      font-size: 35px;
-      padding: 10px;
-      border-radius: 10px;
+      font-size: 0.9rem;
+      padding: 0.266667rem;
+      border-radius: 0.266667rem;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 4px;
+      margin-bottom: 0.11rem;
     }
     .name {
       text-align: center;
-      font-size: 12px;
+      font-size: 0.32rem;
     }
   }
 }
 .more {
-  padding-top: 15px;
-  margin-bottom: 10px;
+  padding-top: 0.4rem;
+  margin-bottom: 0.27rem;
 }
 .last {
-  padding-bottom: 10px;
+  padding-bottom: 0.27rem;
 }
 .sendButton {
 background-color: #ffffff;
@@ -149,13 +149,14 @@ width: 100%;
 left: 0;
 right: 0;
 transition: all 0.3s;
+font-size: 0.5rem;
 div {
   width: 100%;
   text-align: center;
-  padding: 15px 0;
+  padding: 0.4rem 0;
 }
 .send {
-  border-bottom: 1px solid #d6d6d6;
+  border-bottom: 0.027rem solid #d6d6d6;
 }
 }
 .shadowBox {

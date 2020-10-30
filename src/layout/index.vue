@@ -44,19 +44,4 @@ main {
     height: 100%;
   }
 }
-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 5px 24px;
-  background-color: #fcfcfc;
-  box-shadow:  0px -1px 0px #e7e2e2;
-  span {
-    display: block;
-    text-align: center;
-  }
-  .icon {
-    font-size: 24px;
-  }
-}
 </style>

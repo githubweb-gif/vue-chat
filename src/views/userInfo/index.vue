@@ -1,25 +1,28 @@
 <template>
   <div id="userInfo">
     <div class="main">
-      <ul>
-        <li class="avatar">
-          <el-upload
-            class="avatar-uploader"
-            action="http://localhost:8080/"
-            :show-file-list="false"
-            :auto-upload="false"
-            :on-change="changeAvatar"
-          >
-            <div class="upload">
-              <span>头像</span>
-              <div class="mid">
-                <img v-if="userFrom.avatar" :src="baseUrl+userFrom.avatar">
-                <i v-else class="el-icon-plus avatar-uploader-icon" />
-              </div>
-              <span class="link el-icon-arrow-right" />
+      <div class="avatar">
+        <el-upload
+          class="avatar-uploader"
+          action="http://localhost:8080/"
+          :show-file-list="false"
+          :auto-upload="false"
+          :on-change="changeAvatar"
+        >
+          <div class="upload">
+            <div class="cover">
+              <img v-if="userFrom.avatar" :src="baseUrl+userFrom.avatar">
+              <i v-else class="el-icon-plus avatar-uploader-icon" />
             </div>
-          </el-upload>
-        </li>
+            <div class="info">
+              <div class="name">{{ userFrom.name }}</div>
+              <div class="qianming">{{ userFrom.intr }}</div>
+              <div class="time">{{ userFrom.birth | dateFormat }}</div>
+            </div>
+          </div>
+        </el-upload>
+      </div>
+      <ul>
         <li @click="qnMethod({title: 'intr', value:userFrom.intr})">
           <span>签名</span>
           <span class="mid">{{ userFrom.intr }}</span>
@@ -254,13 +257,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "../../style/header.scss";
 #userInfo {
   display: flex;
   position: relative;
   flex-direction: column;
   justify-content: space-between;
   background-color: #f4f4f4;
+  font-size: 0.426667rem;
   .qn,
   .dym {
     background-color: #ffff;
@@ -275,62 +278,75 @@ export default {
     overflow: hidden;
   }
 }
-header {
-  position: relative;
-  .link {
-    font-size: 24px;
-    font-weight: 600;
-  }
-  .right {
-    flex: 1;
-    text-align: center;
-    font-size: 20px;
-  }
-}
 .main {
   flex: 1;
   display: flex;
   flex-direction: column;
-  .avatar,.registered{
-    margin-bottom: 8px;
   }
   .avatar-uploader {
     width: 100%;
   }
+.avatar {
+  padding: 0 0.426667rem;
+  margin-bottom: 0.266667rem;
   .upload {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    img {
-      border-radius: 10px;
+    .cover {
+      margin-right: 0.266667rem;
+      img {
+        height: 2.666667rem;
+        width: 2.666667rem;
+        border-radius: 0.266667rem;
+      }
     }
+    .info {
+      text-align: left;
+      .name {
+        font-size: 0.533333rem;
+        margin-bottom:  0.133333rem;
+      }
+      .time {
+        font-size: 0.373333rem;
+        color: rgba(39, 40, 50, 0.6);
+      }
+      .qianming {
+        font-size: 0.373333rem;
+        margin-bottom: 0.133333rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        width: 60%;
+      }
+    }
+  }
     .mid {
       text-align: left;
     }
   }
   .mid {
     flex: 1;
-    margin-left: 16px;
+    margin-left: 0.426667rem;
     display: flex;
   }
   .select {
     position: absolute;
     opacity: 0;
   }
+  ul {
+    margin: 0 0.213333rem 0.213333rem;
+    border-radius: 0.266667rem;
+    background-color: #ffff;
+  }
   ul li {
     display: flex;
-    border-bottom: 1px solid #f4f4f4;
-    height: 52px;
-    padding: 0 16px 0;
-    background-color: #ffff;
+    border-bottom: 0.026667rem solid #f4f4f4;
+    height: 1.386667rem;
+    padding: 0 0.426667rem 0;
     justify-content: space-between;
     align-items: center;
     position: relative;
     color: rgba(39, 40, 50, 0.6);
-    img {
-      height: 52px;
-      width: 52px;
-    }
+    font-size: 0.426667rem;
   }
   ul li:hover {
     background-color: #f3f4f6;
@@ -339,17 +355,15 @@ header {
     font-weight: 600;
     color: #222222;
   }
-}
 .logout {
-  margin-top: 8px;
+  margin: 0 0.213333rem;
   background-color: #ffff;
-  padding: 0 16px 0;
-  height: 52px;
+  padding: 0.266667rem;
   display: flex;
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
-  width: 100%;
+  font-size: 0.533333rem;
 }
 .logout:hover {
   color: rgb(8, 68, 107);

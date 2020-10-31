@@ -31,12 +31,11 @@ footer {
   justify-content: space-between;
   align-items: center;
   padding: 0.135rem 0.64rem;
-  background-color: rgba(244, 244, 244, 1);
-  box-shadow:  0 -0.023rem 0 #e7e2e2;
+  background-color: rgba(240, 240, 240, 1);
   span {
     display: block;
     text-align: center;
-    font-size: 0.5rem;
+    font-size: 0.4rem;
   }
   .icon {
     font-size: 0.64rem;

@@ -4,19 +4,35 @@
     <slot name="opsition" />
     <div class="main">
       <div class="title">用户</div>
-      <div class="data">
+      <!-- 好友 -->
+      <div v-if="!show && data" class="data">
         <div v-for="(item,index) in data" :key="index" class="item">
           <div class="letter-name">{{ index.toUpperCase() }}</div>
-          <div v-for="(i,n) in item" :key="n" class="dataList">
-            <input v-if="show && groupInfo.userID !== i.friendID._id" :disabled="i.disabled===true ? true: false" :checked="i.disabled===true ? true: false" class="icon" type="checkbox" @change="checkUser(i,$event)">
-            <div class="avatar"><img :src="i.friendID.avatar | avatar" alt=""></div>
-            <div class="xingming">{{ groupInfo.userID === i.friendID._id ? `${i.friendID.name}(群主)` : i.friendID.name }}</div>
-            <div v-if="groupInfo.userID !== i.friendID._id && addFriend" class="right">{{ userID === i.userID ? '发消息' : '加好友' }}</div>
-          </div>
+          <template v-for="(i,n) in item">
+            <div v-if="i" :key="n" class="dataList">
+              <input :disabled="i.disabled===true ? true: false" :checked="i.disabled===true ? true: false" class="icon" type="checkbox" @change="checkUser(i,$event)">
+              <div class="avatar"><img :src="i.userID.avatar | avatar" alt=""></div>
+              <div class="xingming">{{ i.markName }}</div>
+            </div>
+          </template>
+        </div>
+      </div>
+      <!-- 群友 -->
+      <div v-if="show && data" class="data">
+        <div v-for="(item,index) in data" :key="index" class="item">
+          <div v-if="item[0]" class="letter-name">{{ index.toUpperCase() }}</div>
+          <template v-for="(i,n) in item">
+            <div v-if="i" :key="n" class="dataList">
+              <input v-if="groupInfo.userID !== i.userID._id" class="icon" type="checkbox" @change="checkUser(i,$event)">
+              <div class="avatar"><img :src="i.userID.avatar | avatar" alt=""></div>
+              <div class="xingming">{{ groupInfo.userID === i.userID._id ? `${i.markName}(群主)` : i.markName }}</div>
+              <div v-if="groupInfo.userID !== i.userID._id" class="right" @click="toLink(i.userID._id)">{{ userID === i.friendID ? '发消息' : '加好友' }}</div>
+            </div>
+          </template>
         </div>
       </div>
     </div>
-    <div v-if="show" class="footer">
+    <div v-if="!groupInfo || groupInfo.userID === userID" class="footer">
       <van-button :disabled="disabled || num===0?true:false" @click="setGroup">{{ title + (num) }}</van-button>
     </div>
   </div>
@@ -30,15 +46,6 @@ export default {
       type: Object,
       default: null
     },
-    disabled: {
-      type: Boolean,
-      default: false
-    },
-    // 非群主隐藏选择框
-    show: {
-      type: Boolean,
-      default: false
-    },
     // 群信息
     groupInfo: {
       type: Object,
@@ -48,21 +55,26 @@ export default {
       type: String,
       default: ''
     },
-    // 添加好友为群友
-    addFriend: {
+    show: {
       type: Boolean,
-      default: true
+      default: false
     }
   },
   data() {
     return {
       groupFriend: [],
-      num: 0
+      num: 0,
+      disabled: false
     }
   },
   computed: {
     userID() {
       return this.$store.getters.userInfo.id
+    }
+  },
+  watch: {
+    data(value) {
+      console.log(value)
     }
   },
   methods: {
@@ -79,6 +91,13 @@ export default {
     },
     setGroup() {
       this.$emit('checkedPeople', this.groupFriend)
+    },
+    toLink(fid) {
+      if (fid === this.userID) {
+        this.$router.push({ path: '/chat', query: { id: fid }})
+      } else {
+        this.$router.push({ path: '/details', query: { id: fid }})
+      }
     }
   }
 }
@@ -104,7 +123,7 @@ export default {
   .title {
     font-size: 0.586667rem;
     font-weight: 600;
-    margin-bottom: 0.266667rem;
+    padding: 0.266667rem;
   }
   .data {
     flex: 1;
@@ -120,13 +139,13 @@ export default {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 0.533333rem;
     font-size: 0.48rem;
+    padding: 0.266667rem 0;
     .avatar {
       width: 1.066667rem;
       height: 1.066667rem;
       border-radius: 0.266667rem;
-     margin-right: 0.426667rem;
+      margin-right: 0.426667rem;
       img {
         width: 100%;
         height: 100%;
@@ -165,6 +184,7 @@ export default {
   line-height: 1.066667rem;
   text-align: center;
   background-color: #FFE431;
+  font-size: 0.48rem;
   }
 }
 </style>

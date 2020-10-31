@@ -11,12 +11,12 @@
     <div class="friendList">
       <div v-for="(item,index) in dataList" :key="index" class="box">
         <div class="letter">{{ index }}</div>
-        <div v-for="(i,n) in item" :key="n" class="item" @click="$router.push({path: '/chat',query: {id:i.friendID._id}})">
+        <div v-for="(i,n) in item" :key="n" class="item" @click="$router.push({path: '/chat',query: {id:i.userID._id}})">
           <div class="avatar">
-            <img :src="i.friendID.avatar | avatar" alt="">
+            <img :src="i.userID.avatar | avatar" alt="">
           </div>
           <div class="name">
-            {{ i.friendID.name }}
+            {{ i.markName }}
           </div>
         </div>
       </div>

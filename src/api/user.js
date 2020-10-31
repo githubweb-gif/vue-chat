@@ -278,3 +278,20 @@ export function addGroupUser(data) {
   })
 }
 
+// 搜索群友
+export function searchGroupUser(data) {
+  return request({
+    url: '/user/GroupUser',
+    method: 'get',
+    params: data
+  })
+}
+
+// 刪除群成员
+export function deleteGroupPeople(data) {
+  return request({
+    url: '/user/GroupUserPeople',
+    method: 'delete',
+    data
+  })
+}

@@ -34,6 +34,7 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  background-color: rgba(244, 244, 244, 0.8);
 }
 main {
   flex: 1;

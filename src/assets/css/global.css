@@ -13,6 +13,10 @@ body,
   overflow: hidden;
 }
 
+img {
+  display: block;
+}
+
 a {
   text-decoration: none;
   color: #222222;
@@ -80,4 +84,9 @@ textarea {
 .search-tips ul {
   max-height: 200px;
   overflow-x: auto;
+}
+
+#Details .van-cell-group textarea {
+    height: 2rem !important;
+    padding-top: 0.133333rem;
 }

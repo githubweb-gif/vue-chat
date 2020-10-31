@@ -79,7 +79,7 @@
       </dialog-card>
     </transition>
     <transition name="toUp">
-      <group-pepole v-if="toUp" title="添加" :add-friend="false" :group-info="groupInfo" :show="show" class="listPepole" :data="dataList" @checkedPeople="checkedPeople">
+      <group-pepole v-if="toUp" title="添加" :show="false" :group-info="groupInfo" class="listPepole" :data="dataList" @checkedPeople="checkedPeople">
         <template v-slot:header>
           <div class="header">
             <div class="close" @click="toUp=false">取消</div>
@@ -97,7 +97,7 @@
       </group-pepole>
     </transition>
     <transition name="fade">
-      <group-pepole v-if="toLeft" title="刪除" :group-info="groupInfo" :show="show" class="listPepole" :data="allGroupFriend" @checkedPeople="checkedPeople">
+      <group-pepole v-if="toLeft" title="刪除" :show="true" :group-info="groupInfo" class="listPepole" :data="allGroupFriend" @checkedPeople="deleteGroupFriends">
         <template v-slot:header>
           <div class="header">
             <div class="back el-icon-arrow-left" @click="toLeft=false" />
@@ -119,7 +119,7 @@
 </template>
 
 <script>
-import { getGroup, getGroupPepole, putGroup, getGroupPepoleInfo, putGroupPepoleInfo, deleteGroupUser, getAllFriend, addGroupUser, searchFriends } from '@/api/user'
+import { getGroup, getGroupPepole, putGroup, getGroupPepoleInfo, putGroupPepoleInfo, searchGroupUser, deleteGroupUser, addGroupUser, searchFriends, deleteGroupPeople } from '@/api/user'
 import dialogCard from './components/dialog.vue'
 import cropperVue from '@/components/cropper.vue'
 import groupPepole from '@/components/groupPepole.vue'
@@ -164,10 +164,6 @@ export default {
     },
     userID() {
       return this.$store.getters.userInfo.id
-    },
-    // 判断是不是群主
-    show() {
-      return this.userinfo.userID === this.groupInfo.userID
     }
   },
   watch: {
@@ -175,11 +171,14 @@ export default {
       this.data.value = value
     },
     keyWords(value) {
-      if (value.trim() === '') {
+      if (value.trim() === '' && this.toUp) {
         this.getAllFriend()
+      } else if (value.trim() === '' && this.toLeft) {
+        this.managementUser()
       }
     },
     toLeft(value) {
+      console.log(this.allGroupFriend)
       if (value && !this.allGroupFriend) {
         this.managementUser()
       }
@@ -272,16 +271,11 @@ export default {
       this.accomplish({ name: 'shield', value })
     },
     // 处理好友是否已经加入过群
-    processFriend(obj, bol) {
+    processFriend(obj) {
       for (const i in obj) {
         obj[i].map((x) => {
-          if (bol) {
-            const ff = JSON.stringify(x.userID)
-            x.userID = x.friendID
-            x.friendID = JSON.parse(ff)
-          }
           this.groupPepole.map((y) => {
-            if (y.userID._id === x.friendID._id) {
+            if (y.userID._id === x.userID._id) {
               // 已经加入过此群
               x.disabled = true
             }
@@ -290,17 +284,23 @@ export default {
         })
       }
       this.dataList = obj
+      console.log(this.dataList)
     },
-    // 获取排序好的群友
+    // 获取排序好的好友
     getAllFriend() {
-      getAllFriend({ userID: this.userID }).then((res) => {
-        this.processFriend(res.data)
+      searchFriends({ uid: this.userID, key: this.keyWords, pinyin: true }).then((res) => {
+        const obj = res.data
+        console.log('------------')
+        this.processFriend(obj)
       })
     },
     // 添加群友
     checkedPeople(data) {
       addGroupUser({ groupFriend: data, GroupID: this.GroupID }).then(() => {
         this.getGroupPepole()
+        // 清空重新获取
+        this.dataList = null
+        this.allGroupFriend = null
         this.toUp = false
       })
     },
@@ -311,27 +311,60 @@ export default {
       }
       searchFriends({ uid: this.userID, key: this.keyWords, pinyin: true }).then((res) => {
         const obj = res.data
-        this.processFriend(obj, true)
+        console.log(obj)
+        this.processFriend(obj)
       })
     }, 500),
+    // 群成员处理
+    processGroupPeople(obj) {
+      for (const i in obj) {
+        obj[i].forEach((x, index) => {
+          if (x.userID._id === this.groupInfo.userID) {
+            const ll = obj[i].splice(index, 1, undefined)
+            obj['群主'] = ll
+          }
+        })
+      }
+      const arr = Object.keys(obj)
+      const ii = arr.length - 1
+      const push = arr.splice(ii, 1)
+      arr.unshift(push[0])
+      const newObj = {}
+      arr.map((x) => {
+        newObj[x] = obj[x]
+      })
+      return newObj
+    },
     // 成员管理
     managementUser() {
-      getGroupPepole({ GroupID: this.GroupID, pinyin: true }).then((res) => {
-        console.log(res.data)
+      getGroupPepole({ GroupID: this.GroupID, pinyin: true, userID: this.userID }).then((res) => {
         const obj = res.data
-        for (const i in obj) {
-          obj[i].map((x) => {
-            const ff = JSON.stringify(x.userID)
-            const uu = JSON.stringify(x.friendID)
-            x.friendID = JSON.parse(ff)
-            x.userID = JSON.parse(uu)
-          })
-        }
-        this.allGroupFriend = obj
+        this.allGroupFriend = this.processGroupPeople(obj)
       })
     },
     // 搜索群友
-    searchGroupFriends() {}
+    searchGroupFriends: debounce(function() {
+      if (this.keyWords.trim() === '') {
+        return
+      }
+      searchGroupUser({ GroupID: this.GroupID, keyWords: this.keyWords }).then((res) => {
+        console.log(res.data)
+        if (res.data.length === 0) {
+          this.allGroupFriend = null
+          return
+        }
+        this.allGroupFriend = this.processGroupPeople(res.data)
+      })
+    }, 500),
+    // 刪除群员
+    deleteGroupFriends(value) {
+      deleteGroupPeople({ GroupID: this.GroupID, data: value }).then(() => {
+        this.getGroupPepole()
+        this.dataList = null
+        this.allGroupFriend = null
+        this.toLeft = false
+      })
+    }
   }
 }
 </script>

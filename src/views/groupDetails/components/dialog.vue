@@ -79,7 +79,7 @@ export default {
 .van-cell-group {
     padding: 0 0.426667rem;
     .van-cell {
-        border-radius: 5%;
+    border-radius: 5%;
     background-color: #f3f4f6;
     }
 }

@@ -2,25 +2,19 @@
   <div id="userInfo">
     <div class="main">
       <div class="avatar">
-        <el-upload
-          class="avatar-uploader"
-          action="http://localhost:8080/"
-          :show-file-list="false"
-          :auto-upload="false"
-          :on-change="changeAvatar"
-        >
+        <van-uploader :max-size="1000 * 1024" :after-read="afterRead" @oversize="onOversize">
           <div class="upload">
             <div class="cover">
               <img v-if="userFrom.avatar" :src="baseUrl+userFrom.avatar">
               <i v-else class="el-icon-plus avatar-uploader-icon" />
             </div>
-            <div class="info">
-              <div class="name">{{ userFrom.name }}</div>
-              <div class="qianming">{{ userFrom.intr }}</div>
-              <div class="time">{{ userFrom.birth | dateFormat }}</div>
-            </div>
           </div>
-        </el-upload>
+        </van-uploader>
+        <div class="info">
+          <div class="name">{{ userFrom.name }}</div>
+          <div class="qianming">{{ userFrom.intr }}</div>
+          <div class="time">{{ userFrom.birth | dateFormat }}</div>
+        </div>
       </div>
       <ul>
         <li @click="qnMethod({title: 'intr', value:userFrom.intr})">
@@ -88,9 +82,7 @@
       </div>
     </div>
     <!-- 裁剪图片 -->
-    <div>
-      <vue-cropper :is-crop="isCrop" :imgurl="cropimg" @upload="uploadImg" />
-    </div>
+    <vue-cropper :is-crop="isCrop" :imgurl="cropimg" @upload="uploadImg" />
     <!-- 信息修改框 电话，邮箱，密码 -->
     <div :style="isdym" class="dym dialog">
       <info-card
@@ -167,23 +159,27 @@ export default {
   },
   methods: {
     // 选择文件
-    changeAvatar(file) {
-      const fileName = file.name
+    afterRead(file) {
       const regex = /(.jpg|.jpeg|.gif|.png|.bmp)$/
-      if (regex.test(fileName.toLowerCase())) {
-        console.log(file)
-        console.log(URL.createObjectURL(file.raw))
-        this.cropimg = URL.createObjectURL(file.raw)
-        this.isCrop = true
+      if (regex.test(file.file.type.toLowerCase())) {
+        this.cropimg = file.content
+        this.isCrop = !this.isCrop
       } else {
-        this.isCrop = false
-        this.$message.error('请选择图片文件')
+        this.$toast.fail({
+          message: '请选择图片文件',
+          position: 'top'
+        })
       }
+    },
+    onOversize() {
+      this.$toast({
+        message: '文件大小不能超过 1Mb',
+        position: 'top'
+      })
     },
     closeBox(value) {
       this.isdym.right = '-100%'
       this.isqn.right = '-100%'
-      this.isCrop = false
     },
     changeTitle(value) {
       this.changeInfo = !value ? '' : value
@@ -213,7 +209,6 @@ export default {
       if (value && value.length > 0) {
         modifyUserInfo({ info: { avatar: value }, id: this.id }).then(() => {
           this.getUserInfo()
-          this.closeBox()
         })
       }
     },
@@ -289,8 +284,8 @@ export default {
 .avatar {
   padding: 0 0.426667rem;
   margin-bottom: 0.266667rem;
+  display: flex;
   .upload {
-    display: flex;
     .cover {
       margin-right: 0.266667rem;
       img {
@@ -299,27 +294,27 @@ export default {
         border-radius: 0.266667rem;
       }
     }
-    .info {
-      text-align: left;
-      .name {
-        font-size: 0.533333rem;
-        margin-bottom:  0.133333rem;
-      }
-      .time {
-        font-size: 0.373333rem;
-        color: rgba(39, 40, 50, 0.6);
-      }
-      .qianming {
-        font-size: 0.373333rem;
-        margin-bottom: 0.133333rem;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        width: 60%;
-      }
-    }
   }
-    .mid {
+.info {
+  text-align: left;
+  .name {
+    font-size: 0.5rem;
+    margin-bottom:  0.2rem;
+  }
+  .time {
+    font-size: 0.373333rem;
+    color: rgba(39, 40, 50, 0.6);
+  }
+  .qianming {
+    font-size: 0.373333rem;
+    margin-bottom: 0.2rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 60%;
+  }
+}
+  .mid {
       text-align: left;
     }
   }

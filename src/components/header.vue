@@ -1,5 +1,5 @@
 <template>
-  <div class="top">
+  <div class="top header">
     <div v-if="$route.path === '/home' || $route.path === '/addressBook'" class="home header">
       <div v-if="$route.path === '/home'" class="avatar">
         <img v-if="user.avatar" :src="user.avatar | avatar" alt="" @click="infoPage">
@@ -69,6 +69,7 @@ export default {
 <style lang="scss" scoped>
 @import '../style/header.scss';
 .top {
+  padding: 0 0.426667rem;
   position: relative;
   .avatar {
     img {
@@ -128,6 +129,7 @@ export default {
 
 .other {
   font-size: 0.48rem;
+  background-color: rgba(255,255,255,0);
   .name {
     flex: 1;
     padding-left: 0.266667rem;

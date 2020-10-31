@@ -1,7 +1,7 @@
 <template>
-  <div :class="['box', { background: height }]">
+  <div id="Details" :class="{deta: toUp}">
     <!-- 导航 -->
-    <header-bar>
+    <header-bar ref="header" class="header">
       <template v-slot:details>
         <div v-if="validFriend.state || id === uid">
           <router-link v-if="uid === id" :to="`/userInfo?id=${uid}`">
@@ -12,46 +12,41 @@
     </header-bar>
     <!-- 主体 -->
     <div class="main">
-      <div class="avatar">
-        <div :style="animation" class="border">
-          <img v-if="userInfo.avatar" :class="{ size: height }" :src="userInfo.avatar | avatar" alt>
-          <!-- icon-xingbie icon-xingbienan icon-xingbie-nv -->
-          <span :style="{ backgroundColor: sex.bc }" :class="['sex', 'iconfont', sex.icon]" />
-        </div>
-        <h3 v-if="!validFriend.state">{{ userInfo.name }}</h3>
-        <!-- 添加好友弹窗 -->
-        <div
-          v-if="!validFriend.state"
-          :style="height === true ? changeHeight : ''"
-          class="addFriend"
-        >
-          <div class="text">
-            <textarea id="area" v-model="message" name cols="30" rows="10" placeholder="没有内容~" />
-          </div>
-          <div class="whether">
-            <span class="cancel" @click="ani">取消</span>
-            <span class="send" @click="friendRequest">发送</span>
-          </div>
-        </div>
+      <div ref="avatar" class="avatar" :class="{bor: toUp}">
+        <img v-if="userInfo.avatar" :src="userInfo.avatar | avatar" alt>
+        <div :class="['sex', 'iconfont', sex.icon]" />
       </div>
-      <div class="info">
-        <span v-if="validFriend.state">昵称: {{ validFriend.markName }}</span>
-        <p class="motto">{{ userInfo.intr }}</p>
+      <div v-if="!toUp" class="info">
+        <h3>{{ userInfo.name }}</h3>
+        <span v-if="validFriend.state">昵称: 123</span>
+        <p>受asdadadad打发士大夫敢,死队规划的手法首发射手座地方法规发撒沙发沙发的苦减肥过度开发本身就大发噶顺丰吧案说法伽是发吧发吧是东方八所</p>
       </div>
     </div>
     <!-- 底部 -->
     <div v-if="id === uid ? false : true" class="footer">
       <span v-if="validFriend.state" @click="toChat">发送消息</span>
-      <span v-if="!validFriend.state && id" @click="ani">加为好友</span>
+      <span v-if="!validFriend.state && id" @click="toUp=!toUp">加为好友</span>
     </div>
-    <!-- 背景 -->
-    <!-- <div
-      v-if="userInfo.avatar"
-      class="filter"
-      :style="[{backgroundImage: `url(${baseUrl+backgroundImg})`}]"
-    >
-      <div class="white" /> -->
-  <!-- </div> -->
+    <!-- 添加好友弹窗 -->
+    <transition name="toUp">
+      <div v-if="toUp" class="addFriend" :style="{height: toHeight+'px'}">
+        <van-cell-group>
+          <van-field
+            v-model="message"
+            rows="4"
+            autosize
+            type="textarea"
+            maxlength="50"
+            show-word-limit
+            placeholder="没有内容~"
+          />
+        </van-cell-group>
+        <div class="whether">
+          <div class="cancel" @click="toUp = false">取消</div>
+          <div class="send" @click="friendRequest">发送</div>
+        </div>
+      </div>
+    </transition>
   </div>
 </template>
 
@@ -64,20 +59,15 @@ export default {
   },
   data() {
     return {
-      height: false,
-      changeHeight: {
-        height: 0
-      },
-      animation: {
-        width: '200px'
-      },
       userInfo: {},
       // 是否是好友/昵称
       validFriend: {
         state: false,
         markName: ''
       },
-      message: ''
+      message: '',
+      toUp: false,
+      toHeight: ''
     }
   },
   computed: {
@@ -107,22 +97,6 @@ export default {
           bc: '#000000'
         }
       }
-    },
-    baseUrl() {
-      return this.$store.getters.baseUrl
-    },
-    backgroundImg() {
-      if (this.userInfo.avatar) {
-        const url = this.userInfo.avatar.split('\\')
-        const imgurl = url[1] + '/' + url[2]
-        return imgurl
-      }
-      return ''
-    }
-  },
-  watch: {
-    $route(to, from) {
-      console.log(to.path)
     }
   },
   created() {
@@ -130,26 +104,14 @@ export default {
     this.getUserInfo()
   },
   mounted() {
-    this.changeHeights()
+    this.$nextTick(() => {
+      const header = this.$refs.header.$el
+      const avatar = this.$refs.avatar
+      const body = document.body
+      this.toHeight = body.offsetHeight - header.offsetHeight - (avatar.offsetHeight / 2)
+    })
   },
   methods: {
-    // 动画
-    ani() {
-      this.height = !this.height
-      if (this.height === true) {
-        this.animation.width = '120px'
-        this.changeHeights()
-      } else {
-        this.animation.width = '200px'
-        this.changeHeights()
-      }
-    },
-    changeHeights() {
-      const body = document.querySelector('body')
-      const top =
-        body.offsetHeight - (74 + this.animation.width.split('p')[0] / 2)
-      this.changeHeight.height = top + 'px'
-    },
     getUserInfo() {
       if (this.id === this.uid) {
         this.userInfo = this.$store.getters.userInfo
@@ -157,6 +119,7 @@ export default {
         getInfo(this.id)
           .then(async(res) => {
             this.userInfo = res.data
+            console.log(res.data)
             // 判断是否是好友
             const { data } = await this.isFriend()
             this.validFriend = data
@@ -172,6 +135,7 @@ export default {
     },
     // 好友请求
     friendRequest() {
+      this.toUp = false
       const data = {
         userID: this.uid,
         friendID: this.id,
@@ -183,12 +147,9 @@ export default {
           message: message,
           type: 'success'
         })
-        this.ani()
-        this.getUserInfo()
       })
     },
     toChat() {
-      console.log(this.userInfo)
       const item = this.userInfo
       this.$router.push({
         path: '/chat',
@@ -202,180 +163,166 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.box {
-  background-color: rgba(255, 255, 255, 1);
-  position: absolute;
+ #Details {
+   font-size: 0.373333rem;
+   background-color: #8f8f9b;
+   justify-content: space-between;
+ }
+ .deta {
+   background-color: #ebda6e !important;
+   .header {
+     background-color: #ebda6e !important;
+   }
+ }
+ .header {
+   margin-bottom: 0.8rem;
+   background-color: #8f8f9b;
+ }
+ .main, #Details, .addFriend {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  overflow: hidden;
-}
-.background {
-  background-color: rgba(245, 228, 120, 1);
-}
-.filter {
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-  filter: blur(0.16rem);
-  background-repeat: no-repeat;
-  background-position: center center;
-  background-size: cover;
-  .white {
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: -1;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(255, 255, 255, 0.5);
-  }
-}
-header {
-  border: 0;
-  background: 0;
-  .back {
-    .link {
-      display: block;
-      font-size: 0.64rem;
-      font-weight: 600;
-    }
-  }
-  .right {
-    span {
-      font-size: 0.64rem;
-    }
-  }
-}
+ }
 .main {
-  text-align: center;
-  padding-top: 1.97rem;
+  align-items: center;
   flex: 1;
+  position: relative;
   .avatar {
+    transition: all 0.5s;
+    width: 5.333333rem;
+    height: 5.333333rem;
+    padding: 0.1rem;
+    border-radius: 0.4rem;
+    background-color: #ffffff;
     position: relative;
-    padding: 0 0.75rem;
-    margin-bottom: 0.27rem;
-    h3 {
-      font-size: 0.5rem;
-    }
-    .border {
-      display: inline-block;
-      transition: all 0.3s;
-      position: relative;
-      z-index: 2;
-      .sex {
-        position: absolute;
-        bottom: 8%;
-        right: 8%;
-        border-radius: 50%;
-        font-size: 0.48rem;
-        padding: 0.14rem;
-        color: #ffffff;
-      }
-    }
+    z-index: 10;
+    margin-bottom: 0.266667rem;
+    box-shadow: 0 0 5px #676c69;
     img {
-      width: 5.3rem;
-      height: 5.3rem;
-      padding: 2px;
-      background-color: #ffffff;
-      border-radius: 24px;
-      transition: all 0.3s;
+      width: 100%;
+      height: 100%;
+      border-radius: 0.4rem;
+      vertical-align: middle;
     }
-    .size {
-      width: 3.2rem;
-      height: 3.2rem;
+    .sex {
+      position:absolute;
+      bottom: 0.533333rem;
+      right: 0.533333rem;
+      padding: 0.15rem;
+      background-color: #ff2d2b;
+      border-radius: 50%;
+      color: #ffffff;
+    }
+  }
+  .bor {
+    width: 3.2rem;
+    height: 3.2rem;
+    border-radius: 50%;
+    position: absolute;
+    top: 0;
+    left: 10%;
+    img {
+      border-radius: 50%;
     }
   }
   .info {
-    font-size: 0.37rem;
-    position: relative;
-    z-index: 100;
-    span {
-      margin-bottom: 0.27rem;
-      display: inline-block;
-      font-size: 0.43rem;
-    }
-    .motto {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    h3 {
+      font-size: 0.693333rem;
       color: #272832;
-      letter-spacing: -0.0128rem;
+      margin-bottom: 0.12rem;
+    }
+    span {
+      font-weight: 600;
+      font-size: 0.373333rem;
+      color: #272832;
+      margin-bottom: 0.3rem;
+    }
+    p {
+      text-indent: 0.4rem;
+      width: 100%;
+      padding: 0 1.333333rem;
+      font-size: 0.373333rem;
+      color: #272832;
+      letter-spacing:0.02rem;
       line-height: 0.64rem;
-      padding: 0 1.33rem;
+      text-overflow: -o-ellipsis-lastline;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      line-clamp: 3;
+      -webkit-box-orient: vertical;
+      text-align: center;
     }
   }
 }
 .footer {
-  padding: 0 0.47rem;
-  bottom: 0.11rem;
-  left: 0;
-  width: 100%;
-  box-sizing: border-box;
-  font-size: 0.533333rem;
+  padding: 0 0.426667rem;
+  margin-bottom: 0.533333rem;
   span {
-    padding-top: 0.24rem;
-    padding-bottom: 0.24rem;
-    display: inline-block;
-    width: 100%;
-    text-align: center;
+    display: block;
+    padding: 0.266667rem 0;
     background-color: #ffe431;
-    border-radius: 0.13rem;
+    text-align: center;
+    font-size: 0.426667rem;
+    border-radius: 0.15rem;
   }
 }
 .addFriend {
   position: fixed;
-  z-index: 1;
-  bottom: 0;
-  left: 0;
   width: 100%;
-  height: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  z-index: 2;
   background-color: #ffffff;
-  border-radius: 0.53rem 0.53rem 0 0;
-  transition: all 0.3s;
-  overflow: hidden;
-  .text {
-    position: absolute;
-    top: 3.2rem;
-    left: 0;
-    width: 100%;
-    height: 50%;
-    padding: 0 0.75rem;
-    box-sizing: border-box;
-    #area {
-      background-color: #f3f4f6;
-      width: 100%;
-      border-radius: 10px;
-      border: 0;
-      outline: none;
-      padding: 0.27rem;
-      box-sizing: border-box;
-      resize: none;
+  border-top-right-radius: 0.533333rem;
+  border-top-left-radius: 0.533333rem;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 2.1rem;
+  .van-cell-group {
+    width:100%;
+    padding: 0 0.533333rem;
+    .van-cell {
+    border-radius: 5%;
+    font-size: 0.373333rem !important;
+    background-color: #f3f4f6;
     }
   }
   .whether {
-    position: absolute;
-    bottom: 0.11rem;
-    left: 0.75rem;
-    right: 0.75rem;
     display: flex;
-    height: 1.1rem;
-    line-height: 1.1rem;
     justify-content: space-between;
-    .send,
-    .cancel {
+    width: 100%;
+    padding: 0 0.426667rem;
+    margin-bottom: 0.533333rem;
+    div {
+      display: block;
+      padding: 0.25rem 0;
       text-align: center;
-      height: 100%;
-      border-radius: 0.133rem;
+      border-radius: 0.16rem;
+    }
+    .cancel {
+      background-color: #e9e9ea;
+      margin-right: 0.533333rem;
+      flex: 1;
     }
     .send {
-      flex: 1;
+      flex: 3;
       background-color: #ffe431;
-      margin-left: 0.427rem;
-    }
-    .cancel {
-      background-color: rgba(39, 40, 50, 0.1);
-      padding: 0 0.56rem;
     }
   }
+}
+.toUp-enter-active,
+.toUp-leave-active{
+  transition:all 0.5s;
+}
+.toUp-enter {
+  transform: translateY(100%);
+}
+.toUp-leave-active {
+  transform: translateY(100%);
 }
 </style>

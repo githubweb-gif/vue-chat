@@ -1,6 +1,6 @@
 <template>
   <div id="group">
-    <group-pepole :disabled="disabled" :data="data" @checkedPeople="setGroup">
+    <group-pepole title="创建" :show="false" :disabled="disabled" :data="data" @checkedPeople="setGroup">
       <template v-slot:header>
         <div class="header">
           <div class="close" @click="$router.push('/')">取消</div>

@@ -32,6 +32,11 @@ export default {
       } else {
         this.transitionName = 'slide-right'
       }
+      // 判断用户离开群聊房间
+      if (from.path === '/groupChat') {
+        console.log(this.$store.state.user.GroupID)
+        this.socket.emit('leaveToRoom', this.$store.state.user.GroupID)
+      }
     }
   },
   created() {

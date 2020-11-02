@@ -2,9 +2,7 @@
   <div id="addressBook">
     <div class="box">
       <div class="group item">
-        <div class="icon">
-          <img src="../../assets/img/OIP.jpg" alt="">
-        </div>
+        <svg-icon icon-id="qunliao" />
         <div class="name" @click="$router.push('/groupList')">群聊</div>
       </div>
     </div>
@@ -58,7 +56,6 @@ export default {
   justify-content: space-between;
   background-color: rgb(244, 244, 244);
 }
-
 .friendList,
 .groupList {
   flex: 1;
@@ -80,15 +77,22 @@ export default {
 .item {
   display: flex;
   align-items: center;
-  border-bottom: 0.026667rem solid #16be74;
-  padding: 0.133333rem 0;
+  border-bottom: 0.026667rem solid #dadddb;
+  padding: 0.16rem 0;
+  .svg-icon {
+    width: 1.2rem;
+    height: 1.2rem;
+    color: #1aad19;
+    border-radius: 0.16rem;
+  }
   .name {
     margin-left: 0.266667rem;
     font-size: 0.533333rem;
   }
   img {
-    width: 1.386667rem;
-    height: 1.386667rem;
+    width: 1.2rem;
+    height: 1.2rem;
+    border-radius: 0.16rem;
   }
 }
 .item:last-child {

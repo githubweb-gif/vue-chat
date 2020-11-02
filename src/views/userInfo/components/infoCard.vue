@@ -1,49 +1,48 @@
 <template>
-  <div class="box">
-    <div class="ani">
-      <header>
-        <span class="link el-icon-arrow-left" @click="closeBox" />
-        <div class="ok" @click="ok">完成</div>
-      </header>
-      <p>请设置密码。你可以用火火绑定的账号+微信密码登录，比如使用邮箱+密码登录，更快捷。</p>
-      <el-form label-position="left" label-width="70px">
-        <div class="account">
-          <i class="title">账号</i>
-          <span>{{ name }}</span>
-        </div>
-        <el-form-item label="密码">
-          <el-input v-model="form.password" type="password" />
-        </el-form-item>
-        <el-form-item
-          v-if="changeInfo.title && changeInfo.title.indexOf('password') === -1 && changeInfo.value"
-          :disabled="true"
-          :label="'原' + changeInfo.name"
-        >
-          <el-input v-model="changeInfo.value" />
-        </el-form-item>
-        <el-form-item :label="'新' + changeInfo.name">
-          <el-input v-model="form.content" :type="changeInfo.title" />
-        </el-form-item>
-        <el-form-item
-          v-if="changeInfo.title && changeInfo.title.indexOf('password') !== -1"
-          label="确认密码"
-        >
-          <el-input v-model="form.verify" type="password" />
-        </el-form-item>
-        <el-form-item
-          v-if="changeInfo.title && changeInfo.title.indexOf('email') !== -1"
-          class="code"
-          label="验证码"
-        >
-          <el-input v-model="form.code" />
-          <button type="button" @click="getCode">获取验证码</button>
-        </el-form-item>
-      </el-form>
-      <span class="tip">
-        密码必须是8-16位的数字，字符组合(不能纯数字)
-        <div>忘记原密码？</div>
-      </span>
+  <div class="ani">
+    <div class="header">
+      <span class="link el-icon-arrow-left" @click="closeBox" />
+      <div class="ok" @click="ok">完成</div>
     </div>
+    <p>请设置密码。你可以用火火绑定的账号+微信密码登录，比如使用邮箱+密码登录，更快捷。</p>
+    <el-form label-position="left" label-width="70px">
+      <div class="account">
+        <i class="title">账号</i>
+        <span>{{ name }}</span>
+      </div>
+      <el-form-item label="密码">
+        <el-input v-model="form.password" type="password" />
+      </el-form-item>
+      <el-form-item
+        v-if="changeInfo.title && changeInfo.title.indexOf('password') === -1 && changeInfo.value"
+        :disabled="true"
+        :label="'原' + changeInfo.name"
+      >
+        <el-input v-model="changeInfo.value" />
+      </el-form-item>
+      <el-form-item :label="'新' + changeInfo.name">
+        <el-input v-model="form.content" :type="changeInfo.title" />
+      </el-form-item>
+      <el-form-item
+        v-if="changeInfo.title && changeInfo.title.indexOf('password') !== -1"
+        label="确认密码"
+      >
+        <el-input v-model="form.verify" type="password" />
+      </el-form-item>
+      <el-form-item
+        v-if="changeInfo.title && changeInfo.title.indexOf('email') !== -1"
+        class="code"
+        label="验证码"
+      >
+        <el-input v-model="form.code" />
+        <button type="button" @click="getCode">获取验证码</button>
+      </el-form-item>
+    </el-form>
+    <span class="tip">
+      密码必须是8-16位的数字，字符组合(不能纯数字)
+      <div>忘记原密码？</div>
+    </span>
+
   </div>
 </template>
 
@@ -103,9 +102,7 @@ export default {
 
 <style lang="scss" scoped>
 @import "@/style/header.scss";
-header {
-  position: relative !important;
-  padding: 0;
+.header {
   .link {
     font-size: 24px;
     font-weight: 600;
@@ -119,6 +116,13 @@ header {
 }
 .ani {
   padding: 0 16px;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: #ffff;
+  z-index: 3;
   p {
     margin-bottom: 20px;
     font-size: 14px;

@@ -378,6 +378,7 @@ export default {
   .header {
     background-color: #ffffff;
     border: 0;
+    padding: 0 0.426667rem;
     .close {
       font-size: 0.5rem;
     }
@@ -529,26 +530,5 @@ export default {
     background-color: #f4f4f4;
     z-index: 3;
   }
-}
-.fade-enter-active,
-.fade-leave-active {
-   transition: all 0.5s;
-}
-.fade-enter {
-  transform: translateX(100%);
-}
-.fade-leave-active {
-  transform: translateX(100%);
-}
-
-.toUp-enter-active,
-.toUp-leave-active {
-   transition: all 0.5s;
-}
-.toUp-enter {
-  transform: translateY(100%);
-}
-.toUp-leave-active {
-  transform: translateY(100%);
 }
 </style>

@@ -29,7 +29,7 @@
 
 <script>
 import axios from 'axios'
-import { sendMessage } from '@/api/user'
+import { sendMessage, sendGroupMsg } from '@/api/user'
 export default {
   props: {
     showComponent: {
@@ -170,16 +170,24 @@ export default {
       if (value === '取消') {
         return
       }
-      const data = { types: 3, message: this.place, userID: this
-        .oneSelf.id, friendID: this.id }
-      sendMessage(data).then((res) => {
-        console.log(res)
-        const { data: { data, user }} = res
-        data.userID = user
-        this.$store.commit('ACCEPT_DATA', data)
-        this.socket.emit('msg', { fromID: this
-          .oneSelf.id, toID: this.id, msg: data })
-      })
+      if (this.$route.path === '/chat') {
+        const data = { types: 3, message: this.place, userID: this
+          .oneSelf.id, friendID: this.id }
+        sendMessage(data).then((res) => {
+          const { data: { data, user }} = res
+          data.userID = user
+          this.$store.commit('ACCEPT_DATA', data)
+          this.socket.emit('msg', { fromID: this
+            .oneSelf.id, toID: this.id, msg: data })
+        })
+      } else if (this.$route.path === '/groupChat') {
+        const data = { types: 3, message: this.place, userID: this
+          .oneSelf.id, GroupID: this.id }
+        sendGroupMsg(data).then((res) => {
+          this.$store.commit('ACCEPT_DATA', res.data)
+          this.socket.emit('groupMsg', { GroupID: this.id, msg: res.data })
+        })
+      }
     },
     onSearchResult(pois) {
       console.log(pois)

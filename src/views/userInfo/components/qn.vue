@@ -1,9 +1,9 @@
 <template>
-  <div class="box">
-    <header>
+  <div class="qn">
+    <div class="header">
       <span class="link el-icon-arrow-left" @click="closeBox" />
       <div class="ok" @click="ok">完成</div>
-    </header>
+    </div>
     <el-form>
       <el-form-item>
         <el-input v-model="content" />
@@ -48,11 +48,15 @@ export default {
 
 <style lang="scss" scoped>
 @import '@/style/header.scss';
-.box {
-    padding: 0 16px;
-    box-sizing: border-box;
+.qn {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 3;
 }
-header {
+.header {
     position: relative !important;
      padding: 0;
     .link {

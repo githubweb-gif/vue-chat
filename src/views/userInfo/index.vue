@@ -5,8 +5,7 @@
         <van-uploader :max-size="1000 * 1024" :after-read="afterRead" @oversize="onOversize">
           <div class="upload">
             <div class="cover">
-              <img v-if="userFrom.avatar" :src="baseUrl+userFrom.avatar">
-              <i v-else class="el-icon-plus avatar-uploader-icon" />
+              <img v-if="userFrom.avatar" :src="userFrom.avatar | avatar">
             </div>
           </div>
         </van-uploader>
@@ -20,24 +19,24 @@
         <li @click="qnMethod({title: 'intr', value:userFrom.intr})">
           <span>签名</span>
           <span class="mid">{{ userFrom.intr }}</span>
-          <span class="link el-icon-arrow-right" />
+          <van-icon class="link" name="arrow" />
         </li>
         <li class="registered">
           <span>注册</span>
           <span class="mid">{{ userFrom.date | dateFormat }}</span>
-          <span class="link el-icon-arrow-right" />
+          <van-icon class="link" name="arrow" />
         </li>
         <li @click="qnMethod({title: 'name',value:userFrom.name})">
           <span>昵称</span>
           <span class="mid">{{ userFrom.name }}</span>
-          <span class="link el-icon-arrow-right" />
+          <van-icon class="link" name="arrow" />
         </li>
         <li>
           <span>性别</span>
           <span v-if="userFrom.sex === 'asexual'" class="mid">中性</span>
           <span v-if="userFrom.sex === 'man'" class="mid">男</span>
           <span v-if="userFrom.sex === 'girl'" class="mid">女</span>
-          <span class="link el-icon-arrow-right" />
+          <van-icon class="link" name="arrow" />
           <el-select class="select" placeholder="请选择" value @change="changeSex">
             <el-option
               v-for="item in genderList"
@@ -50,7 +49,7 @@
         <li>
           <span>生日</span>
           <span class="mid">{{ userFrom.birth | dateFormat }}</span>
-          <span class="link el-icon-arrow-right" />
+          <van-icon class="link" name="arrow" />
           <div class="select">
             <el-date-picker
               v-model="birthday"
@@ -65,16 +64,16 @@
         <li @click="changeTitle({name: '手机',title: 'phone',value: userFrom.phone})">
           <span>电话</span>
           <span class="mid">{{ userFrom.phone }}</span>
-          <span class="link el-icon-arrow-right" />
+          <van-icon class="link" name="arrow" />
         </li>
         <li @click="changeTitle({name: '邮箱',title: 'email',value: userFrom.email})">
           <span>邮箱</span>
           <span class="mid">{{ userFrom.email }}</span>
-          <span class="link el-icon-arrow-right" />
+          <van-icon class="link" name="arrow" />
         </li>
         <li class="pwd" @click="changeTitle({name: '密码',title: 'password',value: '123455'})">
           <span>密码</span>
-          <span class="link el-icon-arrow-right" />
+          <van-icon class="link" name="arrow" />
         </li>
       </ul>
       <div class="logout">
@@ -84,18 +83,19 @@
     <!-- 裁剪图片 -->
     <vue-cropper :is-crop="isCrop" :imgurl="cropimg" @upload="uploadImg" />
     <!-- 信息修改框 电话，邮箱，密码 -->
-    <div :style="isdym" class="dym dialog">
+    <transition name="fade">
       <info-card
+        v-if="infoCard"
         :change-info="changeInfo"
         :name="userFrom.name || ''"
         @modify="modifyInfo"
         @close="closeBox"
       />
-    </div>
+    </transition>
     <!-- 签名， 昵称 -->
-    <div :style="isqn" class="qn dialog">
-      <qn-card :qn-content="content" @modify="modifyInfo" @close="closeBox" />
-    </div>
+    <transition name="fade">
+      <qn-card v-if="qn" :qn-content="content" @modify="modifyInfo" @close="closeBox" />
+    </transition>
   </div>
 </template>
 
@@ -129,24 +129,17 @@ export default {
       ],
       userFrom: {},
       content: {}, // 签名/昵称绑定的内容
-      birthday: '1995-11-24',
+      birthday: '',
       cropimg: '', // 截图url
       isCrop: false,
-      isdym: {
-        right: '-100%'
-      }, // 修改电话，邮箱，密码容器是否显示
-      isqn: {
-        right: '-100%'
-      }, // 修改签名昵称容器是否显示
+      infoCard: false,
+      qn: false,
       changeInfo: {} // 向infocard组件传递数据
     }
   },
   computed: {
     id() {
       return this.$route.query.id
-    },
-    baseUrl() {
-      return this.$store.getters.baseUrl
     }
   },
   watch: {
@@ -178,16 +171,16 @@ export default {
       })
     },
     closeBox(value) {
-      this.isdym.right = '-100%'
-      this.isqn.right = '-100%'
+      this.infoCard = false
+      this.qn = false
     },
     changeTitle(value) {
       this.changeInfo = !value ? '' : value
-      this.isdym.right = '0'
+      this.infoCard = true
     },
     qnMethod(value) {
+      this.qn = true
       this.content = !value ? {} : value
-      this.isqn.right = '0'
     },
     logout() {
       this.$store.dispatch('logout').then(() => {
@@ -215,7 +208,6 @@ export default {
     // 修改用户信息
     modifyInfo(value) {
       const obj = {}
-      console.log(value)
       obj[value.title] = value.content
       modifyUserInfo({
         id: this.id,
@@ -259,18 +251,9 @@ export default {
   justify-content: space-between;
   background-color: #f4f4f4;
   font-size: 0.426667rem;
-  .qn,
-  .dym {
+  .qn {
     background-color: #ffff;
     transition: all 0.3s;
-  }
-  .dialog {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    top: 0;
-    box-sizing: border-box;
-    overflow: hidden;
   }
 }
 .main {

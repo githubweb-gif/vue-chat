@@ -1,11 +1,8 @@
 <template>
   <div class="groups">
     <div class="header">
-      <div class="back">
-        <span class="link el-icon-arrow-left" @click="$router.go(-1)" />
-      </div>
+      <van-icon name="arrow-left" @click="$router.go(-1)" />
       <div class="title">群聊</div>
-      <div class="right el-icon-search" />
     </div>
     <div class="groupList">
       <div v-for="(item,index) in dataList" :key="index" class="box">
@@ -51,6 +48,13 @@ export default {
 
 <style lang="scss" scoped>
 @import '@/style/header.scss';
+.header {
+  font-size: 0.533333rem;
+  padding: 0 0.3rem;
+  .van-icon {
+    font-size: 0.666667rem;
+  }
+}
 .groups {
   position: fixed;
   top: 0;
@@ -70,7 +74,6 @@ export default {
 .right {
   font-size: 0.53rem;
 }
-
 .groupList {
   overflow-x: hidden;
   overflow-y: auto;
@@ -89,7 +92,7 @@ export default {
     .item {
       display: flex;
       align-items: center;
-      border-bottom: 0.026667rem solid #16be74;
+      border-bottom: 0.026667rem solid #dadddb;
       padding: 0.133333rem 0;
       font-size: 0.5rem;
       .name {

@@ -109,9 +109,7 @@ export default {
     },
     scroll() {
       this.currentTabComponent = ''
-      this.$nextTick(() => {
-        this.$emit('IntoView', this.componentHeight)
-      })
+      this.$emit('IntoView', this.componentHeight)
     },
     // 发送一对一消息或群消息
     sendMsg() {
@@ -171,6 +169,7 @@ footer {
       background-color: #37d237;
       border-radius: 0.14rem;
       padding: 0.08rem 0.27rem;
+      font-size: 0.426667rem;
     }
   }
 }

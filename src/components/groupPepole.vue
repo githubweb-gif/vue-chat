@@ -23,7 +23,7 @@
           <div v-if="item[0]" class="letter-name">{{ index.toUpperCase() }}</div>
           <template v-for="(i,n) in item">
             <div v-if="i" :key="n" class="dataList">
-              <input v-if="groupInfo.userID !== i.userID._id" class="icon" type="checkbox" @change="checkUser(i,$event)">
+              <input v-if="groupInfo.userID === userID && groupInfo.userID !== i.userID._id" class="icon" type="checkbox" @change="checkUser(i,$event)">
               <div class="avatar"><img :src="i.userID.avatar | avatar" alt=""></div>
               <div class="xingming">{{ groupInfo.userID === i.userID._id ? `${i.markName}(群主)` : i.markName }}</div>
               <div v-if="groupInfo.userID !== i.userID._id" class="right" @click="toLink(i.userID._id)">{{ userID === i.friendID ? '发消息' : '加好友' }}</div>
@@ -32,7 +32,7 @@
         </div>
       </div>
     </div>
-    <div v-if="!groupInfo || groupInfo.userID === userID" class="footer">
+    <div v-if="!show || groupInfo.userID === userID" class="footer">
       <van-button :disabled="disabled || num===0?true:false" @click="setGroup">{{ title + (num) }}</van-button>
     </div>
   </div>

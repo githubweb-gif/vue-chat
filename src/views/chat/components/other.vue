@@ -39,7 +39,7 @@
 </template>
 
 <script>
-import { sendMessage, uploadImg } from '@/api/user'
+import { sendMessage, uploadImg, sendGroupMsg } from '@/api/user'
 import dataURLtoFile from '@/until/base64&img'
 import vueAmap from './map'
 export default {
@@ -78,16 +78,24 @@ export default {
       formData.append('upload', imgFile)
       uploadImg(formData).then((res) => {
         const { imgUrl } = res
-        console.log(imgUrl)
-        const data = { types: 1, message: 'http://localhost:3000' + imgUrl, userID: this
-          .oneSelf.id, friendID: this.id }
-        sendMessage(data).then((res) => {
-          const { data: { data, user }} = res
-          data.userID = user
-          this.$store.commit('ACCEPT_DATA', data)
-          this.socket.emit('msg', { fromID: this
-            .oneSelf.id, toID: this.id, msg: data })
-        })
+        if (this.$route.path === '/chat') {
+          const data = { types: 1, message: 'http://localhost:3000' + imgUrl, userID: this
+            .oneSelf.id, friendID: this.id }
+          sendMessage(data).then((res) => {
+            const { data: { data, user }} = res
+            data.userID = user
+            this.$store.commit('ACCEPT_DATA', data)
+            this.socket.emit('msg', { fromID: this
+              .oneSelf.id, toID: this.id, msg: data })
+          })
+        } else if (this.$route.path === '/groupChat') {
+          const data = { types: 1, message: 'http://localhost:3000' + imgUrl, userID: this
+            .oneSelf.id, GroupID: this.id }
+          sendGroupMsg(data).then((res) => {
+            this.$store.commit('ACCEPT_DATA', res.data)
+            this.socket.emit('groupMsg', { GroupID: this.id, msg: res.data })
+          })
+        }
       })
     },
     getMap() {

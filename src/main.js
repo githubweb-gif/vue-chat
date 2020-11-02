@@ -8,6 +8,8 @@ import elementUi from 'element-ui'
 import './until/date'
 import './assets/font/iconfont.css'
 import './vantComponents'
+import '@/icons/index'
+import '@/style/transition.scss'
 // rem布局
 import './until/remshipei'
 // 截图

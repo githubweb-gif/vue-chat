@@ -1,0 +1,21 @@
+.fade-enter-active,
+.fade-leave-active {
+   transition: all 0.5s;
+}
+.fade-enter {
+  transform: translateX(100%);
+}
+.fade-leave-active {
+  transform: translateX(100%);
+}
+
+.toUp-enter-active,
+.toUp-leave-active {
+   transition: all 0.5s;
+}
+.toUp-enter {
+  transform: translateY(100%);
+}
+.toUp-leave-active {
+  transform: translateY(100%);
+}

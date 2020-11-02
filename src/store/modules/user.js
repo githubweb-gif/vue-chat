@@ -11,7 +11,8 @@ const state = {
   phone: '',
   token: getToken(),
   birth: '',
-  otherTypes: null
+  otherTypes: null,
+  GroupID: ''
 }
 
 const mutations = {
@@ -56,6 +57,10 @@ const mutations = {
   // 接受其他类型聊天数据
   ACCEPT_DATA: (state, data) => {
     state.otherTypes = data
+  },
+  // 接受用户登录到那个群
+  GROUP_ID: (state, data) => {
+    state.GroupID = data
   }
 }
 

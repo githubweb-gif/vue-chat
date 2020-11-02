@@ -295,3 +295,12 @@ export function deleteGroupPeople(data) {
     data
   })
 }
+
+// 获取首页群列表
+export function getHomeGroups(data) {
+  return request({
+    url: '/user/getHomeGroup',
+    method: 'get',
+    params: data
+  })
+}

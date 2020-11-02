@@ -20,8 +20,8 @@
     </div>
     <div v-else class="other header">
       <div class="back">
-        <span v-if="$route.path==='/chat' || $route.path==='/groupChat'" class="link el-icon-arrow-left" @click="$router.push('/')" />
-        <span v-else class="link el-icon-arrow-left" @click="$router.go(-1)" />
+        <svg-icon v-if="$route.path==='/chat' || $route.path==='/groupChat'" class="link" icon-id="fanhui2" @click="$router.push('/')" />
+        <svg-icon v-else class="link" icon-id="fanhui2" @click="$router.go(-1)" />
       </div>
       <div v-if="$route.path === '/userInfo'" class="right">个人信息</div>
       <div v-if="$route.path === '/friendReq'" class="right">好友请求</div>
@@ -128,8 +128,14 @@ export default {
 }
 
 .other {
-  font-size: 0.48rem;
   background-color: rgba(255,255,255,0);
+  .back {
+    display: flex;
+  }
+  .svg-icon {
+    width: 0.6rem;
+     height: 1.173333rem;
+  }
   .name {
     flex: 1;
     padding-left: 0.266667rem;

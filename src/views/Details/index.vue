@@ -5,7 +5,7 @@
       <template v-slot:details>
         <div v-if="validFriend.state || id === uid">
           <router-link v-if="uid === id" :to="`/userInfo?id=${uid}`">
-            <span class="el-icon-more" />
+            <svg-icon icon-id="gengduo" />
           </router-link>
         </div>
       </template>
@@ -168,6 +168,10 @@ export default {
    background-color: #8f8f9b;
    justify-content: space-between;
  }
+   .svg-icon {
+    width: 0.8rem;
+    height: 1.173333rem;
+  }
  .deta {
    background-color: #ebda6e !important;
    .header {

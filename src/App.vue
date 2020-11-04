@@ -14,7 +14,8 @@
 export default {
   data() {
     return {
-      transitionName: ''
+      transitionName: '',
+      n: 0
     }
   },
   computed: {
@@ -37,15 +38,35 @@ export default {
         console.log(this.$store.state.user.GroupID)
         this.socket.emit('leaveToRoom', this.$store.state.user.GroupID)
       }
+      console.log(from.path)
+      console.log(to.path === from.path)
+      // 页面刷新时，重新登录socket
+      if (this.id && this.id !== '' && this.n === 0) {
+        this.join()
+      }
+    },
+    id(value) {
+      if (value && value !== '') {
+        this.join()
+      }
     }
-  },
-  created() {
-    this.join()
   },
   methods: {
     // socket登录
     join() {
+      this.n++
       this.socket.emit('login', this.id)
+      this.acceptMessage()
+    },
+    // socket如果多次执行，例如从home和其它页面多次切换，会导致多次监听
+    // 所以acceptMessage卸载app页
+    acceptMessage() {
+      this.socket.on('msg', (data) => {
+        this.$store.commit('ONE_BY_ONE_MSG', data)
+      })
+      this.socket.on('groupMsg', (data) => {
+        this.$store.commit('GROUP_MSG', data)
+      })
     }
   }
 }

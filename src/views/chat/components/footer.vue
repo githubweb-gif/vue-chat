@@ -138,6 +138,8 @@ export default {
         console.log(res)
         this.$emit('addMsg', res.data)
         this.socket.emit('groupMsg', { GroupID: this.id, msg: res.data })
+      }).catch(() => {
+        this.$router.push('/')
       })
     }
   }

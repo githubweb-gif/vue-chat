@@ -205,6 +205,7 @@ export default {
       } else {
         return new Promise((resolve, reject) => {
           getGroupMsg(data).then((res) => {
+            console.log(res)
             const msg = this.Pagination(res.data)
             resolve(msg)
           })
@@ -299,9 +300,11 @@ export default {
     },
     scroll() {
       return new Promise((resolve, reject) => {
-        const scroll = this.$refs.main
-        scroll.scrollTop = scroll.scrollHeight
-        resolve()
+        this.$nextTick(() => {
+          const scroll = this.$refs.main
+          scroll.scrollTop = scroll.scrollHeight
+          resolve()
+        })
       })
     },
     // 滚动加载

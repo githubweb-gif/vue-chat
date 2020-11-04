@@ -8,13 +8,7 @@ const routes = [
     path: '/',
     redirect: '/home',
     component: () => import('../layout/index.vue'),
-    meta: { keepAlive: true },
     children: [
-      {
-        path: 'home',
-        meta: { index: 2, keepAlive: true },
-        component: () => import('../views/home/index.vue')
-      },
       {
         path: 'home',
         meta: { index: 2, keepAlive: true },
@@ -47,13 +41,13 @@ const routes = [
   // 搜索页
   {
     path: '/search',
-    meta: { index: 3, title: 'search', keepAlive: true },
+    meta: { index: 3, title: 'search', keepAlive: false },
     component: () => import('../views/search/index.vue')
   },
   // 个人详情页
   {
     path: '/details',
-    meta: { index: 4, keepAlive: true },
+    meta: { index: 4, keepAlive: false },
     component: () => import('../views/Details/index.vue')
   },
   // 添加好友页

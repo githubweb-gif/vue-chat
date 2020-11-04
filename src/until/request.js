@@ -43,6 +43,7 @@ service.interceptors.response.use(
           })
         })
       }
+      // status 500
       return Promise.reject(new Error(res.message || 'Error'))
     } else {
       return res

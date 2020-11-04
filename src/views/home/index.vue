@@ -16,13 +16,13 @@
       </router-link>
       <li v-for="(item,index) in AllData" :key="index" @click="toChat(item)">
         <div class="avatar">
-          <img v-if="item.friendID" :src="item.friendID.avatar | avatar" alt="">
-          <img v-else :src="item.avatar | avatar" alt="">
+          <img v-if="item.attributes==='group'" :src="item.avatar | avatar" alt="">
+          <img v-else :src="item.userID.avatar | avatar" alt="">
           <i v-if="item.tip > 0 ? true : false">{{ item.tip }}</i>
         </div>
         <div class="info">
-          <div v-if="item.friendID" class="name">{{ item.friendID.name }}</div>
-          <div v-else class="name">{{ item.name }}</div>
+          <div v-if="item.attributes==='group'" class="name">{{ item.name }}</div>
+          <div v-else class="name">{{ item.markName }}</div>
           <p class="msg">{{ item.newMessage }}</p>
         </div>
         <div class="date">
@@ -46,15 +46,68 @@ export default {
     id() {
       return this.$store.getters.userInfo.id
     },
-    baseUrl() {
-      return this.$store.getters.baseUrl
-    },
     AllData() {
       const all = this.friendList.concat(this.groupList)
       all.sort((a, b) => {
         return new Date(b.MsgTime) - new Date(a.MsgTime)
       })
       return all
+    },
+    oneMsg() {
+      return this.$store.state.user.oneMsg
+    },
+    GroupMsg() {
+      return this.$store.state.user.GroupMsg
+    }
+  },
+  watch: {
+    oneMsg(data) {
+      if (data.length && data.length === 1) {
+        if (this.friendList.length === 0) {
+          const res = this.types(data)
+          let e = null
+          e = res[0]
+          e.tip = 1
+          e.MsgTime = res[0].time
+          e.newMessage = res[0].message
+          this.friendList.unshift(e)
+          return
+        }
+        this.friendList.forEach((item, index) => {
+          const res = this.types(data)
+          if (item.userID._id === res[0].userID._id) {
+            const e = item
+            e.tip += 1
+            e.MsgTime = res[0].time
+            e.newMessage = res[0].message
+            this.friendList.splice(index, 1)
+            this.friendList.unshift(e)
+          }
+        })
+      }
+    },
+    GroupMsg(data) {
+      const arr = []
+      let n = 0
+      arr.push(data.GroupID)
+      if (this.groupList.length === 0) {
+        this.setMsg(arr, data.tip)
+        return
+      }
+      this.groupList.forEach((item, index) => {
+        const res = this.types(arr)
+        if (item._id === res[0]._id) {
+          n += 1
+          const e = item
+          e.tip = data.tip
+          e.MsgTime = res[0].MsgTime
+          e.newMessage = res[0].newMessage
+          this.groupList.splice(index, 1)
+          this.groupList.unshift(e)
+        } else if (index === this.groupList.length - 1 && n === 0) {
+          this.setMsg(arr, data.tip)
+        }
+      })
     }
   },
   created() {
@@ -88,7 +141,6 @@ export default {
     initData() {
       this.getFriendList()
       this.getHomeGroups()
-      this.acceptMessage()
     },
     getFriendList() {
       const data = {
@@ -97,19 +149,18 @@ export default {
       }
       getFriends(data)
         .then((res) => {
-          const list = this.flashbackTime(res.data)
-          this.friendList = this.types(list)
+          this.friendList = this.types(res.data)
         })
         .catch((err) => {
           console.log(err)
         })
     },
     toChat(item, name) {
-      if (item.friendID && item.friendID._id) {
+      if (item.userID && item.userID._id) {
         this.$router.push({
           path: '/chat',
           query: {
-            id: item.friendID._id
+            id: item.userID._id
           }
         })
         return
@@ -122,46 +173,6 @@ export default {
         }
       })
     },
-    // 数据按时间倒序排序
-    // 从大到小
-    flashbackTime(data) {
-      return data.sort((a, b) => {
-        return new Date(b.MsgTime) - new Date(a.MsgTime)
-      })
-    },
-    acceptMessage() {
-      this.socket.on('msg', (data) => {
-        if (data.length && data.length === 1) {
-          this.friendList.forEach((item, index) => {
-            const res = this.types(data)
-            if (item.friendID._id === res[0].userID._id) {
-              const e = item
-              e.tip += 1
-              e.MsgTime = res[0].time
-              e.newMessage = res[0].message
-              this.friendList.splice(index, 1)
-              this.friendList.unshift(e)
-            }
-          })
-        }
-      })
-      this.socket.on('groupMsg', (data) => {
-        const arr = []
-        arr.push(data.GroupID)
-        this.groupList.forEach((item, index) => {
-          const res = this.types(arr)
-          console.log(res)
-          if (item._id === res[0]._id) {
-            const e = item
-            e.tip = data.tip
-            e.MsgTime = res[0].MsgTime
-            e.newMessage = res[0].newMessage
-            this.groupList.splice(index, 1)
-            this.groupList.unshift(e)
-          }
-        })
-      })
-    },
     // 获取群列表
     getHomeGroups() {
       getHomeGroups({ userID: this.id }).then((res) => {
@@ -169,10 +180,21 @@ export default {
         res.data.forEach((x, index) => {
           arr.push(x['GroupID'])
           arr[index].tip = x.tip
+          arr[index].attributes = 'group'
         })
-        const list = this.flashbackTime(arr)
-        this.groupList = this.types(list)
+        this.groupList = this.types(arr)
+        console.log(this.groupList)
       })
+    },
+    // 处理群及时消息
+    setMsg(arr, tip) {
+      const res = this.types(arr)
+      const e = res[0]
+      e.tip = tip
+      e.MsgTime = res[0].MsgTime
+      e.attributes = 'group'
+      e.newMessage = res[0].newMessage
+      this.groupList.unshift(e)
     }
   }
 }

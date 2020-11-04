@@ -18,6 +18,15 @@ export function getInfo(id) {
   })
 }
 
+// 获取好友信息
+export function getFriendInfo(data) {
+  return request({
+    url: '/user/FriendInfo',
+    method: 'get',
+    params: data
+  })
+}
+
 // 登出
 export function logout() {
   return request({
@@ -302,5 +311,14 @@ export function getHomeGroups(data) {
     url: '/user/getHomeGroup',
     method: 'get',
     params: data
+  })
+}
+
+// 刪除好友
+export function deleteFriend(data) {
+  return request({
+    url: '/user/deleteFriend',
+    method: 'delete',
+    data
   })
 }

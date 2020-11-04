@@ -103,12 +103,13 @@ export default {
 <style lang="scss" scoped>
 @import "@/style/header.scss";
 .header {
+  padding: 0;
   .link {
-    font-size: 24px;
+    font-size: 0.64rem;
     font-weight: 600;
   }
   .ok {
-    padding: 5px 12px;
+    padding: 0.133333rem 0.32rem;
     background-color: #24b410;
     border-radius: 4px;
     color: #ffff;
@@ -157,7 +158,7 @@ export default {
     position: absolute;
     top: 0;
     right: 0;
-    transform: translate(0, 50%);
+    height: 100%;
   }
 }
 </style>

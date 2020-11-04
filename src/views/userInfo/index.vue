@@ -16,68 +16,73 @@
         </div>
       </div>
       <ul>
-        <li @click="qnMethod({title: 'intr', value:userFrom.intr})">
+        <li>
           <span>签名</span>
           <span class="mid">{{ userFrom.intr }}</span>
-          <van-icon class="link" name="arrow" />
+          <van-icon v-if="ifFriend" class="link" name="arrow" @click="qnMethod({title: 'intr', value:userFrom.intr})" />
         </li>
         <li class="registered">
           <span>注册</span>
           <span class="mid">{{ userFrom.date | dateFormat }}</span>
-          <van-icon class="link" name="arrow" />
+          <van-icon v-if="ifFriend" class="link" name="arrow" />
         </li>
-        <li @click="qnMethod({title: 'name',value:userFrom.name})">
+        <li>
           <span>昵称</span>
           <span class="mid">{{ userFrom.name }}</span>
-          <van-icon class="link" name="arrow" />
+          <van-icon v-if="!ifFriend" class="link" name="arrow" @click="qnMethod({title: 'name',value:userFrom.name})" />
         </li>
         <li>
           <span>性别</span>
-          <span v-if="userFrom.sex === 'asexual'" class="mid">中性</span>
-          <span v-if="userFrom.sex === 'man'" class="mid">男</span>
-          <span v-if="userFrom.sex === 'girl'" class="mid">女</span>
-          <van-icon class="link" name="arrow" />
-          <el-select class="select" placeholder="请选择" value @change="changeSex">
-            <el-option
-              v-for="item in genderList"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
+          <van-field
+            readonly
+            clickable
+            :value="value=userFrom.sex"
+            @click="showPicker = true"
+          />
+          <van-popup v-model="showPicker" round position="bottom">
+            <van-picker
+              show-toolbar
+              :columns="columns"
+              @cancel="showPicker = false"
+              @confirm="changeSex"
             />
-          </el-select>
+          </van-popup>
+          <van-icon v-if="ifFriend" class="link" name="arrow" />
         </li>
         <li>
           <span>生日</span>
           <span class="mid">{{ userFrom.birth | dateFormat }}</span>
-          <van-icon class="link" name="arrow" />
-          <div class="select">
-            <el-date-picker
-              v-model="birthday"
+          <van-popup v-model="showDate" round position="bottom">
+            <van-datetime-picker
+              v-model="currentDate"
               type="date"
-              placeholder="选择日期"
-              format="yyyy 年 MM 月 dd 日"
-              value-format="yyyy-MM-dd"
-              @change="changeBirth"
+              title="选择生日"
+              :min-date="minDate"
+              :max-date="maxDate"
+              @confirm="changeBirth"
+              @cancel="showDate = false"
             />
-          </div>
+          </van-popup>
+          <van-icon v-if="ifFriend" class="link" name="arrow" @click="showDate=true" />
         </li>
-        <li @click="changeTitle({name: '手机',title: 'phone',value: userFrom.phone})">
+        <li>
           <span>电话</span>
           <span class="mid">{{ userFrom.phone }}</span>
-          <van-icon class="link" name="arrow" />
+          <van-icon v-if="ifFriend" class="link" name="arrow" @click="changeTitle({name: '手机',title: 'phone',value: userFrom.phone})" />
         </li>
-        <li @click="changeTitle({name: '邮箱',title: 'email',value: userFrom.email})">
+        <li>
           <span>邮箱</span>
           <span class="mid">{{ userFrom.email }}</span>
-          <van-icon class="link" name="arrow" />
+          <van-icon v-if="ifFriend" class="link" name="arrow" @click="changeTitle({name: '邮箱',title: 'email',value: userFrom.email})" />
         </li>
-        <li class="pwd" @click="changeTitle({name: '密码',title: 'password',value: '123455'})">
+        <li v-if="ifFriend" class="pwd">
           <span>密码</span>
-          <van-icon class="link" name="arrow" />
+          <van-icon class="link" name="arrow" @click="changeTitle({name: '密码',title: 'password',value: '123455'})" />
         </li>
       </ul>
       <div class="logout">
-        <span @click="logout">退出应用</span>
+        <span v-if="ifFriend" @click="logout">退出应用</span>
+        <span v-else class="del" @click="deleteFriend">刪除好友</span>
       </div>
     </div>
     <!-- 裁剪图片 -->
@@ -100,7 +105,7 @@
 </template>
 
 <script>
-import { getInfo, modifyUserInfo } from '@/api/user'
+import { getInfo, getFriendInfo, modifyUserInfo, deleteFriend } from '@/api/user'
 import VueCropper from '@/components/cropper.vue'
 import InfoCard from './components/infoCard.vue'
 import QnCard from './components/qn.vue'
@@ -113,33 +118,32 @@ export default {
   },
   data() {
     return {
-      genderList: [
-        {
-          value: 'man',
-          label: '男'
-        },
-        {
-          value: 'girl',
-          label: '女'
-        },
-        {
-          value: 'asexual',
-          label: '中性'
-        }
-      ],
+      columns: ['男', '女'],
       userFrom: {},
       content: {}, // 签名/昵称绑定的内容
-      birthday: '',
       cropimg: '', // 截图url
       isCrop: false,
       infoCard: false,
       qn: false,
-      changeInfo: {} // 向infocard组件传递数据
+      changeInfo: {}, // 向infocard组件传递数据
+      value: '',
+      showPicker: false,
+      minDate: new Date(1970, 0, 1),
+      maxDate: new Date(2030, 10, 1),
+      currentDate: new Date(),
+      showDate: false
     }
   },
   computed: {
     id() {
       return this.$route.query.id
+    },
+    uid() {
+      return this.$store.getters.userInfo.id
+    },
+    // 判断是自己还是好友
+    ifFriend() {
+      return this.id === this.uid
     }
   },
   watch: {
@@ -184,11 +188,22 @@ export default {
     },
     logout() {
       this.$store.dispatch('logout').then(() => {
+        this.socket.emit('logOut', this.uid)
         location.reload()
       })
     },
     // 获取用户信息
     getUserInfo() {
+      // 是好友
+      if (!this.ifFriend) {
+        getFriendInfo({ id: this.id, uid: this.uid }).then((res) => {
+          console.log(res)
+          this.userFrom = res.data.userID
+          this.userFrom.markName = res.data.markName
+        })
+        return
+      }
+      // 是自己
       getInfo(this.id)
         .then((res) => {
           this.userFrom = res.data
@@ -221,22 +236,33 @@ export default {
     },
     // 改变性别
     changeSex(value) {
-      if (value && value.length > 0) {
+      if (value.length > 0) {
         const obj = {
           title: 'sex',
           content: value
         }
         this.modifyInfo(obj)
+        this.value = value
+        this.showPicker = false
       }
     },
     // 改变生日
     changeBirth(value) {
-      if (value && value.length > 0) {
-        const obj = {
-          title: 'birth',
-          content: value
-        }
-        this.modifyInfo(obj)
+      console.log(value)
+      const obj = {
+        title: 'birth',
+        content: value
+      }
+      this.modifyInfo(obj)
+      this.showDate = false
+    },
+    // 刪除好友
+    deleteFriend() {
+      if (!this.ifFriend) {
+        deleteFriend({ userID: this.uid, friendID: this.id }).then(() => {
+          this.$toast.success('刪除成功')
+          this.$router.push('/')
+        })
       }
     }
   }
@@ -306,10 +332,6 @@ export default {
     margin-left: 0.426667rem;
     display: flex;
   }
-  .select {
-    position: absolute;
-    opacity: 0;
-  }
   ul {
     margin: 0 0.213333rem 0.213333rem;
     border-radius: 0.266667rem;
@@ -325,8 +347,11 @@ export default {
     position: relative;
     color: rgba(39, 40, 50, 0.6);
     font-size: 0.426667rem;
+    .van-field {
+      flex: 1;
+    }
   }
-  ul li:hover {
+  ul li:hover, ul li .van-field:hover, .van-cell:hover {
     background-color: #f3f4f6;
   }
   ul li span:first-child {
@@ -342,6 +367,9 @@ export default {
   justify-content: center;
   box-sizing: border-box;
   font-size: 0.533333rem;
+  .del {
+    color: red;
+  }
 }
 .logout:hover {
   color: rgb(8, 68, 107);

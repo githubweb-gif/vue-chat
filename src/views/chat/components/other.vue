@@ -87,6 +87,8 @@ export default {
             this.$store.commit('ACCEPT_DATA', data)
             this.socket.emit('msg', { fromID: this
               .oneSelf.id, toID: this.id, msg: data })
+          }).catch(() => {
+            this.$router.push('/')
           })
         } else if (this.$route.path === '/groupChat') {
           const data = { types: 1, message: 'http://localhost:3000' + imgUrl, userID: this
@@ -94,6 +96,8 @@ export default {
           sendGroupMsg(data).then((res) => {
             this.$store.commit('ACCEPT_DATA', res.data)
             this.socket.emit('groupMsg', { GroupID: this.id, msg: res.data })
+          }).catch(() => {
+            this.$router.push('/')
           })
         }
       })

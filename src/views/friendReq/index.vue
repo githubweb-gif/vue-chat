@@ -4,12 +4,12 @@
     <main>
       <ul>
         <li v-for="item of reqList" :key="item._id">
-          <div class="avatar header">
-            <img :src="item.userID.avatar" alt>
+          <div class="avatar">
+            <img :src="item.userID.avatar | avatar" alt>
           </div>
           <div class="main">
             <div class="operating">
-              <div class="refuse" @click="refuse(item.userID._id)">拒绝</div>
+              <div class="refuse" @click="refuse(item.userID._id )">拒绝</div>
               <div class="agree" @click="agree(item.userID._id)">同意</div>
             </div>
             <div class="info">
@@ -36,6 +36,9 @@ export default {
   computed: {
     id() {
       return this.$store.getters.userInfo.id
+    },
+    name() {
+      return this.$store.getters.userInfo.name
     }
   },
   created() {
@@ -63,7 +66,8 @@ export default {
     agree(id) {
       const obj = {
         friendID: id,
-        userID: this.id
+        userID: this.id,
+        markName: this.name
       }
       agreeRequest(obj).then((res) => {
         this.getRequest()
@@ -75,22 +79,13 @@ export default {
 
 <style lang="scss" scoped>
 @import "../../style/header.scss";
-header {
-  background-color: #ffffff;
-  .right {
-    font-size: 0.5rem;
-  }
-}
-.link {
-  font-size: 0.64rem;
-  font-weight: 600;
-}
 main {
   padding: 2.67rem 0.426rem 0;
   li {
     position: relative;
     margin-bottom: 1.6rem;
-    .header {
+    font-size: 0.426667rem;
+    .avatar {
       text-align: center;
       position: absolute;
       left: 50%;

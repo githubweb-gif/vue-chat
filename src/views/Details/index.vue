@@ -1,10 +1,10 @@
 <template>
   <div id="Details" :class="{deta: toUp}">
     <!-- 导航 -->
-    <header-bar ref="header" class="header">
+    <header-bar ref="header" class="head">
       <template v-slot:details>
         <div v-if="validFriend.state || id === uid">
-          <router-link v-if="uid === id" :to="`/userInfo?id=${uid}`">
+          <router-link :to="`/userInfo?id=${id}`">
             <svg-icon icon-id="gengduo" />
           </router-link>
         </div>
@@ -18,8 +18,8 @@
       </div>
       <div v-if="!toUp" class="info">
         <h3>{{ userInfo.name }}</h3>
-        <span v-if="validFriend.state">昵称: 123</span>
-        <p>受asdadadad打发士大夫敢,死队规划的手法首发射手座地方法规发撒沙发沙发的苦减肥过度开发本身就大发噶顺丰吧案说法伽是发吧发吧是东方八所</p>
+        <span v-if="validFriend.state">昵称: {{ userInfo.markName }}</span>
+        <p>{{ userInfo.intr }}</p>
       </div>
     </div>
     <!-- 底部 -->
@@ -51,7 +51,7 @@
 </template>
 
 <script>
-import { getInfo, isFriend, friendRequest } from '@/api/user'
+import { getInfo, getFriendInfo, isFriend, friendRequest } from '@/api/user'
 import headerBar from '@/components/header'
 export default {
   components: {
@@ -81,12 +81,12 @@ export default {
       return this.$store.getters.userInfo.id
     },
     sex() {
-      if (this.userInfo.sex === 'girl') {
+      if (this.userInfo.sex === '女') {
         return {
           icon: 'icon-xingbie-nv',
           bc: '#FF5D5B'
         }
-      } else if (this.userInfo.sex === 'man') {
+      } else if (this.userInfo.sex === '男') {
         return {
           icon: 'icon-xingbienan',
           bc: '#248ba7'
@@ -99,34 +99,45 @@ export default {
       }
     }
   },
+  watch: {
+    toUp(value) {
+      if (value) {
+        const header = this.$refs.header.$el
+        const avatar = this.$refs.avatar
+        const body = document.body
+        const a = avatar.offsetHeight / 3
+        this.toHeight = body.offsetHeight - header.offsetHeight - a
+      }
+    }
+  },
   created() {
     this.message = `你好我是${this.name}~`
     this.getUserInfo()
   },
   mounted() {
-    this.$nextTick(() => {
-      const header = this.$refs.header.$el
-      const avatar = this.$refs.avatar
-      const body = document.body
-      this.toHeight = body.offsetHeight - header.offsetHeight - (avatar.offsetHeight / 2)
-    })
   },
   methods: {
     getUserInfo() {
       if (this.id === this.uid) {
         this.userInfo = this.$store.getters.userInfo
       } else {
-        getInfo(this.id)
-          .then(async(res) => {
-            this.userInfo = res.data
-            console.log(res.data)
-            // 判断是否是好友
-            const { data } = await this.isFriend()
-            this.validFriend = data
-          })
-          .catch((err) => {
-            console.log(err)
-          })
+        this.isFriend().then((data) => {
+          this.validFriend = data.data
+          if (this.validFriend.state) {
+            getFriendInfo({ id: this.id, uid: this.uid }).then((res) => {
+              this.userInfo = res.data.userID
+              this.userInfo.markName = res.data.markName
+            })
+          } else {
+            getInfo(this.id)
+              .then(async(res) => {
+                this.userInfo = res.data
+              })
+              .catch((err) => {
+                console.log(err)
+              })
+          }
+        })
       }
     },
     // 判断是否是好友
@@ -174,7 +185,7 @@ export default {
   }
  .deta {
    background-color: #ebda6e !important;
-   .header {
+   .head {
      background-color: #ebda6e !important;
    }
  }
@@ -192,8 +203,8 @@ export default {
   position: relative;
   .avatar {
     transition: all 0.5s;
-    width: 5.333333rem;
-    height: 5.333333rem;
+    width: 5.1rem;
+    height: 5.1rem;
     padding: 0.1rem;
     border-radius: 0.4rem;
     background-color: #ffffff;
@@ -218,8 +229,8 @@ export default {
     }
   }
   .bor {
-    width: 3.2rem;
-    height: 3.2rem;
+    width: 3.4rem;
+    height: 3.4rem;
     border-radius: 50%;
     position: absolute;
     top: 0;

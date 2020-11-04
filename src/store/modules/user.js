@@ -12,7 +12,9 @@ const state = {
   token: getToken(),
   birth: '',
   otherTypes: null,
-  GroupID: ''
+  GroupID: '',
+  oneMsg: null,
+  GroupMsg: null
 }
 
 const mutations = {
@@ -61,6 +63,14 @@ const mutations = {
   // 接受用户登录到那个群
   GROUP_ID: (state, data) => {
     state.GroupID = data
+  },
+  // 一对一消息
+  ONE_BY_ONE_MSG: (state, data) => {
+    state.oneMsg = data
+  },
+  // 群信息
+  GROUP_MSG: (state, data) => {
+    state.GroupMsg = data
   }
 }
 

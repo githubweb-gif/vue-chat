@@ -14,11 +14,11 @@
       </div>
       <div class="iconfont icon-biaoqing-xue" @click.stop="show('emoji')" />
       <div
-        v-if="message === ''"
+        v-if="message.trim() === ''"
         class="icon el-icon-circle-plus-outline"
         @click.stop="show('other')"
       />
-      <div v-if="message !== '' ? true : false" class="send" @click="sendMsg">
+      <div v-if="message.trim() !== '' ? true : false" class="send" @click="sendMsg">
         <p>发送</p>
       </div>
     </div>

@@ -2,7 +2,7 @@
   <div class="main">
     <ul>
       <router-link class="link" to="/friendReq">
-        <li>
+        <li class="req">
           <div class="avatar">
             <span class="el-icon-s-custom" />
           </div>
@@ -15,26 +15,33 @@
         </li>
       </router-link>
       <li v-for="(item,index) in AllData" :key="index" @click="toChat(item)">
-        <div class="avatar">
-          <img v-if="item.attributes==='group'" :src="item.avatar | avatar" alt="">
-          <img v-else :src="item.userID.avatar | avatar" alt="">
-          <i v-if="item.tip > 0 ? true : false">{{ item.tip }}</i>
-        </div>
-        <div class="info">
-          <div v-if="item.attributes==='group'" class="name">{{ item.name }}</div>
-          <div v-else class="name">{{ item.markName }}</div>
-          <p class="msg">{{ item.newMessage }}</p>
-        </div>
-        <div class="date">
-          {{ item.MsgTime | dateFormat }}
-        </div>
+        <van-swipe-cell>
+          <div class="content req">
+            <div class="avatar">
+              <img v-if="item.attributes==='group'" :src="item.avatar | avatar" alt="">
+              <img v-else :src="item.userID.avatar | avatar" alt="">
+              <i v-if="item.tip > 0 ? true : false">{{ item.tip }}</i>
+            </div>
+            <div class="info">
+              <div v-if="item.attributes==='group'" class="name">{{ item.name }}</div>
+              <div v-else class="name">{{ item.markName }}</div>
+              <p class="msg">{{ item.newMessage }}</p>
+            </div>
+            <div class="date">
+              {{ item.MsgTime | dateFormat }}
+            </div>
+          </div>
+          <template #right>
+            <van-button square type="danger" text="删除" @click="deleteMsg(item,index)" />
+          </template>
+        </van-swipe-cell>
       </li>
     </ul>
   </div>
 </template>
 
 <script>
-import { getFriends, getHomeGroups } from '@/api/user'
+import { getFriends, getHomeGroups, deleteMsg, deleteHomeGroup } from '@/api/user'
 export default {
   data() {
     return {
@@ -46,12 +53,30 @@ export default {
     id() {
       return this.$store.getters.userInfo.id
     },
-    AllData() {
-      const all = this.friendList.concat(this.groupList)
-      all.sort((a, b) => {
-        return new Date(b.MsgTime) - new Date(a.MsgTime)
-      })
-      return all
+    AllData: {
+      get: function() {
+        const all = this.friendList.concat(this.groupList)
+        all.sort((a, b) => {
+          return new Date(b.MsgTime) - new Date(a.MsgTime)
+        })
+        return all
+      },
+      // setter
+      set: function(data) {
+        if (data.attributes && data.attributes === 'group') {
+          this.groupList.forEach((x, index) => {
+            if (x._id === data.id) {
+              this.groupList.splice(index, 1)
+            }
+          })
+          return
+        }
+        this.friendList.forEach((x, index) => {
+          if (x.userID._id === data.id) {
+            this.friendList.splice(index, 1)
+          }
+        })
+      }
     },
     oneMsg() {
       return this.$store.state.user.oneMsg
@@ -176,6 +201,7 @@ export default {
     // 获取群列表
     getHomeGroups() {
       getHomeGroups({ userID: this.id }).then((res) => {
+        console.log(res)
         const arr = []
         res.data.forEach((x, index) => {
           arr.push(x['GroupID'])
@@ -195,6 +221,20 @@ export default {
       e.attributes = 'group'
       e.newMessage = res[0].newMessage
       this.groupList.unshift(e)
+    },
+    // 刪除消息
+    deleteMsg(data, index) {
+      if (data.attributes === 'group') {
+        // 刪除群消息
+        deleteHomeGroup({ userID: this.id, GroupID: data._id }).then(() => {
+          this.AllData = { id: data._id, attributes: data.attributes }
+        })
+        return
+      }
+      // 删除好友消息
+      deleteMsg({ userID: this.id, friendID: data.userID._id }).then(() => {
+        this.AllData = { id: data.userID._id }
+      })
     }
   }
 }
@@ -211,11 +251,14 @@ export default {
 li:hover {
   background-color: #f3f4f6;
 }
-li {
+.req,.content {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.24rem 0.427rem;
+  margin: 0 0.427rem;
+}
+li {
+  padding: 0.24rem 0;
   .avatar {
     width: 1.28rem;
     height: 1.28rem;

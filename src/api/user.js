@@ -322,3 +322,21 @@ export function deleteFriend(data) {
     data
   })
 }
+
+// 刪除首页好友信息
+export function deleteMsg(data) {
+  return request({
+    url: '/user/deleteMsg',
+    method: 'delete',
+    data
+  })
+}
+
+// 刪除首页群信息
+export function deleteHomeGroup(data) {
+  return request({
+    url: '/user/deleteHomeGroup',
+    method: 'delete',
+    data
+  })
+}

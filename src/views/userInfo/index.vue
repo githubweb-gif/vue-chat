@@ -143,6 +143,9 @@ export default {
     },
     // 判断是自己还是好友
     ifFriend() {
+      if (this.uid === '') {
+        return true
+      }
       return this.id === this.uid
     }
   },

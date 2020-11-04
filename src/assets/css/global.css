@@ -90,3 +90,12 @@ textarea {
     height: 2rem !important;
     padding-top: 0.133333rem;
 }
+
+/* 左滑动 */
+.van-swipe-cell__right  {
+  display: flex;
+  align-items: center;
+}
+.van-swipe-cell__right button {
+  height: 100%;
+}

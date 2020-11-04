@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import { PullRefresh, Uploader, Button, Switch, Field, CellGroup, Icon, Toast, Picker, Popup, DatetimePicker } from 'vant'
+import { PullRefresh, Uploader, Button, Switch, Field, CellGroup, Icon, Toast, Picker, Popup, DatetimePicker, SwipeCell } from 'vant'
 
 Vue.use(PullRefresh)
 Vue.use(Uploader)
@@ -12,3 +12,5 @@ Vue.use(Toast)
 Vue.use(Picker)
 Vue.use(Popup)
 Vue.use(DatetimePicker)
+Vue.use(SwipeCell)
+

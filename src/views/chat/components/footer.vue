@@ -3,21 +3,25 @@
     <div class="input">
       <div class="iconfont icon-yuyin" />
       <div class="msg">
-        <el-input
-          ref="text"
+        <!-- <el-input
           v-model="message"
           :autosize="{ minRows: 1, maxRows: 5 }"
           type="textarea"
           @input="scroll"
           @focus="scroll"
+        /> -->
+        <van-field
+          v-model="message"
+          :autosize="{ maxHeight: 100, minHeight: 30 }"
+          :border="true"
+          :center="true"
+          type="textarea"
+          @input="scroll"
+          @focus="scroll"
         />
       </div>
-      <div class="iconfont icon-biaoqing-xue" @click.stop="show('emoji')" />
-      <div
-        v-if="message.trim() === ''"
-        class="icon el-icon-circle-plus-outline"
-        @click.stop="show('other')"
-      />
+      <van-icon name="smile-o" @click.stop="show('emoji')" />
+      <van-icon v-if="message.trim() === ''" class="icon" name="add-o" @click.stop="show('other')" />
       <div v-if="message.trim() !== '' ? true : false" class="send" @click="sendMsg">
         <p>发送</p>
       </div>
@@ -154,6 +158,10 @@ footer {
     align-items: center;
     justify-content: space-between;
     padding: 0.08rem 0.43rem;
+    .van-field {
+      padding: 0;
+      border: 1px solid red;
+    }
     .msg {
       flex: 1;
       padding: 0 0.27rem;
@@ -161,7 +169,8 @@ footer {
       align-items: center;
     }
     .iconfont,
-    .icon {
+    .icon,
+    .van-icon {
       font-size: 0.8rem;
     }
     .icon {

@@ -143,6 +143,15 @@ export function modifyUserInfo(data) {
   })
 }
 
+// 修改好友信息
+export function modifyFriendInfo(data) {
+  return request({
+    url: '/user/modifyFriendInfo',
+    method: 'post',
+    data
+  })
+}
+
 // 上传头像
 export function uploadImg(data) {
   return request({

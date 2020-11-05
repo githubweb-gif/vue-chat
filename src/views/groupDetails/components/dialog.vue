@@ -1,7 +1,7 @@
 <template>
   <div v-if="bol" class="dialog">
     <div class="header">
-      <span class="link el-icon-arrow-left" @click="closeBox" />
+      <van-icon name="arrow-left" @click="closeBox" />
       <div class="ok" @click="ok">完成</div>
     </div>
     <slot />
@@ -65,7 +65,7 @@ export default {
     padding: 0 0.426667rem;
     background-color: #ffff;
     margin-bottom: 0.53rem;
-    .link {
+    .van-icon {
     font-size: 0.64rem;
     font-weight: 600;
   }

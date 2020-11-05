@@ -1,10 +1,18 @@
 import axios from 'axios'
 import { getToken } from './auth'
 import store from '@/store'
-import { MessageBox, Message } from 'element-ui'
+import { Notify, Dialog } from 'vant'
+
+let baseURL = ''
+if (process.env.NODE_ENV === 'production') {
+  // 你上线的后端url
+  baseURL = 'http://106.53.102.65:3200'
+} else {
+  baseURL = 'http://localhost:3000'
+}
 
 const service = axios.create({
-  baseURL: 'http://localhost:3000',
+  baseURL,
   timeout: '5000'
 })
 
@@ -26,18 +34,10 @@ service.interceptors.response.use(
   (response) => {
     const res = response.data
     if (res.status !== 200) {
-      Message({
-        message: res.message || 'Error',
-        type: 'error',
-        duration: 1 * 1000
-      })
+      Notify({ type: 'danger', message: res.message || 'Error', duration: 1000 })
       // token503
       if (res.status === 503) {
-        MessageBox.confirm('您已注销，您可以取消以留在此页面，或再次登录', '确认注销', {
-          confirmButtonText: '重新登录',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
+        Dialog.alert({ message: '您已注销，您可以取消以留在此页面，或再次登录', showCancelButton: true }).then(() => {
           store.dispatch('resetToken').then(() => {
             location.reload()
           })
@@ -50,11 +50,7 @@ service.interceptors.response.use(
     }
   },
   (error) => {
-    Message({
-      message: error.message,
-      type: 'error',
-      duration: 5 * 1000
-    })
+    Notify({ type: 'danger', message: error.message, duration: 1000 })
     return Promise.reject(error)
   }
 )

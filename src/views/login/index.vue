@@ -13,34 +13,38 @@
         <p>登录</p>
         <span>你好，欢迎来到火火</span>
       </div>
-      <el-form ref="loginForm" :model="loginForm" :rules="rules" class="demo-ruleForm">
-        <el-form-item prop="name">
-          <el-input
-            v-model="loginForm.name"
-            placeholder="请输入名字/邮箱"
-            @blur="message = ''"
-          />
-        </el-form-item>
-        <el-form-item prop="password">
-          <el-input
-            :key="passwordType"
-            ref="password"
-            v-model="loginForm.password"
-            :type="passwordType"
-            placeholder="请输入密码"
-            @blur="message = ''"
-          />
-          <span
-            class="iconfont"
-            :class="passwordType === 'password' ? 'icon-eye2' : 'icon-eye'"
-            @click="pwdType"
-          />
-        </el-form-item>
-        <span class="message" style="color: red">{{ message }}</span>
-        <el-form-item class="btn">
-          <el-button type="primary" @click="login">登录</el-button>
-        </el-form-item>
-      </el-form>
+      <van-form :show-erro="false" @submit="login">
+        <van-field
+          v-model="loginForm.name"
+          name="用户名"
+          label="用户名"
+          placeholder="请输入名字/邮箱"
+          :rules="rules.name"
+          @blur="message = ''"
+        />
+        <van-field
+          v-model="loginForm.password"
+          :type="passwordType"
+          name="pattern"
+          label="密码"
+          placeholder="请输入密码"
+          :rules=" rules.password"
+          @blur="message = ''"
+        >
+          <template v-slot:right-icon>
+            <span
+              class="iconfont"
+              :class="passwordType === 'password' ? 'icon-eye2' : 'icon-eye'"
+              @click="pwdType"
+            />
+          </template>
+        </van-field>
+        <div style="margin: 16px;">
+          <van-button :disabled="disabled" round block type="info" native-type="submit">
+            提交
+          </van-button>
+        </div>
+      </van-form>
     </div>
   </div>
 </template>
@@ -54,32 +58,28 @@ export default {
         password: '123456'
       },
       rules: {
-        name: [{ required: true, message: '请输入名字/邮箱', trigger: 'blur' }],
+        name: [{ required: true, message: '请输入名字/邮箱', trigger: 'onBlur' }],
         password: [
-          { required: true, message: '请输入密码', trigger: 'blur' },
-          { min: 6, max: 18, message: '长度在 6 到 18 个字符', trigger: 'blur' }
+          { required: true, message: '请输入密码', trigger: 'onBlur' },
+          { pattern: /^[\s\S]{6,18}$/, message: '长度在 6 到 18 个字符', trigger: 'onBlur' }
         ]
       },
       message: '',
-      passwordType: 'password'
+      passwordType: 'password',
+      disabled: false
     }
   },
   methods: {
     login() {
-      this.$refs.loginForm.validate((valid) => {
-        if (valid) {
-          this.$store
-            .dispatch('login', this.loginForm)
-            .then((res) => {
-              this.$router.push({ path: '/' })
-            })
-            .catch(() => {
-              this.message = '用户名或密码错误'
-            })
-        } else {
-          return false
-        }
-      })
+      this.disabled = true
+      this.$store
+        .dispatch('login', this.loginForm)
+        .then((res) => {
+          this.$router.push({ path: '/' })
+        })
+        .catch(() => {
+          this.message = '用户名或密码错误'
+        })
     },
     pwdType() {
       if (this.passwordType === 'password') {
@@ -87,9 +87,6 @@ export default {
       } else {
         this.passwordType = 'password'
       }
-      this.$nextTick(() => {
-        this.$refs.password.focus()
-      })
     }
   }
 }
@@ -135,41 +132,6 @@ header {
     span {
       font-size: 0.533333rem;
       color: rgba(39, 40, 50, 0.5);
-    }
-  }
-}
-
-.el-form {
-  .message {
-    margin-left: 0.4rem;
-    font-size: 0.373333rem;
-  }
-  .iconfont {
-    font-size: 0.32rem;
-  }
-  .btn {
-    box-sizing: border-box;
-    .el-button {
-      width: 100%;
-      height: 1.28rem;
-      background-color: #ffe431;
-      border: 0;
-      border-radius: 0.64rem;
-      color: #222;
-      font-size: 0.426667rem;
-      font-weight: 600;
-    }
-  }
-  .el-form-item {
-    position: relative;
-    margin-bottom: 0.586667rem;
-    .el-input {
-      font-size: 0.373333rem;
-    }
-    span {
-      position: absolute;
-      top: 0;
-      right: 0;
     }
   }
 }

@@ -2,7 +2,7 @@
   <div>
     <header>
       <div class="back">
-        <router-link to="/login"><span class="el-icon-arrow-left" /></router-link>
+        <router-link to="/login"><van-icon name="arrow-left" /></router-link>
       </div>
     </header>
     <div class="logo">
@@ -12,55 +12,65 @@
       <div class="hello">
         <p>注册</p>
       </div>
-      <el-form ref="loginForm" :model="loginForm" :rules="rules" :status-icon="false">
-        <el-form-item prop="name">
-          <el-input
-            v-model="loginForm.name"
-            placeholder="请取个名字"
-            @blur="validate('name')"
-          />
-        </el-form-item>
-        <el-form-item prop="email">
-          <el-input
-            v-model="loginForm.email"
-            placeholder="请输入邮箱"
-            @blur="validate('email')"
-          />
-          <span class="iconfont icon-185078emailmailstreamline" />
-        </el-form-item>
-        <el-form-item prop="code">
-          <el-input
-            v-model="loginForm.code"
-            type="text"
-            placeholder="请输入验证码"
-            @blur="validate('code')"
-          />
-          <span class="code" @click="getCode">获取验证码</span>
-        </el-form-item>
-        <el-form-item prop="password">
-          <el-input
-            :key="passwordType"
-            ref="password"
-            v-model="loginForm.password"
-            :type="passwordType"
-            placeholder="这里输入密码"
-            @blur="validate('password')"
-          />
-          <span
-            class="iconfont"
-            :class="passwordType === 'password' ? 'icon-eye2' : 'icon-eye'"
-            @click="pwdType"
-          />
-        </el-form-item>
-        <el-form-item class="btn">
-          <el-button
-            :disabled="isDisabled"
-            :style="background"
-            type="primary"
-            @click="submitForm()"
-          >注册</el-button>
-        </el-form-item>
-      </el-form>
+      <van-form :show-erro="false" @submit="submitForm">
+        <van-field
+          v-model="loginForm.name"
+          label-width="3em"
+          :error="false"
+          name="validator"
+          label="用户名"
+          placeholder="请取个名字"
+          :rules="rules.name"
+          @focus="rules.name[0].message = '名称不正确，3 到 12 个字符'"
+        />
+        <van-field
+          v-model="loginForm.email"
+          name="validator"
+          label-width="3em"
+          :error="false"
+          label="邮箱"
+          type="email"
+          placeholder="请输入邮箱"
+          :rules="rules.email"
+          @focus="rules.email[0].message = '请输入正确的邮箱'"
+        />
+        <van-field
+          v-model="loginForm.code"
+          label-width="3em"
+          name="pattern"
+          label="验证码"
+          :error="false"
+          placeholder="请输入验证码"
+          :rules="rules.code"
+        >
+          <template v-slot:right-icon>
+            <span class="code" @click="getCode">获取验证码</span>
+          </template>
+        </van-field>
+        <van-field
+          v-model="loginForm.password"
+          label-width="3em"
+          :type="passwordType"
+          name="pattern"
+          label="密码"
+          :error="false"
+          placeholder="这里输入密码"
+          :rules=" rules.password"
+        >
+          <template v-slot:right-icon>
+            <span
+              class="iconfont"
+              :class="passwordType === 'password' ? 'icon-eye2' : 'icon-eye'"
+              @click="pwdType"
+            />
+          </template>
+        </van-field>
+        <div style="margin: 16px;">
+          <van-button :disabled="isDisabled" round block type="info" native-type="submit">
+            提交
+          </van-button>
+        </div>
+      </van-form>
     </div>
   </div>
 </template>
@@ -70,50 +80,11 @@ import { validName, validEmail } from '@/until/validate'
 import { getCode } from '@/api/user'
 export default {
   data() {
-    const checkEmail = async(rule, value, callback) => {
-      const email = /^[a-z\d]+(\.[a-z\d]+)*@([\da-z](-[\da-z])?)+(\.{1,2}[a-z]+)+$/
-      if (value.trim() === '') {
-        callback(new Error('请输入邮箱'))
-      } else if (!email.test(value.trim())) {
-        callback(new Error('请输入正确的邮箱'))
-      } else {
-        const valid = await validEmail(value.trim())
-        if (valid) {
-          callback(new Error('邮箱已被占用'))
-        } else {
-          callback()
-        }
-      }
-    }
-    const checkName = async(rule, value, callback) => {
-      if (value.trim() === '') {
-        callback(new Error('请输入名字'))
-      } else if (value.trim().length < 3 || value.trim().length > 12) {
-        callback(new Error('长度在 3 到 12 个字符'))
-      }
-      const valid = await validName(value.trim())
-      if (valid) {
-        callback(new Error('名字已被占用'))
-      } else {
-        callback()
-      }
-    }
     return {
       // 明文和密码切换
       passwordType: 'password',
-      // 提交按钮的禁用和切换
-      isDisabled: true,
-      // 只有状态全部为true时才可以提交表单
-      valid: {
-        name: false,
-        password: false,
-        email: false,
-        code: false
-      },
-      // 提交按钮的颜色
-      background: {
-        backgroundColor: 'rgb(175 169 169)'
-      },
+      // 提交按钮的禁用
+      isDisabled: false,
       // 注册表单
       loginForm: {
         name: '',
@@ -126,60 +97,38 @@ export default {
         name: [
           {
             required: true,
-            validator: checkName,
-            trigger: blur
+            validator: this.checkName,
+            message: '名称不正确，3 到 12 个字符',
+            trigger: 'onBlur'
           }
         ],
         email: [
           {
             required: true,
-            validator: checkEmail,
-            trigger: blur
+            validator: this.checkEmail,
+            trigger: 'onBlur',
+            message: '请输入正确的邮箱'
           }
         ],
         password: [
-          { required: true, message: '请填写密码', trigger: blur },
-          { min: 6, max: 18, message: '长度在 6 到 18 个字符', trigger: blur }
+          { required: true, message: '请填写密码', trigger: 'onBlur' },
+          { pattern: /^[\s\S]{6,18}$/, message: '长度在 6 到 18 个字符', trigger: 'onBlur' }
         ],
         code: [
-          { required: true, message: '请填写验证码', trigger: blur },
-          { min: 6, max: 6, message: '6个字符', trigger: blur }
+          { required: true, message: '请填写验证码', trigger: 'onBlur' },
+          { pattern: /^[\s\S]{6}$/, message: '6个字符', trigger: 'onBlur' }
         ]
       }
     }
   },
-  watch: {
-    valid: {
-      deep: true,
-      handler() {
-        for (const i in this.valid) {
-          if (!this.valid[i]) {
-            this.isDisabled = true
-            this.background.backgroundColor = 'rgb(175 169 169)'
-            break
-          } else {
-            this.isDisabled = false
-            this.background.backgroundColor = '#ffe431'
-          }
-        }
-      }
-    }
-  },
   methods: {
-    // 单独验证表单某一字段是否通过
-    validate(data) {
-      this.$refs.loginForm.validateField(data, (valid) => {
-        if (valid === '') {
-          this.valid[data] = true
-        } else {
-          this.valid[data] = false
-        }
-      })
-    },
     // 提交注册
     submitForm() {
+      this.isDisabled = true
       this.$store.dispatch('registered', this.loginForm).then((res) => {
         this.$router.push('/login')
+      }).catch(() => {
+        this.isDisabled = false
       })
     },
     // 明文和密码切换
@@ -189,14 +138,12 @@ export default {
       } else {
         this.passwordType = 'password'
       }
-      this.$nextTick(() => {
-        this.$refs.password.focus()
-      })
     },
     // 获取验证码
     getCode() {
-      if (!this.valid.email) {
-        // alert('请输入合法邮箱')
+      const email = /^[a-z\d]+(\.[a-z\d]+)*@([\da-z](-[\da-z])?)+(\.{1,2}[a-z]+)+$/
+      if (!email.test(this.loginForm.email)) {
+        alert('请输入合法邮箱')
         return
       }
       getCode({ email: this.loginForm.email })
@@ -205,6 +152,39 @@ export default {
           alert('验证码已发送注意查收')
         })
         .catch(() => {})
+    },
+    async checkName(value) {
+      const name = /^[a-z0-9_-]{3,12}$/
+      if (name.test(value)) {
+        const valid = await validName(value)
+        if (valid) {
+          this.rules.name[0].message = '名称已被占用'
+          return false
+        } else {
+          return true
+        }
+      } else {
+        this.rules.name[0].message = '名称不正确，3 到 12 个字符'
+        return false
+      }
+    },
+    async checkEmail(value) {
+      const email = /^[a-z\d]+(\.[a-z\d]+)*@([\da-z](-[\da-z])?)+(\.{1,2}[a-z]+)+$/
+      if (value.trim() === '') {
+        this.rules.email[0].message = '请输入邮箱'
+        return false
+      } else if (!email.test(value)) {
+        this.rules.email[0].message = '请输入正确的邮箱'
+        return false
+      } else {
+        const valid = await validEmail(value)
+        if (valid) {
+          this.rules.email[0].message = '邮箱已被占用'
+          return false
+        } else {
+          return true
+        }
+      }
     }
   }
 }
@@ -223,52 +203,20 @@ header {
   box-sizing: border-box;
 }
 .logo {
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   img {
     width: 2.56rem;
   }
 }
 .submit {
-  padding: 0.72rem 0.826667rem 0;
+  padding: 0.72rem 0.6rem 0;
   .hello {
     margin-bottom: 0.96rem;
     p {
       font-size: 0.746667rem;
       font-weight: 600;
-    }
-  }
-}
-
-.el-form {
-  .btn {
-    padding: 1.066667rem 0.72rem 0;
-    box-sizing: border-box;
-    .el-button {
-      width: 100%;
-      height: 1.28rem;
-      background-color: #ffe431;
-      border: 0;
-      border-radius: 0.64rem;
-      color: #222;
-      font-size: 0.426667rem;
-      font-weight: 600;
-    }
-  }
-  .el-form-item {
-    position: relative;
-    span {
-      position: absolute;
-      top: 0;
-      right: 0;
-    }
-    .code {
-      background-color: #81afd3;
-      padding: 0.106667rem 0.266667rem;
-      border-radius: 0.373333rem;
-      line-height: 0.666667rem;
-    }
-    .code:hover {
-      background-color: rgb(89, 131, 117);
     }
   }
 }

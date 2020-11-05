@@ -3,8 +3,13 @@
     <!-- 导航 -->
     <header-bar ref="header" class="head">
       <template v-slot:details>
-        <div v-if="validFriend.state || id === uid">
+        <div v-if="id === uid">
           <router-link :to="`/userInfo?id=${id}`">
+            <svg-icon icon-id="gengduo" />
+          </router-link>
+        </div>
+        <div v-if="validFriend.state">
+          <router-link :to="`/friendInfo?id=${id}`">
             <svg-icon icon-id="gengduo" />
           </router-link>
         </div>
@@ -52,6 +57,7 @@
 
 <script>
 import { getInfo, getFriendInfo, isFriend, friendRequest } from '@/api/user'
+import { Notify } from 'vant'
 import headerBar from '@/components/header'
 export default {
   components: {
@@ -154,10 +160,7 @@ export default {
       }
       friendRequest(data).then((res) => {
         const { message } = res
-        this.$message({
-          message: message,
-          type: 'success'
-        })
+        Notify({ type: 'success', message: message })
       })
     },
     toChat() {

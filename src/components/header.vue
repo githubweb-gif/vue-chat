@@ -6,16 +6,16 @@
       </div>
       <div v-else class="title">{{ $route.meta.title }}</div>
       <div class="right">
-        <span class="search el-icon-search" @click="$router.push('/search')" />
-        <span class="add el-icon-circle-plus-outline" @touchstart.stop.prevent="isMenu = !isMenu" />
+        <van-icon class="search" name="search" @click="$router.push('/search')" />
+        <van-icon class="add" name="add-o" @touchstart.stop.prevent="isMenu = !isMenu" />
       </div>
       <div v-if="isMenu" class="options">
-        <div @touchstart.stop.prevent="$router.push('/setGroup')"><span class="el-icon-chat-round" /><i>发起群聊</i></div>
+        <div @touchstart.stop.prevent="$router.push('/setGroup')"><van-icon name="chat-o" /><i>发起群聊</i></div>
         <div @touchstart.stop.prevent="$router.push('/addFriend')">
-          <span class="el-icon-user" />添加朋友<i />
+          <van-icon name="friends" />添加朋友<i />
         </div>
-        <div><span class="el-icon-full-screen" /><i>扫一扫</i></div>
-        <div><span class="el-icon-message" /><i>帮助与反馈</i></div>
+        <div><van-icon name="add-o" /><i>添加群</i></div>
+        <div><van-icon name="envelop-o" /><i>帮助与反馈</i></div>
       </div>
     </div>
     <div v-else class="other header">
@@ -100,7 +100,7 @@ export default {
     background-color: rgba(62, 62, 64, 1);
     border-radius: 0.16rem;
     margin-top: 0.266667rem;
-    span {
+    .van-icon {
       font-size: 0.64rem;
       padding: 0 0.2rem;
     }

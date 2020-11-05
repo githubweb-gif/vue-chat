@@ -13,7 +13,7 @@
           @click.stop="copy"
         >{{ item }}</span>
       </div>
-      <div class="el-icon-close close" @click="pop" />
+      <van-icon class="close" name="cross" @click="pop" />
     </div>
   </div>
 </template>

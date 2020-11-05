@@ -21,5 +21,5 @@ export function getID(token) {
 }
 
 export function reomveID(token) {
-  return window.sessionStorage.removeItem('uid')
+  window.sessionStorage.removeItem('uid')
 }

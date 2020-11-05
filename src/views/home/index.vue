@@ -4,7 +4,7 @@
       <router-link class="link" to="/friendReq">
         <li class="req">
           <div class="avatar">
-            <span class="el-icon-s-custom" />
+            <van-icon name="friends" />
           </div>
           <div class="info">
             <div class="name">好友请求</div>
@@ -269,7 +269,7 @@ li {
       height: 100%;
       border-radius: 12px;
     }
-    span {
+    .van-icon {
       width: 1.28rem;
       height: 100%;
       display: flex;
@@ -278,8 +278,10 @@ li {
       background-color: #ffe431;
       font-size: 0.66rem;
       border-radius: 0.32rem;
+      font-size: 0.8rem;
     }
-    i {
+    .content {
+          i {
       display: flex;
       align-items: center;
       justify-content: center;
@@ -292,7 +294,9 @@ li {
       color: #fff;
       font-size: 0.32rem;
     }
+    }
   }
+
   .info {
     flex: 1;
     align-self: flex-start;

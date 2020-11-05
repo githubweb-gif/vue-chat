@@ -2,7 +2,7 @@
   <div class="chat">
     <header-bar @click="initHeight = !initHeight">
       <template v-slot:details>
-        <div class="name">{{ chatInfo.name }}</div>
+        <div class="name">{{ chatInfo.markName }}</div>
         <router-link v-if="$route.path === '/chat'" :to="`/details?id=${id}`">
           <van-icon name="ellipsis" />
         </router-link>
@@ -56,7 +56,7 @@
 </template>
 
 <script>
-import { getInfo, oppositeMessage, clearTip, getGroup, getGroupMsg } from '@/api/user'
+import { getFriendInfo, oppositeMessage, clearTip, getGroup, getGroupMsg } from '@/api/user'
 import { ImagePreview } from 'vant'
 import FooterVue from './components/footer.vue'
 import headerBar from '@/components/header'
@@ -135,13 +135,16 @@ export default {
   methods: {
     // 获取用户信息
     getUserInfo() {
-      getInfo(this.id)
-        .then((res) => {
-          this.chatInfo = res.data
+      if (this.id !== this.oneSelf.id) {
+        getFriendInfo({ id: this.id, uid: this.oneSelf.id }).then((res) => {
+          this.chatInfo = res.data.userID
+          this.chatInfo.markName = res.data.markName
+        }).catch(() => {
+          this.$router.push('/')
         })
-        .catch((err) => {
-          console.log(err)
-        })
+      } else {
+        this.$router.push('/')
+      }
     },
     // 初始化获取一对一消息
     async getOneMsg() {
@@ -282,14 +285,12 @@ export default {
     // 进入页面时聊天滚动到底部
     initScroll() {
       this.$nextTick(() => {
-        setTimeout(() => {
-          const scroll = this.$refs.main
-          const footer = this.$refs.footer
-          console.log(footer.$el.offsetHeight)
-          if (scroll.scrollHeight > scroll.clientHeight) {
-            scroll.scrollTop = scroll.scrollHeight
-          }
-        }, 30)
+        const scroll = this.$refs.main
+        const footer = this.$refs.footer
+        console.log(footer.$el.offsetHeight)
+        if (scroll.scrollHeight > scroll.clientHeight) {
+          scroll.scrollTop = scroll.scrollHeight
+        }
       })
     },
     scrollFooter(b) {

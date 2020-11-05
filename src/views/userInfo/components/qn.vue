@@ -1,14 +1,12 @@
 <template>
   <div class="qn">
     <div class="header">
-      <span class="link el-icon-arrow-left" @click="closeBox" />
+      <van-icon class="link" name="arrow-left" @click="closeBox" />
       <div class="ok" @click="ok">完成</div>
     </div>
-    <el-form>
-      <el-form-item>
-        <el-input v-model="content" />
-      </el-form-item>
-    </el-form>
+    <div class="content">
+      <van-field v-model="content" />
+    </div>
   </div>
 </template>
 
@@ -58,17 +56,22 @@ export default {
 }
 .header {
     position: relative !important;
-     padding: 0;
     .link {
-    font-size: 24px;
+    font-size: 0.64rem;
     font-weight: 600;
   }
   .ok {
-    padding: 5px 12px;
+    padding: 0.133333rem 0.32rem;
     background-color: #24b410;
-    border-radius: 4px;
+    border-radius: 0.106667rem;
     color: #ffff;
   }
+}
+.van-field {
+  border-bottom: 0.026667rem solid #b7b7b7;
+}
+.content {
+  padding: 0 16px;
 }
 
 </style>

@@ -25,6 +25,12 @@ const routes = [
         path: '/userInfo',
         meta: { index: 5, keepAlive: true },
         component: () => import('../views/userInfo/index.vue')
+      },
+      // 好友信息页
+      {
+        path: '/friendInfo',
+        meta: { index: 5, keepAlive: true },
+        component: () => import('../views/userInfo/index.vue')
       }
     ]
   },

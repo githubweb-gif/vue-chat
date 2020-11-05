@@ -10,7 +10,10 @@
           </div>
         </van-uploader>
         <div class="info">
-          <div class="name">{{ userFrom.name }}</div>
+          <div class="name">
+            <div>{{ userFrom.name }}</div>
+            <van-icon v-if="ifFriend" name="edit" @click="qnMethod({title: 'name', value:userFrom.name})" />
+          </div>
           <div class="qianming">{{ userFrom.intr }}</div>
           <div class="time">{{ userFrom.birth | dateFormat }}</div>
         </div>
@@ -27,9 +30,11 @@
           <van-icon v-if="ifFriend" class="link" name="arrow" />
         </li>
         <li>
-          <span>昵称</span>
-          <span class="mid">{{ userFrom.name }}</span>
-          <van-icon v-if="!ifFriend" class="link" name="arrow" @click="qnMethod({title: 'name',value:userFrom.name})" />
+          <span v-if="!ifFriend">昵称</span>
+          <span v-else>名字</span>
+          <span v-if="ifFriend" class="mid">{{ userFrom.name }}</span>
+          <span v-else class="mid">{{ userFrom.markName }}</span>
+          <van-icon v-if="!ifFriend" class="link" name="arrow" @click="qnMethod({title: 'markName',value:userFrom.markName})" />
         </li>
         <li>
           <span>性别</span>
@@ -105,7 +110,7 @@
 </template>
 
 <script>
-import { getInfo, getFriendInfo, modifyUserInfo, deleteFriend } from '@/api/user'
+import { getInfo, getFriendInfo, modifyUserInfo, deleteFriend, modifyFriendInfo } from '@/api/user'
 import VueCropper from '@/components/cropper.vue'
 import InfoCard from './components/infoCard.vue'
 import QnCard from './components/qn.vue'
@@ -150,8 +155,10 @@ export default {
     }
   },
   watch: {
-    $route(to, from) {
-      console.log(to.path)
+    id() {
+      if (this.$route.path === '/userInfo' || this.$route.path === '/friendInfo') {
+        this.getUserInfo()
+      }
     }
   },
   created() {
@@ -225,6 +232,17 @@ export default {
     },
     // 修改用户信息
     modifyInfo(value) {
+      if (value.title === 'markName') {
+        modifyFriendInfo({
+          uid: this.uid,
+          markName: value.content,
+          id: this.id
+        }).then((res) => {
+          this.getUserInfo()
+          this.closeBox()
+        })
+        return
+      }
       const obj = {}
       obj[value.title] = value.content
       modifyUserInfo({
@@ -312,6 +330,11 @@ export default {
   .name {
     font-size: 0.5rem;
     margin-bottom:  0.2rem;
+    display: flex;
+    align-items: center;
+    .van-icon {
+      margin-left: 0.133333rem;
+    }
   }
   .time {
     font-size: 0.373333rem;

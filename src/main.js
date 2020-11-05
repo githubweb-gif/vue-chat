@@ -3,8 +3,9 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import './assets/css/global.css'
-import 'element-ui/lib/theme-chalk/index.css'
-import elementUi from 'element-ui'
+// import 'element-ui/lib/theme-chalk/index.css'
+// import elementUi from 'element-ui'
+import './el-ui'
 import './until/date'
 import './assets/font/iconfont.css'
 import './vantComponents'
@@ -27,11 +28,15 @@ Vue.use(VueAMap)
 
 // socket.io
 import io from 'weapp.socket.io'
-Vue.prototype.socket = io('http://localhost:8082/')
+if (process.env.NODE_ENV === 'production') {
+  // 你上线的后端url
+  Vue.prototype.socket = io('http://106.53.102.65:8082/')
+} else {
+  Vue.prototype.socket = io('http://localhost:8082/')
+}
 
 // 全局注册
 Vue.use(VueCropper)
-Vue.use(elementUi)
 
 Vue.config.productionTip = false
 

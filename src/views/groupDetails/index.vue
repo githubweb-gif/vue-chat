@@ -2,10 +2,10 @@
   <div id="groupDetails">
     <div class="header top">
       <div class="back">
-        <span class="link el-icon-arrow-left" @click="$router.go(-1)" />
+        <van-icon name="arrow-left" @click="$router.go(-1)" />
       </div>
       <van-uploader v-if="groupInfo.userID === userID" :after-read="afterRead">
-        <span :style="{color:'#1a73e8'}" class="el-icon-edit" @click="isCrop=!isCrop" />
+        <van-icon :style="{color:'#1a73e8'}" name="edit" @click="isCrop=!isCrop" />
       </van-uploader>
     </div>
     <div v-if="groupInfo.avatar" class="cover">
@@ -22,9 +22,9 @@
       <div v-if="groupPepole" class="groupPepole">
         <div class="header">
           <div class="title">群成员</div>
-          <div @click="toLeft=true">
+          <div class="arrow" @click="toLeft=true">
             <span>成员管理</span>
-            <span class="el-icon-arrow-right" />
+            <van-icon name="arrow" />
           </div>
         </div>
         <div class="list">
@@ -35,7 +35,7 @@
             <div class="name">{{ item.markName }}</div>
           </div>
           <div class="addPeople item last-item" @click="toUp=true">
-            <div class="icon el-icon-plus avatar" />
+            <van-icon class="icon" name="plus" />
             <div class="name">邀请</div>
           </div>
         </div>
@@ -43,17 +43,17 @@
       <div class="group-name info">
         <div>群名称</div>
         <div class="content">{{ groupInfo.name }}</div>
-        <div v-if="groupInfo.userID === userID" class="el-icon-arrow-right" @click="putInfo(groupInfo.name, 'name')" />
+        <van-icon v-if="groupInfo.userID === userID" name="arrow" @click="putInfo(groupInfo.name, 'name')" />
       </div>
       <div class="group-bulletin info">
         <div>群说明</div>
         <div class="content">{{ groupInfo.notice }}</div>
-        <div v-if="groupInfo.userID === userID" class="el-icon-arrow-right" @click="putInfo(groupInfo.notice, 'notice')" />
+        <van-icon v-if="groupInfo.userID === userID" name="arrow" @click="putInfo(groupInfo.notice, 'notice')" />
       </div>
       <div class="group-markName info">
         <div>群内昵称</div>
         <div class="content">{{ userinfo.markName }}</div>
-        <div class="el-icon-arrow-right" @click="putInfo(userinfo.markName, 'markName')" />
+        <van-icon v-if="groupInfo.userID === userID" name="arrow" @click="putInfo(userinfo.markName, 'markName')" />
       </div>
       <div class="message-setting info">
         <div>消息免打扰</div>
@@ -100,7 +100,7 @@
       <group-pepole v-if="toLeft" title="刪除" :show="true" :group-info="groupInfo" class="listPepole" :data="allGroupFriend" @checkedPeople="deleteGroupFriends">
         <template v-slot:header>
           <div class="header">
-            <div class="back el-icon-arrow-left" @click="toLeft=false" />
+            <van-icon class="back" name="arrow-left" @click="toLeft=false" />
           </div>
         </template>
         <template v-slot:opsition>
@@ -451,7 +451,9 @@ export default {
         .title {
           font-weight: 600;
         }
-        span {
+        .arrow {
+          display: flex;
+          align-items: center;
           font-size: 0.373rem;
           color: rgba(39,40,50,0.50);
         }
@@ -490,10 +492,13 @@ export default {
         .addPeople {
           .icon {
             background-color: #ffe431;
+            height: 1.386rem;
+            border-radius: 0.267rem;
             display: flex;
             justify-content: center;
             align-items: center;
             font-size: 0.853rem;
+            margin-bottom: 0.11rem;
           }
         }
       }

@@ -1,13 +1,13 @@
 <template>
   <div class="search">
     <div class="header">
-      <form>
+      <div class="form">
         <div class="ss">
           <input v-if="title === 'search'" v-model="keyWords" type="text" @input="search">
           <input v-else v-model="keyWords" type="text" @input="addFriend">
-          <button><span class="el-icon-search" /></button>
+          <button><van-icon name="search" /></button>
         </div>
-      </form>
+      </div>
       <div class="cancel"><router-link to="/">取消</router-link></div>
     </div>
     <div class="main">
@@ -130,7 +130,7 @@ export default {
   align-items: center;
   border-bottom: 0.026667rem solid #ede8e8;
   background-color: #ffffff;
-  form {
+  .form {
     flex: 2;
     height: 100%;
     .ss {

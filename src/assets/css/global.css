@@ -35,10 +35,6 @@ i {
   background-color: #605e5e;
 }
 
-.el-upload {
-  width: 100%;
-}
-
 /* 处理下textarea右下三角 */
 textarea {
   resize: none !important;
@@ -63,7 +59,3 @@ textarea {
 .van-swipe-cell__right button {
   height: 100%;
 }
-
-/* .input textarea {
-  height: 30px !important;
-} */

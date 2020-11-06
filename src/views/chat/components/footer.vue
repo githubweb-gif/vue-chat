@@ -6,6 +6,7 @@
         <text-input
           v-model="message"
           :autosize="{ minRows: 1, maxRows: 5 }"
+          @input="scroll"
           @focus="scroll"
         />
       </div>
@@ -95,6 +96,7 @@ export default {
     emoji(value) {
       if (value) {
         this.message += value
+        console.log(this.message)
       } else {
         const index = this.message.length
         const num = this.message.substring(index - 2, index).search(/(\ud83c[\udf00-\udfff])|(\ud83d[\udc00-\ude4f])|(\ud83d[\ude80-\udeff])/i) === -1 ? 1 : 2

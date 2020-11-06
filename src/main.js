@@ -28,8 +28,8 @@ Vue.use(VueAMap)
 // socket.io
 import io from 'weapp.socket.io'
 if (process.env.NODE_ENV === 'production') {
-  // 你上线的后端url
-  Vue.prototype.socket = io('http://106.53.102.65:8082/')
+  // 你上线的后端url,
+  Vue.prototype.socket = io('https://chat.putao.work:8082/')
 } else {
   Vue.prototype.socket = io('http://localhost:8082/')
 }

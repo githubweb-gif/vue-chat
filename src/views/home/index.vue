@@ -1,26 +1,26 @@
 <template>
   <div class="main">
-    <ul>
-      <router-link class="link" to="/friendReq">
-        <li class="req">
-          <div class="avatar">
-            <van-icon name="friends" />
-          </div>
-          <div class="info">
-            <div class="name">好友请求</div>
-          </div>
-          <!-- <div class="date">
+    <router-link class="link" to="/friendReq">
+      <div class="req">
+        <div class="icon">
+          <van-icon name="friends" />
+        </div>
+        <div class="info">
+          <div class="name">好友请求</div>
+        </div>
+        <!-- <div class="date">
             上午7:45
           </div> -->
-        </li>
-      </router-link>
+      </div>
+    </router-link>
+    <ul>
       <li v-for="(item,index) in AllData" :key="index" @click="toChat(item)">
         <van-swipe-cell>
           <div class="content req">
             <div class="avatar">
               <img v-if="item.attributes==='group'" :src="item.avatar | avatar" alt="">
               <img v-else :src="item.userID.avatar | avatar" alt="">
-              <i v-if="item.tip > 0 ? true : false">{{ item.tip }}</i>
+              <i v-if="item.tip - 0 > 0 ? true : false">{{ item.tip }}</i>
             </div>
             <div class="info">
               <div v-if="item.attributes==='group'" class="name">{{ item.name }}</div>
@@ -244,31 +244,19 @@ export default {
 }
 .link {
   width: 100%;
-}
-li:hover {
-  background-color: #f3f4f6;
-}
-.req,.content {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin: 0 0.427rem;
-}
-li {
-  padding: 0.24rem 0;
-  .avatar {
-    width: 1.28rem;
-    height: 1.28rem;
-    margin-right: 0.427rem;
-    position: relative;
-    img {
-      width: 1.28rem;
-      height: 100%;
-      border-radius: 12px;
+  display: block;
+  .req {
+    padding: 0.24rem 0;
+    font-size: 0.426667rem;
+    .info {
+      flex: 1;
+    }
+    .icon {
+      margin-right: 0.427rem;
     }
     .van-icon {
       width: 1.28rem;
-      height: 100%;
+      height: 1.28rem;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -277,27 +265,51 @@ li {
       border-radius: 0.32rem;
       font-size: 0.8rem;
     }
-    .content {
-          i {
+  }
+}
+li:hover {
+  background-color: #f3f4f6;
+}
+.req,
+.content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0 0.427rem;
+}
+li {
+  .van-swipe-cell {
+    padding: 0.24rem 0;
+  }
+  .avatar {
+    width: 1.28rem;
+    height: 1.28rem;
+    margin-right: 0.427rem;
+    position: relative;
+    i {
       display: flex;
       align-items: center;
       justify-content: center;
       padding: 0.0267rem 0.106rem;
       position: absolute;
-      top: -0.1067rem;
-      right: -0.1067rem;
+      top: -0.16rem;
+      right: -0.08rem;
       background-color: #ed3e3c;
       border-radius: 50%;
       color: #fff;
       font-size: 0.32rem;
     }
+    img {
+      width: 1.28rem;
+      height: 100%;
+      border-radius: 12px;
     }
   }
 
   .info {
     flex: 1;
     align-self: flex-start;
-    padding-top:0.1067rem;
+    padding-top: 0.1067rem;
     overflow: hidden;
     .name {
       font-size: 0.48rem;

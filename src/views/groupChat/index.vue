@@ -11,7 +11,7 @@
         <div class="opsition">
           <van-uploader :after-read="afterRead">
             <div class="cover">
-              <img :src="img | avatar" alt="">
+              <img src="../../assets/img/群聊.png" alt="">
             </div>
           </van-uploader>
           <div class="name">
@@ -39,7 +39,6 @@ export default {
       name: '',
       isCrop: false,
       imgurl: '',
-      img: 'http://www.huohuo90.com/assets/%E7%BE%A4%E8%81%8A.png',
       disabled: false
     }
   },

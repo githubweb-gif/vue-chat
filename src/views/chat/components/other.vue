@@ -79,7 +79,7 @@ export default {
       uploadImg(formData).then((res) => {
         const { imgUrl } = res
         if (this.$route.path === '/chat') {
-          const data = { types: 1, message: 'http://localhost:3000' + imgUrl, userID: this
+          const data = { types: 1, message: imgUrl, userID: this
             .oneSelf.id, friendID: this.id }
           sendMessage(data).then((res) => {
             const { data: { data, user }} = res
@@ -91,7 +91,7 @@ export default {
             this.$router.push('/')
           })
         } else if (this.$route.path === '/groupChat') {
-          const data = { types: 1, message: 'http://localhost:3000' + imgUrl, userID: this
+          const data = { types: 1, message: imgUrl, userID: this
             .oneSelf.id, GroupID: this.id }
           sendGroupMsg(data).then((res) => {
             this.$store.commit('ACCEPT_DATA', res.data)

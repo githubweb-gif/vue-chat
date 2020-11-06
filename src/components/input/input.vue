@@ -35,16 +35,28 @@ export default {
   computed: {
     textareaStyle() {
       return merge({}, this.textareaCalcStyle)
+    },
+    nativeInputValue() {
+      return this.value === null || this.value === undefined ? '' : String(this.value)
     }
   },
   watch: {
     value() {
       this.$nextTick(this.resizeTextarea)
+    },
+    nativeInputValue() {
+      this.setNativeInputValue()
     }
+  },
+  mounted() {
+    this.setNativeInputValue()
+    this.resizeTextarea()
   },
   methods: {
     handleInput(event) {
+      if (event.target.value === this.nativeInputValue) return
       this.$emit('input', event.target.value)
+      this.$nextTick(this.setNativeInputValue)
     },
     resizeTextarea() {
       const { autosize } = this
@@ -62,6 +74,15 @@ export default {
     handleFocus(event) {
       this.$emit('focus', event)
       this.borderColor = '#3e92c7'
+    },
+    setNativeInputValue() {
+      const input = this.getInput()
+      if (!input) return
+      if (input.value === this.nativeInputValue) return
+      input.value = this.nativeInputValue
+    },
+    getInput() {
+      return this.$refs.textarea
     }
   }
 }

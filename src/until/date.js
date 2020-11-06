@@ -46,7 +46,7 @@ Vue.filter('avatar', function(value) {
   }
   if (process.env.NODE_ENV === 'production') {
     // 你上线的后端url
-    return `http://106.53.102.65:3200/${value}`
+    return `https://chat.putao.work/${value}`
   }
   return `http://localhost:3000/${value}`
 })

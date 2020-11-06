@@ -6,7 +6,7 @@ import { Notify, Dialog } from 'vant'
 let baseURL = ''
 if (process.env.NODE_ENV === 'production') {
   // 你上线的后端url
-  baseURL = 'http://106.53.102.65:3200'
+  baseURL = 'https://chat.putao.work'
 } else {
   baseURL = 'http://localhost:3000'
 }

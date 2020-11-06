@@ -178,7 +178,6 @@ export default {
       }
     },
     toLeft(value) {
-      console.log(this.allGroupFriend)
       if (value && !this.allGroupFriend) {
         this.managementUser()
       }
@@ -284,13 +283,11 @@ export default {
         })
       }
       this.dataList = obj
-      console.log(this.dataList)
     },
     // 获取排序好的好友
     getAllFriend() {
       searchFriends({ uid: this.userID, key: this.keyWords, pinyin: true }).then((res) => {
         const obj = res.data
-        console.log('------------')
         this.processFriend(obj)
       })
     },
@@ -311,7 +308,6 @@ export default {
       }
       searchFriends({ uid: this.userID, key: this.keyWords, pinyin: true }).then((res) => {
         const obj = res.data
-        console.log(obj)
         this.processFriend(obj)
       })
     }, 500),
@@ -348,7 +344,6 @@ export default {
         return
       }
       searchGroupUser({ GroupID: this.GroupID, keyWords: this.keyWords }).then((res) => {
-        console.log(res.data)
         if (res.data.length === 0) {
           this.allGroupFriend = null
           return

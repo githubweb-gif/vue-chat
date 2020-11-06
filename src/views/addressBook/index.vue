@@ -41,7 +41,6 @@ export default {
   methods: {
     initData() {
       getAllFriend({ userID: this.oneSelf.id }).then((res) => {
-        console.log(res)
         this.dataList = res.data
       })
     }

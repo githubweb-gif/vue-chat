@@ -72,14 +72,8 @@ export default {
       return this.$store.getters.userInfo.id
     }
   },
-  watch: {
-    data(value) {
-      console.log(value)
-    }
-  },
   methods: {
     checkUser(item, e) {
-      console.log(e.target.checked)
       if (!e.target.checked) {
         const index = this.groupFriend.indexOf(item)
         this.groupFriend.splice(index, 1)

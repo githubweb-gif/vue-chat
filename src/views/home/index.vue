@@ -190,7 +190,6 @@ export default {
         })
         return
       }
-      console.log(item)
       this.$router.push({
         path: '/groupChat',
         query: {
@@ -201,7 +200,6 @@ export default {
     // 获取群列表
     getHomeGroups() {
       getHomeGroups({ userID: this.id }).then((res) => {
-        console.log(res)
         const arr = []
         res.data.forEach((x, index) => {
           arr.push(x['GroupID'])
@@ -209,7 +207,6 @@ export default {
           arr[index].attributes = 'group'
         })
         this.groupList = this.types(arr)
-        console.log(this.groupList)
       })
     },
     // 处理群及时消息

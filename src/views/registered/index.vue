@@ -148,7 +148,6 @@ export default {
       }
       getCode({ email: this.loginForm.email })
         .then((data) => {
-          console.log(data)
           alert('验证码已发送注意查收')
         })
         .catch(() => {})

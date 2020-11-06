@@ -3,20 +3,9 @@
     <div class="input">
       <div class="iconfont icon-yuyin" />
       <div class="msg">
-        <!-- <el-input
+        <text-input
           v-model="message"
           :autosize="{ minRows: 1, maxRows: 5 }"
-          type="textarea"
-          @input="scroll"
-          @focus="scroll"
-        /> -->
-        <van-field
-          v-model="message"
-          :autosize="{ maxHeight: 100, minHeight: 30 }"
-          :border="true"
-          :center="true"
-          type="textarea"
-          @input="scroll"
           @focus="scroll"
         />
       </div>
@@ -40,12 +29,14 @@
 
 <script>
 import { sendMessage, sendGroupMsg } from '@/api/user'
+import textInput from '@/components/input/input.vue'
 import other from './other.vue'
 import emoji from './emoji.vue'
 export default {
   components: {
     other,
-    emoji
+    emoji,
+    textInput
   },
   props: {
     isComponet: {
@@ -74,7 +65,6 @@ export default {
       return this.$store.getters.userInfo
     },
     route() {
-      console.log(this.$route.path)
       return this.$route.path
     }
   },
@@ -139,12 +129,15 @@ export default {
       // GroupID, userID, message, types
       const data = { types: 0, message: this.message, GroupID: this.id, userID: this.oneSelf.id }
       sendGroupMsg(data).then((res) => {
-        console.log(res)
         this.$emit('addMsg', res.data)
         this.socket.emit('groupMsg', { GroupID: this.id, msg: res.data })
       }).catch(() => {
         this.$router.push('/')
       })
+    },
+    changeHeight() {
+      const hh = this.$refs.textarea
+      hh.style.posHeight = hh.scrollHeight + 'px'
     }
   }
 }
@@ -158,9 +151,9 @@ footer {
     align-items: center;
     justify-content: space-between;
     padding: 0.08rem 0.43rem;
-    .van-field {
-      padding: 0;
-      border: 1px solid red;
+    .textarea {
+      flex: 1;
+      font-size: 0.373333rem;
     }
     .msg {
       flex: 1;

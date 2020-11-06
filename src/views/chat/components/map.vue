@@ -6,7 +6,7 @@
         发送
       </div>
     </div>
-    <el-amap ref="map" :zoom="zoom" vid="amap" :events="events" :plugin="plugin" class="amap-demo" :center="center">
+    <el-amap ref="map" :zoom="zoom" vid="amap" :plugin="plugin" class="amap-demo" :center="center">
       <template>
         <el-amap-marker v-for="(marker, index) in markers" :key="index" :position="marker.position" :events="marker.events" :visible="marker.visible" :draggable="marker.draggable" :vid="index" />
       </template>
@@ -58,11 +58,6 @@ export default {
 
       place: '', // 经纬度 具体位置 所在地区
       loaded: false,
-      events: {
-        complete: (data) => {
-          console.log(data)
-        }
-      },
       plugin: [{
         position: 'RB',
         pName: 'Scale'
@@ -77,8 +72,6 @@ export default {
           init(o) {
             // o 是高德地图定位插件实例
             o.getCurrentPosition((status, result) => {
-              console.log(status)
-              console.log(result)
               if (result && result.position) {
                 self.location = result.addressComponent
                 self.formattedAddress = result.formattedAddress
@@ -154,7 +147,6 @@ export default {
         })
     },
     changeLaLn(value) {
-      console.log(value)
       const obj = [
         value.location,
         value.name,
@@ -194,7 +186,6 @@ export default {
       }
     },
     onSearchResult(pois) {
-      console.log(pois)
       const obj = [
         pois[0].lng + ',' + pois[0].lat,
         pois[0].name,

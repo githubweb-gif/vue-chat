@@ -188,7 +188,6 @@ export default {
         }
         if (index === msg.length - 1) {
           x.scroll = 'bottom' + data.page
-          console.log(x.scroll)
         }
         return x
       })
@@ -208,7 +207,6 @@ export default {
       } else {
         return new Promise((resolve, reject) => {
           getGroupMsg(data).then((res) => {
-            console.log(res)
             const msg = this.Pagination(res.data)
             resolve(msg)
           })
@@ -259,9 +257,6 @@ export default {
     },
     // socket接收群消息
     acceptGroupMessage() {
-      this.socket.on('joinToRoom', (data) => {
-        console.log(data)
-      })
       this.socket.on('sendGroupMsg', (data) => {
         this.addMsg(data.msg)
       })
@@ -273,7 +268,6 @@ export default {
       this.acceptGroupMessage()
     },
     show(images) {
-      console.log(images)
       const index = this.images.indexOf(images)
       ImagePreview({
         images: this.images,
@@ -286,8 +280,6 @@ export default {
     initScroll() {
       this.$nextTick(() => {
         const scroll = this.$refs.main
-        const footer = this.$refs.footer
-        console.log(footer.$el.offsetHeight)
         if (scroll.scrollHeight > scroll.clientHeight) {
           scroll.scrollTop = scroll.scrollHeight
         }
@@ -339,7 +331,6 @@ export default {
         'SymbianOS', 'Windows Phone',
         'iPad', 'iPod']
       const userAgentInfo = navigator.userAgent
-      console.log(userAgentInfo)
       let flag = false
       for (let i = 0; i < Agents.length; i++) {
         if (userAgentInfo.indexOf(Agents[i]) !== -1) {
@@ -405,6 +396,7 @@ main {
         display: flex;
         align-items: center;
         position: relative;
+        word-break:break-all;
         img {
           width: 100%;
         }

@@ -2,10 +2,7 @@
   <div class="layout" @click="menu = !menu">
     <header-bar :menu="menu" :user="user" />
     <main @mousewheel="menu === false">
-      <keep-alive>
-        <router-view v-if="$route.meta.keepAlive" class="main" />
-      </keep-alive>
-      <router-view v-if="!$route.meta.keepAlive" class="main" />
+      <router-view class="main" />
     </main>
     <footer-bar />
   </div>

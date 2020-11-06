@@ -35,11 +35,8 @@ export default {
       }
       // 判断用户离开群聊房间
       if (from.path === '/groupChat') {
-        console.log(this.$store.state.user.GroupID)
         this.socket.emit('leaveToRoom', this.$store.state.user.GroupID)
       }
-      console.log(from.path)
-      console.log(to.path === from.path)
       // 页面刷新时，重新登录socket
       if (this.id && this.id !== '' && this.n === 0) {
         this.join()

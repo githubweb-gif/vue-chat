@@ -207,7 +207,6 @@ export default {
       // 是好友
       if (!this.ifFriend) {
         getFriendInfo({ id: this.id, uid: this.uid }).then((res) => {
-          console.log(res)
           this.userFrom = res.data.userID
           this.userFrom.markName = res.data.markName
         })
@@ -269,7 +268,6 @@ export default {
     },
     // 改变生日
     changeBirth(value) {
-      console.log(value)
       const obj = {
         title: 'birth',
         content: value

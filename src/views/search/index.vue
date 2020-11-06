@@ -109,10 +109,8 @@ export default {
       if (this.keyWords.trim() === '') {
         return
       }
-      console.log(this.keyWords)
       searchStranger({ key: this.keyWords, uname: this.name }).then((res) => {
         const { data } = res
-        console.log(data)
         this.stranger = data
       })
     }, 500)

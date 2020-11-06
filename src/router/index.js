@@ -53,7 +53,7 @@ const routes = [
   // 个人详情页
   {
     path: '/details',
-    meta: { index: 4, keepAlive: false },
+    meta: { index: 4, keepAlive: true },
     component: () => import('../views/Details/index.vue')
   },
   // 添加好友页

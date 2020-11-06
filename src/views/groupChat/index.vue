@@ -62,7 +62,6 @@ export default {
       this.imgurl = file.content
     },
     upload(value) {
-      console.log(value)
       this.img = value
     },
     setGroup(data) {
@@ -74,7 +73,6 @@ export default {
       this.disabled = true
       const obj = { name: this.name, userID: this.oneSelf.id, avatar: this.img, username: this.oneSelf.name, groupFriend: data }
       setGroup(obj).then((res) => {
-        console.log(res)
         this.$router.push('/')
       }).catch(() => {
         location.href()

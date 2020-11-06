@@ -2,7 +2,7 @@
   <div class="top">
     <div v-if="$route.path === '/home' || $route.path === '/addressBook'" class="home header">
       <div v-if="$route.path === '/home'" class="avatar">
-        <img v-if="user.avatar" :src="user.avatar | avatar" alt="" @click="infoPage">
+        <img v-if="user.avatar && user" :src="user.avatar | avatar" alt="" @click="infoPage">
       </div>
       <div v-else class="title">{{ $route.meta.title }}</div>
       <div class="right">

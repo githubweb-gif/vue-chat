@@ -111,7 +111,6 @@ export default {
       this.mapShow = false
     },
     show(value) {
-      console.log(value)
       this.componentShow = false
     }
   }

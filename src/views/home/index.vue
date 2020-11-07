@@ -83,6 +83,9 @@ export default {
     },
     GroupMsg() {
       return this.$store.state.user.GroupMsg
+    },
+    route() {
+      return this.$route
     }
   },
   watch: {
@@ -133,6 +136,25 @@ export default {
           this.setMsg(arr, data.tip)
         }
       })
+    },
+    route(value) {
+      const route = value
+      const id = route.query.id
+      console.log(route.path)
+      if (route.path === '/chat') {
+        this.friendList.forEach((x, index) => {
+          if (x.userID._id === id) {
+            this.friendList[index].tip = 0
+          }
+        })
+      } else if (route.path === '/groupChat') {
+        this.groupList.forEach((x, index) => {
+          if (x._id === id) {
+            this.groupList[index].tip = 0
+            console.log(this.groupList[index])
+          }
+        })
+      }
     }
   },
   created() {
@@ -290,7 +312,7 @@ li {
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 0.0267rem 0.106rem;
+      padding: 0.02rem 0.11rem;
       position: absolute;
       top: -0.16rem;
       right: -0.08rem;

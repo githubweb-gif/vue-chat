@@ -34,7 +34,6 @@ export default {
       if (this.id && this.id !== '' && this.n === 0) {
         this.join()
       }
-      console.log(from.meta.index)
       if (to.meta.index === from.meta.index) {
         this.transitionName = ''
         return

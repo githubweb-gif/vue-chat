@@ -15,7 +15,7 @@
     <header />
     <main ref="main" @click="initHeight = !initHeight">
       <van-pull-refresh v-model="isLoading" :disabled="disabled" @refresh="onRefresh">
-        <div v-for="(item,index) in msgList" :id="index===0?'lastItem': ''" :key="item._id" :class="['user', item.scroll]">
+        <div v-for="(item,index) in msgList" :id="index===0?'lastItem': ''" :key="index" :class="['user', item.scroll]">
           <div class="time">{{ item.time | chatDate }}</div>
           <div class="info" :class="[item.userID._id === oneSelf.id ? 'oneself' : 'friend', item.GroupID ? 'group': '']">
             <div class="avatar">
@@ -126,6 +126,7 @@ export default {
     },
     changeRoute() {
       this.initScroll()
+      this.joinGroup()
     }
   },
   created() {
@@ -265,6 +266,7 @@ export default {
     // socket接收群消息
     acceptGroupMessage() {
       this.socket.on('sendGroupMsg', (data) => {
+        console.log(data)
         this.addMsg(data.msg)
       })
     },

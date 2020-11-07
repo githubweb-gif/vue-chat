@@ -3,11 +3,6 @@
     <!-- 导航 -->
     <header-bar ref="header" class="head">
       <template v-slot:details>
-        <div v-if="id === uid">
-          <router-link :to="`/userInfo?id=${id}`">
-            <svg-icon icon-id="gengduo" />
-          </router-link>
-        </div>
         <div v-if="validFriend.state">
           <router-link :to="`/friendInfo?id=${id}`">
             <svg-icon icon-id="gengduo" />
@@ -23,12 +18,12 @@
       </div>
       <div v-if="!toUp" class="info">
         <h3>{{ userInfo.name }}</h3>
-        <span v-if="validFriend.state">昵称: {{ userInfo.markName }}</span>
+        <span>昵称: {{ userInfo.markName }}</span>
         <p>{{ userInfo.intr }}</p>
       </div>
     </div>
     <!-- 底部 -->
-    <div v-if="id === uid ? false : true" class="footer">
+    <div class="footer">
       <span v-if="validFriend.state" @click="toChat">发送消息</span>
       <span v-if="!validFriend.state && id" @click="toUp=!toUp">加为好友</span>
     </div>
@@ -52,6 +47,7 @@
         </div>
       </div>
     </transition>
+    <van-loading v-if="load" class="loading" type="spinner" />
   </div>
 </template>
 
@@ -73,7 +69,8 @@ export default {
       },
       message: '',
       toUp: false,
-      toHeight: ''
+      toHeight: '',
+      load: true
     }
   },
   computed: {
@@ -124,27 +121,25 @@ export default {
   },
   methods: {
     getUserInfo() {
-      if (this.id === this.uid) {
-        this.userInfo = this.$store.getters.userInfo
-      } else {
-        this.isFriend().then((data) => {
-          this.validFriend = data.data
-          if (this.validFriend.state) {
-            getFriendInfo({ id: this.id, uid: this.uid }).then((res) => {
-              this.userInfo = res.data.userID
-              this.userInfo.markName = res.data.markName
+      this.isFriend().then((data) => {
+        this.validFriend = data.data
+        if (this.validFriend.state) {
+          getFriendInfo({ id: this.id, uid: this.uid }).then((res) => {
+            this.userInfo = res.data.userID
+            this.userInfo.markName = res.data.markName
+            this.load = false
+          })
+        } else {
+          getInfo(this.id)
+            .then(async(res) => {
+              this.userInfo = res.data
+              this.load = false
             })
-          } else {
-            getInfo(this.id)
-              .then(async(res) => {
-                this.userInfo = res.data
-              })
-              .catch((err) => {
-                console.log(err)
-              })
-          }
-        })
-      }
+            .catch((err) => {
+              console.log(err)
+            })
+        }
+      })
     },
     // 判断是否是好友
     async isFriend() {

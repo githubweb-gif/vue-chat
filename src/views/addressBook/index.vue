@@ -19,6 +19,7 @@
         </div>
       </div>
     </div>
+    <van-loading v-if="load" class="layloading" type="spinner" />
   </div>
 </template>
 
@@ -27,7 +28,8 @@ import { getAllFriend } from '@/api/user'
 export default {
   data() {
     return {
-      dataList: []
+      dataList: [],
+      load: true
     }
   },
   computed: {
@@ -42,6 +44,7 @@ export default {
     initData() {
       getAllFriend({ userID: this.oneSelf.id }).then((res) => {
         this.dataList = res.data
+        this.load = false
       })
     }
   }
@@ -54,6 +57,7 @@ export default {
   flex-direction: column;
   justify-content: space-between;
   background-color: rgb(244, 244, 244);
+  position: relative;
 }
 .friendList,
 .groupList {

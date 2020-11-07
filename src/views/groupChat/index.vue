@@ -39,7 +39,8 @@ export default {
       name: '',
       isCrop: false,
       imgurl: '',
-      disabled: false
+      disabled: false,
+      img: ''
     }
   },
   computed: {
@@ -65,8 +66,10 @@ export default {
     },
     setGroup(data) {
       const test = /^[a-z0-9_-]{3,16}$/
-      if (!test.test(this.name) || this.img.trim() === '') {
-        alert('用户名或头像错误')
+      if (!test.test(this.name) || this.img === '') {
+        this.$dialog.alert({
+          message: '用户名或头像错误'
+        })
         return
       }
       this.disabled = true
@@ -74,7 +77,10 @@ export default {
       setGroup(obj).then((res) => {
         this.$router.push('/')
       }).catch(() => {
-        location.href()
+        this.$dialog.alert({
+          message: '创建失败'
+        })
+        this.disabled = false
       })
     }
   }

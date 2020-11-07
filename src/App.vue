@@ -1,11 +1,11 @@
 <template>
   <div id="app">
-    <!-- <transition v-if="$route.meta.keepAlive" :name="transitionName">
+    <transition v-if="$route.meta.keepAlive" :name="transitionName">
       <keep-alive>
         <router-view v-if="$route.meta.keepAlive" class="box" />
       </keep-alive>
-    </transition> -->
-    <transition :name="transitionName">
+    </transition>
+    <transition v-else :name="transitionName">
       <router-view class="box" />
     </transition>
   </div>
@@ -26,13 +26,6 @@ export default {
   watch: {
     // 使用watch 监听$router的变化
     $route(to, from) {
-      // 如果to索引大于from索引,判断为前进状态,反之则为后退状态
-      if (to.meta.index > from.meta.index) {
-        // 设置动画名称
-        this.transitionName = 'slide-left'
-      } else {
-        this.transitionName = 'slide-right'
-      }
       // 判断用户离开群聊房间
       if (from.path === '/groupChat') {
         this.socket.emit('leaveToRoom', this.$store.state.user.GroupID)
@@ -40,6 +33,18 @@ export default {
       // 页面刷新时，重新登录socket
       if (this.id && this.id !== '' && this.n === 0) {
         this.join()
+      }
+      console.log(from.meta.index)
+      if (to.meta.index === from.meta.index) {
+        this.transitionName = ''
+        return
+      }
+      // 如果to索引大于from索引,判断为前进状态,反之则为后退状态
+      if (to.meta.index > from.meta.index) {
+        // 设置动画名称
+        this.transitionName = 'slide-left'
+      } else {
+        this.transitionName = 'slide-right'
       }
     },
     id(value) {

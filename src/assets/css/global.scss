@@ -59,3 +59,28 @@ textarea {
 .van-swipe-cell__right button {
   height: 100%;
 }
+
+.loading{
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+
+.loading,.layloading{
+  display: flex;
+  justify-content: center;
+  z-index: 100;
+  align-items: center;
+  background-color: #ffffff;
+}
+
+// layout
+.layloading {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}

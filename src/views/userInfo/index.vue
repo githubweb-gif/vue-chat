@@ -106,6 +106,7 @@
     <transition name="fade">
       <qn-card v-if="qn" :qn-content="content" @modify="modifyInfo" @close="closeBox" />
     </transition>
+    <van-loading v-if="load" class="layloading" type="spinner" />
   </div>
 </template>
 
@@ -136,7 +137,8 @@ export default {
       minDate: new Date(1970, 0, 1),
       maxDate: new Date(2030, 10, 1),
       currentDate: new Date(),
-      showDate: false
+      showDate: false,
+      load: true
     }
   },
   computed: {
@@ -209,6 +211,7 @@ export default {
         getFriendInfo({ id: this.id, uid: this.uid }).then((res) => {
           this.userFrom = res.data.userID
           this.userFrom.markName = res.data.markName
+          this.load = false
         })
         return
       }
@@ -216,6 +219,7 @@ export default {
       getInfo(this.id)
         .then((res) => {
           this.userFrom = res.data
+          this.load = false
         })
         .catch((err) => {
           console.log(err)

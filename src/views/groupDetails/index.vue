@@ -115,6 +115,7 @@
       </group-pepole>
     </transition>
     <cropper-Vue :is-fixed="false" :is-crop="isCrop" :imgurl="imgurl" class="cropper" @upload="upload" />
+    <van-loading v-if="load" class="loading" type="spinner" />
   </div>
 </template>
 
@@ -155,7 +156,8 @@ export default {
       keyWords: '',
       toLeft: false,
       // 全部群成员
-      allGroupFriend: null
+      allGroupFriend: null,
+      load: true
     }
   },
   computed: {
@@ -198,6 +200,7 @@ export default {
         this.groupInfo = res.data
         // 获取群成员
         this.getGroupPepole()
+        this.load = false
       })
     },
     // 获取群成员
@@ -376,6 +379,9 @@ export default {
     padding: 0 0.426667rem;
     .close {
       font-size: 0.5rem;
+    }
+    .back {
+      color: #000000;
     }
   }
   .van-cell-group {

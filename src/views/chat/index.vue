@@ -2,7 +2,8 @@
   <div class="chat">
     <header-bar @click="initHeight = !initHeight">
       <template v-slot:details>
-        <div class="name">{{ chatInfo.markName }}</div>
+        <div v-if="$route.path!=='/groupChat'" class="name">{{ chatInfo.markName }}</div>
+        <div v-else class="name">{{ chatInfo.name }}</div>
         <router-link v-if="$route.path === '/chat'" :to="`/details?id=${id}`">
           <van-icon name="ellipsis" />
         </router-link>
@@ -111,6 +112,9 @@ export default {
         return true
       }
       return false
+    },
+    changeRoute() {
+      return this.$route.path
     }
   },
   watch: {
@@ -119,6 +123,9 @@ export default {
     },
     otherMsg() {
       this.addMsg(this.otherMsg)
+    },
+    changeRoute() {
+      this.initScroll()
     }
   },
   created() {
@@ -358,6 +365,11 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+}
+.header-bar {
+  .name {
+    flex: 1;
+  }
 }
 .van-icon {
   font-size: 0.8rem;

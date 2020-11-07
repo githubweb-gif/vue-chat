@@ -21,6 +21,7 @@
         </li>
       </ul>
     </main>
+    <van-loading v-if="load" class="loading" type="spinner" />
   </div>
 </template>
 <script>
@@ -30,7 +31,8 @@ export default {
   components: { headerBar },
   data() {
     return {
-      reqList: []
+      reqList: [],
+      load: true
     }
   },
   computed: {
@@ -52,6 +54,7 @@ export default {
       }
       getRequest(obj).then((res) => {
         this.reqList = res.data
+        this.load = false
       })
     },
     refuse(id) {

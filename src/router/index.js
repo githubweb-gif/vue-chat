@@ -17,19 +17,19 @@ const routes = [
       // 通讯录
       {
         path: '/addressBook',
-        meta: { index: 2, title: '通讯录' },
+        meta: { index: 2, title: '通讯录', keepAlive: true },
         component: () => import('../views/addressBook/index.vue')
       },
       // 个人信息页
       {
         path: '/userInfo',
-        meta: { index: 5, keepAlive: true },
+        meta: { index: 2, keepAlive: true, title: '个人信息' },
         component: () => import('../views/userInfo/index.vue')
       },
       // 好友信息页
       {
         path: '/friendInfo',
-        meta: { index: 5, keepAlive: true },
+        meta: { index: 5, title: '好友信息' },
         component: () => import('../views/userInfo/index.vue')
       }
     ]
@@ -47,13 +47,13 @@ const routes = [
   // 搜索页
   {
     path: '/search',
-    meta: { index: 3, title: 'search', keepAlive: false },
+    meta: { index: 3, title: 'search' },
     component: () => import('../views/search/index.vue')
   },
-  // 个人详情页
+  // 好友详情页
   {
     path: '/details',
-    meta: { index: 4, keepAlive: true },
+    meta: { index: 4 },
     component: () => import('../views/Details/index.vue')
   },
   // 添加好友页
@@ -65,13 +65,13 @@ const routes = [
   // 拒绝，同意好友请求页
   {
     path: '/friendReq',
-    meta: { index: 3 },
+    meta: { index: 3, title: '好友请求' },
     component: () => import('../views/friendReq/index.vue')
   },
   // 聊天页
   {
     path: '/chat',
-    meta: { index: 3 },
+    meta: { index: 3, keepAlive: true },
     component: () => import('../views/chat/index.vue')
   },
   // 创建群聊
@@ -83,7 +83,7 @@ const routes = [
   // 群聊聊天页
   {
     path: '/groupChat',
-    meta: { index: 5 },
+    meta: { index: 5, keepAlive: true },
     component: () => import('../views/chat/index.vue')
   },
   // 群详情页
@@ -95,7 +95,7 @@ const routes = [
   // 群列表页
   {
     path: '/groupList',
-    meta: { index: 4 },
+    meta: { index: 4, keepAlive: true },
     component: () => import('../views/groupList/index.vue')
   }
 ]

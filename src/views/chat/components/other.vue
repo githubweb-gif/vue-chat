@@ -39,8 +39,7 @@
 </template>
 
 <script>
-import { sendMessage, uploadImg, sendGroupMsg } from '@/api/user'
-import dataURLtoFile from '@/until/base64&img'
+import { sendMessage, sendGroupMsg } from '@/api/user'
 import vueAmap from './map'
 export default {
   components: {
@@ -73,34 +72,29 @@ export default {
   methods: {
     afterRead(file) {
       // 此时可以自行将文件上传至服务器
-      const imgFile = dataURLtoFile(file.content)
-      const formData = new FormData()
-      formData.append('upload', imgFile)
-      uploadImg(formData).then((res) => {
-        const { imgUrl } = res
-        if (this.$route.path === '/chat') {
-          const data = { types: 1, message: imgUrl, userID: this
-            .oneSelf.id, friendID: this.id }
-          sendMessage(data).then((res) => {
-            const { data: { data, user }} = res
-            data.userID = user
-            this.$store.commit('ACCEPT_DATA', data)
-            this.socket.emit('msg', { fromID: this
-              .oneSelf.id, toID: this.id, msg: data })
-          }).catch(() => {
-            this.$router.push('/')
-          })
-        } else if (this.$route.path === '/groupChat') {
-          const data = { types: 1, message: imgUrl, userID: this
-            .oneSelf.id, GroupID: this.id }
-          sendGroupMsg(data).then((res) => {
-            this.$store.commit('ACCEPT_DATA', res.data)
-            this.socket.emit('groupMsg', { GroupID: this.id, msg: res.data })
-          }).catch(() => {
-            this.$router.push('/')
-          })
-        }
-      })
+      const imgUrl = file.content
+      if (this.$route.path === '/chat') {
+        const data = { types: 1, message: imgUrl, userID: this
+          .oneSelf.id, friendID: this.id }
+        sendMessage(data).then((res) => {
+          const { data: { data, user }} = res
+          data.userID = user
+          this.$store.commit('ACCEPT_DATA', data)
+          this.socket.emit('msg', { fromID: this
+            .oneSelf.id, toID: this.id, msg: data })
+        }).catch(() => {
+          this.$router.push('/')
+        })
+      } else if (this.$route.path === '/groupChat') {
+        const data = { types: 1, message: imgUrl, userID: this
+          .oneSelf.id, GroupID: this.id }
+        sendGroupMsg(data).then((res) => {
+          this.$store.commit('ACCEPT_DATA', res.data)
+          this.socket.emit('groupMsg', { GroupID: this.id, msg: res.data })
+        }).catch(() => {
+          this.$router.push('/')
+        })
+      }
     },
     getMap() {
       this.$refs.sendButton.style.bottom = 0

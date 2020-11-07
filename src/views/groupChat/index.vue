@@ -11,7 +11,8 @@
         <div class="opsition">
           <van-uploader :after-read="afterRead">
             <div class="cover">
-              <img src="../../assets/img/群聊.png" alt="">
+              <img v-if="!img" src="../../assets/img/群聊.png" alt="">
+              <img v-else :src="img | avatar" alt="">
             </div>
           </van-uploader>
           <div class="name">
@@ -40,7 +41,7 @@ export default {
       isCrop: false,
       imgurl: '',
       disabled: false,
-      img: ''
+      img: null
     }
   },
   computed: {

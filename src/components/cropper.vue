@@ -2,7 +2,7 @@
   <div v-if="bol" class="crop">
     <div class="header">
       <div class="back">
-        <span class="link el-icon-arrow-left" @click="closeBox" />
+        <van-icon class="close" name="arrow-left" @click="closeBox" />
       </div>
       <!-- 最好上传后禁止再次点击 -->
       <div class="cropData" @click="startCrop">完成</div>
@@ -111,7 +111,7 @@ export default {
     z-index: 2000;
     background-color: #ffffff;
 }
-  .link {
+  .close {
     font-size: 0.64rem;
     font-weight: 600;
   }

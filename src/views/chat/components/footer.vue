@@ -1,9 +1,12 @@
 <template>
   <footer>
     <div class="input">
-      <div class="iconfont icon-yuyin" />
+      <svg-icon :icon-id="icon" @click="changeAutio" />
       <div class="msg">
+        <div v-if="icon==='yuyin'" class="sound" @touchend="cancelSound" @touchstart="sound">长按说话</div>
+        <audio-vue v-show="isAudio" :is-audio="isAudio" @recorder="getRecorder" />
         <text-input
+          ref="input"
           v-model="message"
           :autosize="{ minRows: 1, maxRows: 5 }"
           @input="scroll"
@@ -30,6 +33,7 @@
 
 <script>
 import { sendMessage, sendGroupMsg } from '@/api/user'
+import audioVue from './audio'
 import textInput from '@/components/input/input.vue'
 import other from './other.vue'
 import emoji from './emoji.vue'
@@ -37,7 +41,8 @@ export default {
   components: {
     other,
     emoji,
-    textInput
+    textInput,
+    audioVue
   },
   props: {
     isComponet: {
@@ -48,7 +53,11 @@ export default {
   data() {
     return {
       message: '',
-      currentTabComponent: ''
+      currentTabComponent: '',
+      icon: 'jianpan',
+      isAudio: false,
+      WAVBlob: '',
+      isSend: false
     }
   },
   computed: {
@@ -77,6 +86,9 @@ export default {
     },
     isComponet() {
       this.currentTabComponent = ''
+    },
+    route() {
+      this.message = ''
     }
   },
   methods: {
@@ -140,6 +152,35 @@ export default {
     changeHeight() {
       const hh = this.$refs.textarea
       hh.style.posHeight = hh.scrollHeight + 'px'
+    },
+    // 切换语音
+    changeAutio() {
+      if (this.icon === 'yuyin') {
+        this.icon = 'jianpan'
+        this.$refs.input.$el.querySelector('textarea').focus()
+      } else if (this.icon === 'jianpan') {
+        this.icon = 'yuyin'
+      }
+    },
+    // 长按录音
+    sound() {
+      this.isAudio = true
+    },
+    // 结束录音
+    cancelSound() {
+      this.isAudio = false
+    },
+    // 获取录音文件
+    getRecorder(value) {
+      if (value) {
+        this.WAVBlob = value
+        // 上传文件
+      } else {
+        this.$notify({
+          type: 'primary',
+          message: '时间太短'
+        })
+      }
     }
   }
 }
@@ -148,6 +189,10 @@ export default {
 <style lang="scss" scoped>
 footer {
   border-top: 0.03rem solid #d6d6d6;
+  .svg-icon {
+    width: 0.8rem;
+    height: 0.8rem;
+  }
   .input {
     display: flex;
     align-items: center;
@@ -162,6 +207,20 @@ footer {
       padding: 0 0.27rem;
       display: flex;
       align-items: center;
+      position: relative;
+      .sound {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        font-size: 0.48rem;
+        background-color: #ffffff;
+        border: 1px solid #d4d3d3;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
     }
     .iconfont,
     .icon,

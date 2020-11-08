@@ -28,9 +28,11 @@ export default {
     $route(to, from) {
       // 判断用户离开群聊房间
       if (from.path === '/groupChat') {
+        console.log('---------')
         this.socket.emit('leaveToRoom', this.$store.state.user.GroupID)
       }
       // 页面刷新时，重新登录socket
+      // n是用来判断页面更新
       if (this.id && this.id !== '' && this.n === 0) {
         this.join()
       }
@@ -60,12 +62,22 @@ export default {
       this.acceptMessage()
     },
     // socket如果多次执行，例如从home和其它页面多次切换，会导致多次监听
-    // 所以acceptMessage卸载app页
+    // 所以acceptMessage写在app页
     acceptMessage() {
       this.socket.on('msg', (data) => {
         this.$store.commit('ONE_BY_ONE_MSG', data)
       })
       this.socket.on('groupMsg', (data) => {
+        console.log(data)
+        this.$store.commit('GROUP_MSG', data)
+      })
+      // 接受自己给自己发的消息
+      this.socket.on('onselfMsg', (data) => {
+        this.$store.commit('ONE_BY_ONE_MSG', data)
+      })
+      // 接受自己给自己发的群消息
+      this.socket.on('groupOneSelfMsg', (data) => {
+        console.log(data)
         this.$store.commit('GROUP_MSG', data)
       })
     }

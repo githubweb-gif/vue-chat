@@ -84,7 +84,8 @@ export default {
       isLoading: false,
       scrollHeight: '',
       // 群数据
-      GroupData: {}
+      GroupData: {},
+      n: 0
     }
   },
   computed: {
@@ -114,7 +115,7 @@ export default {
       return false
     },
     changeRoute() {
-      return this.$route.path
+      return this.$route
     }
   },
   watch: {
@@ -124,12 +125,36 @@ export default {
     otherMsg() {
       this.addMsg(this.otherMsg)
     },
-    changeRoute() {
-      this.initScroll()
-      this.joinGroup()
+    changeRoute(route) {
+      if (route.path === '/chat' || route.path === '/groupChat') {
+        this.initScroll()
+        this.joinGroup()
+      }
+    },
+    id(value) {
+      if (!value || value === '') {
+        return
+      }
+      const chatId = window.sessionStorage.getItem('chatId')
+      console.log(chatId === value)
+      if (chatId === value) {
+        return
+      }
+      window.sessionStorage.setItem('chatId', value)
+      this.msgList = []
+      if (this.route) {
+        this.getUserInfo()
+        this.getOneMsg()
+        this.acceptMessage()
+      } else {
+        this.getGroup()
+        this.getGroupMsg()
+        this.joinGroup()
+      }
     }
   },
   created() {
+    window.sessionStorage.setItem('chatId', this.id)
     if (this.route) {
       this.getUserInfo()
       this.getOneMsg()
@@ -224,6 +249,7 @@ export default {
     // 接收好友发来的信息
     acceptMessage() {
       this.socket.on('msg', (data) => {
+        console.log(data)
         if (data.length && data.length === 1) {
           this.addMsg(data[0])
         }
@@ -274,7 +300,10 @@ export default {
     joinGroup() {
       this.socket.emit('joinToRoom', { GroupID: this.id, id: this.oneSelf.id })
       this.$store.commit('GROUP_ID', this.id)
-      this.acceptGroupMessage()
+      this.n += 1
+      if (this.n === 1) {
+        this.acceptGroupMessage()
+      }
     },
     show(images) {
       const index = this.images.indexOf(images)
@@ -304,6 +333,10 @@ export default {
       return new Promise((resolve, reject) => {
         this.$nextTick(() => {
           const scroll = this.$refs.main
+          // console.log(scroll)
+          if (!scroll) {
+            return
+          }
           scroll.scrollTop = scroll.scrollHeight
           resolve()
         })
@@ -311,7 +344,6 @@ export default {
     },
     // 滚动加载
     onRefresh() {
-      this.n = true
       this.page++
       new Promise((resolve) => {
         if (this.route) {

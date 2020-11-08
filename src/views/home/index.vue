@@ -41,7 +41,7 @@
 </template>
 
 <script>
-import { getFriends, getHomeGroups, deleteMsg, deleteHomeGroup } from '@/api/user'
+import { getFriends, getHomeGroups, clearTip, deleteMsg, deleteHomeGroup } from '@/api/user'
 export default {
   data() {
     return {
@@ -90,12 +90,30 @@ export default {
   },
   watch: {
     oneMsg(data) {
+      console.log(data)
+      let n = 0
       if (data.length && data.length === 1) {
         if (this.friendList.length === 0) {
           const res = this.types(data)
+          if (this.id === res[0].userID._id) {
+            const a = JSON.stringify(res[0])
+            const e = JSON.parse(a)
+            e.userID = res[0].friendID
+            e.friendID = res[0].userID
+            e.tip = 0
+            e.MsgTime = res[0].time
+            e.newMessage = res[0].message
+            this.friendList.unshift(e)
+            return
+          }
           let e = null
           e = res[0]
-          e.tip = 1
+          if (this.$route.query.id === res[0].userID._id && this.$route.path === '/chat') {
+            e.tip = 0
+            clearTip({ userID: this.id, friendID: res[0].userID._id })
+          } else {
+            e.tip = 1
+          }
           e.MsgTime = res[0].time
           e.newMessage = res[0].message
           this.friendList.unshift(e)
@@ -104,11 +122,45 @@ export default {
         this.friendList.forEach((item, index) => {
           const res = this.types(data)
           if (item.userID._id === res[0].userID._id) {
+            n += 1
             const e = item
-            e.tip += 1
+            if (this.$route.query.id === item.userID._id && this.$route.path === '/chat') {
+              e.tip = 0
+              clearTip({ userID: this.id, friendID: item.userID._id })
+            } else {
+              e.tip += 1
+            }
             e.MsgTime = res[0].time
             e.newMessage = res[0].message
             this.friendList.splice(index, 1)
+            this.friendList.unshift(e)
+          } else if (item.userID._id === res[0].friendID._id) {
+            // 给好友发送消息，自己home也接受一下，配合缓存
+            n += 1
+            const e = item
+            e.tip = 0
+            e.MsgTime = res[0].time
+            e.newMessage = res[0].message
+            this.friendList.splice(index, 1)
+            this.friendList.unshift(e)
+          } else if (index === this.friendList.length - 1 && n === 0) {
+            if (this.id === res[0].userID._id) {
+              console.log(res[0])
+              const a = JSON.stringify(res[0])
+              const e = JSON.parse(a)
+              e.userID = res[0].friendID
+              e.friendID = res[0].userID
+              e.tip = 0
+              e.MsgTime = res[0].time
+              e.newMessage = res[0].message
+              this.friendList.unshift(e)
+              return
+            }
+            let e = null
+            e = res[0]
+            e.tip = 1
+            e.MsgTime = res[0].time
+            e.newMessage = res[0].message
             this.friendList.unshift(e)
           }
         })
@@ -118,6 +170,7 @@ export default {
       const arr = []
       let n = 0
       arr.push(data.GroupID)
+      console.log(data)
       if (this.groupList.length === 0) {
         this.setMsg(arr, data.tip)
         return

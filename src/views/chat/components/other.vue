@@ -16,10 +16,6 @@
         <div class="iconfont icon-weizhi1" />
         <div class="name">位置</div>
       </div>
-      <div class="index">
-        <div class="iconfont icon-shipin" />
-        <div class="name">视频</div>
-      </div>
     </div>
     <div class="last">
       <div class="index">

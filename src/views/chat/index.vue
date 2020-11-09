@@ -12,11 +12,10 @@
         </router-link>
       </template>
     </header-bar>
-    <header />
     <main ref="main" @click="initHeight = !initHeight">
       <van-pull-refresh v-model="isLoading" :disabled="disabled" @refresh="onRefresh">
-        <div v-for="(item,index) in msgList" :id="index===0?'lastItem': ''" :key="index" :class="['user', item.scroll]">
-          <div class="time">{{ item.time | chatDate }}</div>
+        <div v-for="(item,index) in msgList" :id="index===0?'lastItem': ''" :key="index" :class="['user', item.scroll ,index===0?'top':'']">
+          <div v-if="isShowTime(index,msgList)" class="time">{{ item.time | getTimeStringAutoShort2 }}</div>
           <div class="info" :class="[item.userID._id === oneSelf.id ? 'oneself' : 'friend', item.GroupID ? 'group': '']">
             <div class="avatar">
               <img v-if="$route.path === '/chat'" :src="(item.userID._id === oneSelf.id ? oneSelf.avatar : item.userID.avatar) | avatar" alt>
@@ -66,10 +65,18 @@
 
 <script>
 import { getFriendInfo, oppositeMessage, clearTip, getGroup, getGroupMsg } from '@/api/user'
+import { getPermission } from '@/until/audio'
 import { ImagePreview } from 'vant'
 import FooterVue from './components/footer.vue'
 import headerBar from '@/components/header'
+import TimeUtils from '@/until/timeUtils'
 export default {
+  filters: {
+    getTimeStringAutoShort2(timestamp) {
+      const date = new Date(timestamp)
+      return TimeUtils.getTimeStringAutoShort2(date.getTime(), true)
+    }
+  },
   components: {
     FooterVue,
     headerBar
@@ -134,34 +141,49 @@ export default {
       this.addMsg(this.otherMsg)
     },
     changeRoute(route) {
-      if (route.path === '/chat' || route.path === '/groupChat') {
+      if (route.path === '/groupChat') {
+        const data = {
+          GroupID: this.id,
+          page: 1
+        }
+        this.msgList = []
+        this.getMessage(data).then((res) => {
+          this.msgList = res
+          this.initScroll()
+          this.joinGroup()
+        })
+      }
+      if (route.path === '/chat') {
         this.initScroll()
         this.joinGroup()
       }
     },
     id(value) {
-      if (!value || value === '') {
-        return
-      }
-      const chatId = window.sessionStorage.getItem('chatId')
-      console.log(chatId === value)
-      if (chatId === value) {
-        return
-      }
-      window.sessionStorage.setItem('chatId', value)
-      this.msgList = []
-      if (this.route) {
-        this.getUserInfo()
-        this.getOneMsg()
-        this.acceptMessage()
-      } else {
-        this.getGroup()
-        this.getGroupMsg()
-        this.joinGroup()
+      if (this.changeRoute.path === '/chat' || this.changeRoute.path === '/groupChat') {
+        if (!value || value === '') {
+          return
+        }
+        const chatId = window.sessionStorage.getItem('chatId')
+        console.log(chatId === value)
+        if (chatId === value) {
+          return
+        }
+        window.sessionStorage.setItem('chatId', value)
+        this.msgList = []
+        if (this.route) {
+          this.getUserInfo()
+          this.getOneMsg()
+          this.acceptMessage()
+        } else {
+          this.getGroup()
+          this.getGroupMsg()
+          this.joinGroup()
+        }
       }
     }
   },
   created() {
+    getPermission()
     window.sessionStorage.setItem('chatId', this.id)
     if (this.route) {
       this.getUserInfo()
@@ -249,6 +271,7 @@ export default {
         return new Promise((resolve, reject) => {
           getGroupMsg(data).then((res) => {
             const msg = this.Pagination(res.data)
+            console.log(msg)
             resolve(msg)
           })
         })
@@ -259,6 +282,7 @@ export default {
       this.socket.on('msg', (data) => {
         console.log(data)
         if (data.length && data.length === 1) {
+          console.log(data[0])
           this.addMsg(data[0])
         }
       })
@@ -300,7 +324,6 @@ export default {
     // socket接收群消息
     acceptGroupMessage() {
       this.socket.on('sendGroupMsg', (data) => {
-        console.log(data)
         this.addMsg(data.msg)
       })
     },
@@ -402,6 +425,19 @@ export default {
       const play = this.$refs[audio][0]
       console.log(this.$refs[audio])
       play.play()
+    },
+    isShowTime(index, msgList) {
+      const msgTime = msgList[index].time
+      const tim1 = new Date(msgTime)
+      if (index > 0) {
+        const preProtoMessage = msgList[index - 1]
+        const preMsgTime = preProtoMessage.time
+        const tim2 = new Date(preMsgTime)
+        if (tim1 - tim2 > (5 * 60 * 1000)) {
+          return true
+        }
+      }
+      return false
     }
   }
 }
@@ -429,7 +465,12 @@ main {
   overflow-y: scroll;
   background-color: #f4f4f4;
   position: relative;
+  .top {
+    margin-top: 0.533333rem;
+    overflow: hidden;
+  }
   .user {
+    margin-bottom: 0.533333rem;
     .time {
       text-align: center;
       margin: 0.4rem 0 0.53rem;

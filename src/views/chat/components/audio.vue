@@ -115,10 +115,10 @@ export default {
     getPermission() {
       getPermission().then(
         () => {
-          this.$Message.success('获取权限成功')
+          this.$notify({ type: 'success', message: '获取权限成功' })
         },
-        (error) => {
-          console.log(`${error.name} : ${error.message}`)
+        () => {
+          this.$notify({ type: 'danger', message: '获取权限失败' })
         }
       )
     },
@@ -227,6 +227,7 @@ export default {
   height: 2.133333rem;
   top: 50%;
   left: 50%;
+  z-index: 200;
   transform: translate(-50%, -50%);
   border-radius: 0.266667rem;
   #canvas {

@@ -5,13 +5,13 @@
       <van-uploader :after-read="afterRead">
         <div class="index">
           <div class="iconfont icon-image" />
-          <div class="name">照片</div>
+          <div class="name">相册</div>
         </div>
       </van-uploader>
-      <div class="index">
-        <div class="iconfont icon-xiangji" />
-        <div class="name">拍摄</div>
-      </div>
+      <!-- <div class="index">
+        <div class="iconfont icon-ziyuan1" />
+        <div class="name">文件</div>
+      </div> -->
       <div class="index" @click="getMap">
         <div class="iconfont icon-weizhi1" />
         <div class="name">位置</div>
@@ -19,8 +19,8 @@
     </div>
     <div class="last">
       <div class="index">
-        <div class="iconfont icon-ziyuan1" />
-        <div class="name">文件</div>
+        <!-- <div class="iconfont icon-xiangji" />
+        <div class="name">拍摄</div> -->
       </div>
     </div>
     <div ref="sendButton" class="sendButton">
@@ -116,9 +116,9 @@ export default {
 .last {
   display: flex;
   padding: 0 0.67rem 0;
-  justify-content: space-between;
   .index {
     position: relative;
+    margin-right: 0.533333rem;
     .iconfont {
       background-color: #ffffff;
       font-size: 0.9rem;

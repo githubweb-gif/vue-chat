@@ -21,15 +21,18 @@ export default {
   computed: {
     id() {
       return this.$store.getters.userInfo.id
+    },
+    GroupID() {
+      return this.$store.state.user.GroupID
     }
   },
   watch: {
     // 使用watch 监听$router的变化
     $route(to, from) {
+      console.log(this.$route.path)
       // 判断用户离开群聊房间
       if (from.path === '/groupChat') {
-        console.log('---------')
-        this.socket.emit('leaveToRoom', this.$store.state.user.GroupID)
+        this.socket.emit('leaveToRoom', this.GroupID)
       }
       // 页面刷新时，重新登录socket
       // n是用来判断页面更新
@@ -65,6 +68,7 @@ export default {
     // 所以acceptMessage写在app页
     acceptMessage() {
       this.socket.on('msg', (data) => {
+        console.log(data)
         this.$store.commit('ONE_BY_ONE_MSG', data)
       })
       this.socket.on('groupMsg', (data) => {

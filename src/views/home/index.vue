@@ -28,7 +28,7 @@
               <p class="msg">{{ item.newMessage }}</p>
             </div>
             <div class="date">
-              {{ item.MsgTime | dateFormat }}
+              {{ item.MsgTime | getTimeStringAutoShort2 }}
             </div>
           </div>
           <template #right>
@@ -42,7 +42,14 @@
 
 <script>
 import { getFriends, getHomeGroups, clearTip, deleteMsg, deleteHomeGroup } from '@/api/user'
+import TimeUtils from '@/until/timeUtils'
 export default {
+  filters: {
+    getTimeStringAutoShort2(timestamp) {
+      const date = new Date(timestamp)
+      return TimeUtils.getTimeStringAutoShort2(date.getTime(), true)
+    }
+  },
   data() {
     return {
       friendList: [],
@@ -93,75 +100,86 @@ export default {
       console.log(data)
       let n = 0
       if (data.length && data.length === 1) {
+        const c = JSON.stringify(data[0])
+        const m = JSON.parse(c)
+        const copy = [m]
+        const v = this.types(copy)
+        const res = v[0]
         if (this.friendList.length === 0) {
-          const res = this.types(data)
-          if (this.id === res[0].userID._id) {
-            const a = JSON.stringify(res[0])
+          if (this.id === res.userID._id) {
+            const a = JSON.stringify(res)
             const e = JSON.parse(a)
-            e.userID = res[0].friendID
-            e.friendID = res[0].userID
+            e.userID = res.friendID
+            e.friendID = res.userID
             e.tip = 0
-            e.MsgTime = res[0].time
-            e.newMessage = res[0].message
+            e.MsgTime = res.time
+            e.newMessage = res.message
             this.friendList.unshift(e)
             return
           }
           let e = null
-          e = res[0]
-          if (this.$route.query.id === res[0].userID._id && this.$route.path === '/chat') {
+          e = res
+          // 两个人同在chat房间
+          if (this.$route.query.id === res.userID._id && this.$route.path === '/chat') {
             e.tip = 0
-            clearTip({ userID: this.id, friendID: res[0].userID._id })
+            clearTip({ userID: this.id, friendID: res.userID._id })
           } else {
             e.tip = 1
           }
-          e.MsgTime = res[0].time
-          e.newMessage = res[0].message
+          e.MsgTime = res.time
+          e.newMessage = res.message
           this.friendList.unshift(e)
           return
         }
         this.friendList.forEach((item, index) => {
-          const res = this.types(data)
-          if (item.userID._id === res[0].userID._id) {
+          if (item.userID._id === res.userID._id) {
             n += 1
             const e = item
+            // 两个人同在chat房间
             if (this.$route.query.id === item.userID._id && this.$route.path === '/chat') {
               e.tip = 0
               clearTip({ userID: this.id, friendID: item.userID._id })
             } else {
               e.tip += 1
             }
-            e.MsgTime = res[0].time
-            e.newMessage = res[0].message
+            e.MsgTime = res.time
+            e.newMessage = res.message
             this.friendList.splice(index, 1)
             this.friendList.unshift(e)
-          } else if (item.userID._id === res[0].friendID._id) {
+          } else if (item.userID._id === res.friendID._id) {
             // 给好友发送消息，自己home也接受一下，配合缓存
             n += 1
             const e = item
             e.tip = 0
-            e.MsgTime = res[0].time
-            e.newMessage = res[0].message
+            e.MsgTime = res.time
+            e.newMessage = res.message
             this.friendList.splice(index, 1)
             this.friendList.unshift(e)
           } else if (index === this.friendList.length - 1 && n === 0) {
-            if (this.id === res[0].userID._id) {
-              console.log(res[0])
-              const a = JSON.stringify(res[0])
-              const e = JSON.parse(a)
-              e.userID = res[0].friendID
-              e.friendID = res[0].userID
+            if (this.id === res.userID._id) {
+              let e = null
+              e = res
+              e.userID = res.friendID
+              e.friendID = res.userID
               e.tip = 0
-              e.MsgTime = res[0].time
-              e.newMessage = res[0].message
+              e.MsgTime = res.time
+              e.newMessage = res.message
               this.friendList.unshift(e)
               return
             }
             let e = null
-            e = res[0]
+            e = res
             e.tip = 1
-            e.MsgTime = res[0].time
-            e.newMessage = res[0].message
+            e.MsgTime = res.time
+            e.newMessage = res.message
             this.friendList.unshift(e)
+            // 两个人同在chat房间
+            if (this.$route.query.id === item.userID._id && this.$route.path === '/chat') {
+              e.tip = 0
+              clearTip({ userID: this.id, friendID: item.userID._id })
+            } else {
+              e.tip += 1
+            }
           }
         })
       }
@@ -169,8 +187,9 @@ export default {
     GroupMsg(data) {
       const arr = []
       let n = 0
-      arr.push(data.GroupID)
-      console.log(data)
+      const a = JSON.stringify(data.GroupID)
+      arr.push(JSON.parse(a))
+      console.log(arr)
       if (this.groupList.length === 0) {
         this.setMsg(arr, data.tip)
         return
@@ -217,21 +236,28 @@ export default {
     // 根据数据类型返回不同的数据
     types(data) {
       const list = data.map((x) => {
-        if (x.types === 0) {
+        if (x.types - 0 === 0) {
           return x
-        } else if (x.types === 1) {
+        } else if (x.types - 0 === 1) {
           if (x.message) {
             x.message = '[图片]'
             return x
           }
           x.newMessage = '[图片]'
           return x
-        } else if (x.types === 3) {
+        } else if (x.types - 0 === 3) {
           if (x.message) {
             x.message = '[地图]'
             return x
           }
           x.newMessage = '[地图]'
+          return x
+        } else if (x.types - 0 === 2) {
+          if (x.message) {
+            x.message = '[语音]'
+            return x
+          }
+          x.newMessage = '[语音]'
           return x
         }
         return x
@@ -249,7 +275,7 @@ export default {
       }
       getFriends(data)
         .then((res) => {
-          this.friendList = this.types(res.data)
+          this.friendList = this.types(res.data.slice())
         })
         .catch((err) => {
           console.log(err)
@@ -281,12 +307,12 @@ export default {
           arr[index].tip = x.tip
           arr[index].attributes = 'group'
         })
-        this.groupList = this.types(arr)
+        this.groupList = this.types(arr.slice())
       })
     },
     // 处理群及时消息
     setMsg(arr, tip) {
-      const res = this.types(arr)
+      const res = this.types(arr.slice())
       const e = res[0]
       e.tip = tip
       e.MsgTime = res[0].MsgTime

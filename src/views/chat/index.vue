@@ -41,6 +41,14 @@
               </div>
               <img src="https://tse4-mm.cn.bing.net/th/id/OIP.MENcIlW1vtk-uNV5bxjZxgAAAA?w=206&h=193&c=7&o=5&dpr=1.25&pid=1.7" alt>
             </div>
+            <div
+              v-else-if="item.types - 0 === 2"
+              class="audio content text"
+            >
+              <div v-if="item.duration">{{ item.duration + 's' }}</div>
+              <van-icon name="music-o" @click="playAuto(item.message)" />
+              <audio :ref="item.message" :src="item.message | avatar" />
+            </div>
           </div>
         </div>
       </van-pull-refresh>
@@ -388,6 +396,12 @@ export default {
       } else {
         window.location.href = `https://uri.amap.com/marker?position=${arr[0].split(',')[0]},${arr[0].split(',')[1]}&name=${arr[1]}`
       }
+    },
+    // 播放音频
+    playAuto(audio) {
+      const play = this.$refs[audio][0]
+      console.log(this.$refs[audio])
+      play.play()
     }
   }
 }
@@ -470,6 +484,9 @@ main {
          img {
            width: 100%;
          }
+      }
+      .audio {
+        font-size: 0.3rem;
       }
     }
   }

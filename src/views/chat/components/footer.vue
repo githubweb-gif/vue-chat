@@ -32,7 +32,7 @@
 </template>
 
 <script>
-import { sendMessage, sendGroupMsg } from '@/api/user'
+import { sendMessage, sendGroupMsg, uploadAudio } from '@/api/user'
 import audioVue from './audio'
 import textInput from '@/components/input/input.vue'
 import other from './other.vue'
@@ -122,15 +122,15 @@ export default {
     // 发送一对一消息或群消息
     sendMsg() {
       if (this.route === '/chat') {
-        this.sendOneMsg()
+        const data = { types: 0, message: this.message, userID: this
+          .oneSelf.id, friendID: this.id }
+        this.sendOneMsg(data)
       } else if (this.route === '/groupChat') {
         this.sendGroupMsg()
       }
     },
     // 发送一对一消息
-    sendOneMsg() {
-      const data = { types: 0, message: this.message, userID: this
-        .oneSelf.id, friendID: this.id }
+    sendOneMsg(data) {
       sendMessage(data).then((res) => {
         const a = res.data.data
         a.userID = res.data.user
@@ -172,9 +172,36 @@ export default {
     },
     // 获取录音文件
     getRecorder(value) {
-      if (value) {
-        this.WAVBlob = value
+      if (value.audio) {
+        this.WAVBlob = value.audio
+        const time = value.time
+        const formData = new FormData()
+        formData.append('user', this.WAVBlob)
         // 上传文件
+        uploadAudio(formData).then((res) => {
+          const data = { types: 2, message: res.audio, userID: this
+            .oneSelf.id, duration: time }
+          if (this.$route.path === '/chat') {
+            data.friendID = this.id
+            sendMessage(data).then((res) => {
+              const { data: { data, user }} = res
+              data.userID = user
+              this.$store.commit('ACCEPT_DATA', data)
+              this.socket.emit('msg', { fromID: this
+                .oneSelf.id, toID: this.id, msg: data })
+            }).catch(() => {
+              this.$router.push('/')
+            })
+          } else if (this.$route.path === '/groupChat') {
+            data.GroupID = this.id
+            sendGroupMsg(data).then((res) => {
+              this.$store.commit('ACCEPT_DATA', res.data)
+              this.socket.emit('groupMsg', { GroupID: this.id, msg: res.data })
+            }).catch(() => {
+              this.$router.push('/')
+            })
+          }
+        })
       } else {
         this.$notify({
           type: 'primary',

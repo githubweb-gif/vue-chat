@@ -349,3 +349,12 @@ export function deleteHomeGroup(data) {
     data
   })
 }
+
+// 发送音频
+export function uploadAudio(data) {
+  return request({
+    url: '/user/uploadAudio',
+    method: 'post',
+    data
+  })
+}

@@ -88,7 +88,7 @@ export default {
       } else {
         this.WAVBlob = null
       }
-      this.$emit('recorder', this.WAVBlob)
+      this.$emit('recorder', { audio: this.WAVBlob, time })
     },
     // 取消录音
     cancelRecorde() {

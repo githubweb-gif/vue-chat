@@ -14,7 +14,6 @@
         <div @touchstart.stop.prevent="$router.push('/addFriend')">
           <van-icon name="friends" />添加朋友<i />
         </div>
-        <div><van-icon name="add-o" /><i>添加群</i></div>
         <div><van-icon name="envelop-o" /><i>帮助与反馈</i></div>
       </div>
     </div>

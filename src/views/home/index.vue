@@ -4,13 +4,11 @@
       <div class="req">
         <div class="icon">
           <van-icon name="friends" />
+          <i v-if="num > 0" class="num">{{ num }}</i>
         </div>
         <div class="info">
           <div class="name">好友请求</div>
         </div>
-        <!-- <div class="date">
-            上午7:45
-          </div> -->
       </div>
     </router-link>
     <ul>
@@ -20,7 +18,7 @@
             <div class="avatar">
               <img v-if="item.attributes==='group'" :src="item.avatar | avatar" alt="">
               <img v-else :src="item.userID.avatar | avatar" alt="">
-              <i v-if="item.tip - 0 > 0 ? true : false">{{ item.tip }}</i>
+              <i v-if="item.tip - 0 > 0 ? true : false" class="num">{{ item.tip }}</i>
             </div>
             <div class="info">
               <div v-if="item.attributes==='group'" class="name">{{ item.name }}</div>
@@ -41,7 +39,7 @@
 </template>
 
 <script>
-import { getFriends, getHomeGroups, clearTip, deleteMsg, deleteHomeGroup } from '@/api/user'
+import { getFriends, getHomeGroups, clearTip, deleteMsg, deleteHomeGroup, getRequest } from '@/api/user'
 import TimeUtils from '@/until/timeUtils'
 export default {
   filters: {
@@ -53,7 +51,8 @@ export default {
   data() {
     return {
       friendList: [],
-      groupList: []
+      groupList: [],
+      num: 0
     }
   },
   computed: {
@@ -267,6 +266,7 @@ export default {
     initData() {
       this.getFriendList()
       this.getHomeGroups()
+      this.getRequest()
     },
     getFriendList() {
       const data = {
@@ -333,6 +333,16 @@ export default {
       deleteMsg({ userID: this.id, friendID: data.userID._id }).then(() => {
         this.AllData = { id: data.userID._id }
       })
+    },
+    // 获取好友请求数
+    getRequest() {
+      const obj = {
+        friendID: this.id,
+        state: 1
+      }
+      getRequest(obj).then((res) => {
+        this.num = res.data.length
+      })
     }
   }
 }
@@ -342,6 +352,20 @@ export default {
 .main {
   width: 100%;
   box-sizing: border-box;
+}
+.num {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0.4rem;
+  height: 0.4rem;
+  position: absolute;
+  top: -0.16rem;
+  right: -0.08rem;
+  background-color: #ed3e3c;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 0.32rem;
 }
 .link {
   width: 100%;
@@ -354,6 +378,7 @@ export default {
     }
     .icon {
       margin-right: 0.427rem;
+      position: relative;
     }
     .van-icon {
       width: 1.28rem;
@@ -387,19 +412,6 @@ li {
     height: 1.28rem;
     margin-right: 0.427rem;
     position: relative;
-    i {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0.02rem 0.11rem;
-      position: absolute;
-      top: -0.16rem;
-      right: -0.08rem;
-      background-color: #ed3e3c;
-      border-radius: 50%;
-      color: #fff;
-      font-size: 0.32rem;
-    }
     img {
       width: 1.28rem;
       height: 100%;

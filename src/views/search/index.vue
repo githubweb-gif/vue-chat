@@ -12,7 +12,7 @@
     </div>
     <div class="main">
       <div class="user">
-        <div v-if="friendList.length > 0 ? true : false" class="title">
+        <div v-if="friendList.length > 0 || stranger !== null" class="title">
           用户
         </div>
         <div class="list">
@@ -41,19 +41,19 @@
           </router-link>
         </div>
       </div>
-      <div class="group">
+      <div v-if="$route.path==='/search' && groupList.length > 0" class="group">
         <div class="title">群组</div>
         <div class="list">
           <ul>
-            <li>
+            <li v-for="(item,index) in groupList" :key="index">
               <div class="avatar">
                 <img
-                  src="https://i1.hdslb.com/bfs/face/92b2703498674eaada44b4d05e1b2420197f117d.jpg@87w_88h_1c_100q.webp"
+                  :src="item.GroupID.avatar | avatar"
                   alt=""
                 >
               </div>
-              <div class="name">开发的实力</div>
-              <div class="info">发消息</div>
+              <div class="name">{{ item.GroupID.name }}</div>
+              <div class="info" @click="$router.push({path:'/groupChat',query: {id: item.GroupID._id}})">发消息</div>
             </li>
           </ul>
         </div>
@@ -72,7 +72,9 @@ export default {
       // 判断是否是好友
       people: true,
       friendList: [],
-      stranger: null
+      stranger: null,
+      // 群列表
+      groupList: []
     }
   },
   computed: {
@@ -94,13 +96,14 @@ export default {
     this.keyWords = ''
   },
   methods: {
-    // 搜索好友
+    // 搜索好友// 搜索已加入群
     search: debounce(function() {
       if (this.keyWords.trim() === '') {
         return
       }
       searchFriends({ uid: this.id, key: this.keyWords }).then((res) => {
-        const { data } = res
+        const { data, groupList } = res
+        this.groupList = groupList
         this.friendList = data
       })
     }, 500),
@@ -110,6 +113,7 @@ export default {
         return
       }
       searchStranger({ key: this.keyWords, uname: this.name }).then((res) => {
+        console.log(res)
         const { data } = res
         this.stranger = data
       })

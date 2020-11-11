@@ -66,8 +66,7 @@ export default {
       this.img = value
     },
     setGroup(data) {
-      const test = /^[a-z0-9_-]{3,16}$/
-      if (!test.test(this.name) || this.img === '') {
+      if (this.name === '' || this.img === '') {
         this.$dialog.alert({
           message: '用户名或头像错误'
         })

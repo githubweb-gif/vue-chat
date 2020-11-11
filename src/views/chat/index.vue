@@ -21,7 +21,9 @@
               <img v-if="$route.path === '/chat'" :src="(item.userID._id === oneSelf.id ? oneSelf.avatar : item.userID.avatar) | avatar" alt>
               <img v-else :src="item.userID.avatar | avatar" alt>
             </div>
+            <!-- 文字 -->
             <div v-if="item.types - 0 === 0" class="content text">{{ item.message }}</div>
+            <!-- 图片 -->
             <div
               v-else-if="item.types - 0 === 1"
               class="image content"
@@ -29,6 +31,7 @@
             >
               <img :src="item.message" alt>
             </div>
+            <!-- 地图 -->
             <div
               v-else-if="item.types - 0 === 3"
               class="map"
@@ -38,8 +41,9 @@
                 <div class="title"> {{ item.message.split('&')[1] }} </div>
                 <p>{{ item.message.split('&')[2] }}</p>
               </div>
-              <img src="https://tse4-mm.cn.bing.net/th/id/OIP.MENcIlW1vtk-uNV5bxjZxgAAAA?w=206&h=193&c=7&o=5&dpr=1.25&pid=1.7" alt>
+              <img :src="item.map | avatar" alt>
             </div>
+            <!-- 语音 -->
             <div
               v-else-if="item.types - 0 === 2"
               class="audio content text"
@@ -396,7 +400,7 @@ export default {
         }, 500)
       })
     },
-    // 判断设备
+    // 判断设备//暂时没用
     equipment() {
       // 移动端
       const Agents = ['Android', 'iPhone',
@@ -414,11 +418,7 @@ export default {
     // 调用地图组件
     mapApp(data) {
       const arr = data.split('&')
-      if (this.equipment()) {
-        window.location.href = `androidamap://navi?sourceApplication=appname&amp;poiname=fangheng&amp;lat=${arr[0].split(',')[0]}&amp;lon=${arr[0].split(',')[1]}&amp;dev=1&amp;style=2`
-      } else {
-        window.location.href = `https://uri.amap.com/marker?position=${arr[0].split(',')[0]},${arr[0].split(',')[1]}&name=${arr[1]}`
-      }
+      window.location.href = `https://uri.amap.com/marker?position=${arr[0].split(',')[0]},${arr[0].split(',')[1]}&name=${arr[1]}`
     },
     // 播放音频
     playAuto(audio) {
@@ -524,6 +524,8 @@ main {
          }
          img {
            width: 100%;
+           height: 2.666667rem;
+           object-fit: cover;
          }
       }
       .audio {

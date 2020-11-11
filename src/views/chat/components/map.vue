@@ -29,7 +29,9 @@
 
 <script>
 import axios from 'axios'
-import { sendMessage, sendGroupMsg } from '@/api/user'
+import { sendMessage, sendGroupMsg, uploadImg } from '@/api/user'
+import base64ToImg from '@/until/base64&img'
+import html2canvas from 'html2canvas'
 export default {
   props: {
     showComponent: {
@@ -40,6 +42,8 @@ export default {
   data() {
     const self = this
     return {
+      // 截图
+      mapUrl: '',
       mapData: [],
       zoom: 15,
       key: 'aee7cc085fc25b723455a438f4f54d94',
@@ -157,14 +161,15 @@ export default {
       this.markers[0].position = data
       this.center = data
     },
-    sendMap(value) {
+    async sendMap(value) {
       this.$emit('showComponent', false)
       if (value === '取消') {
         return
       }
+      await this.Screenshots()
       if (this.$route.path === '/chat') {
         const data = { types: 3, message: this.place, userID: this
-          .oneSelf.id, friendID: this.id }
+          .oneSelf.id, friendID: this.id, map: this.mapUrl }
         sendMessage(data).then((res) => {
           const { data: { data, user }} = res
           data.userID = user
@@ -176,7 +181,7 @@ export default {
         })
       } else if (this.$route.path === '/groupChat') {
         const data = { types: 3, message: this.place, userID: this
-          .oneSelf.id, GroupID: this.id }
+          .oneSelf.id, GroupID: this.id, map: this.mapUrl }
         sendGroupMsg(data).then((res) => {
           this.$store.commit('ACCEPT_DATA', res.data)
           this.socket.emit('groupMsg', { GroupID: this.id, msg: res.data })
@@ -195,6 +200,20 @@ export default {
       const data = [pois[0].lng, pois[0].lat]
       this.center = data
       this.markers[0].position = data
+    },
+    // 截图
+    async Screenshots() {
+      const canvas = await html2canvas(document.querySelector('.amap-demo'))
+      // canvas为转换后的Canvas对象
+      const oImg = new Image()
+      oImg.src = canvas.toDataURL() // 导出图片
+      const img = base64ToImg(oImg.src)
+
+      const formData = new FormData()
+      formData.append('upload', img)
+
+      const res = await uploadImg(formData)
+      this.mapUrl = res.imgUrl
     }
   }
 }

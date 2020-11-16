@@ -13,7 +13,9 @@
           @click.stop="copy"
         >{{ item }}</span>
       </div>
-      <van-icon class="close" name="cross" @click="pop" />
+      <div class="close">
+        <svg-icon icon-id="backspace" @click="pop" />
+      </div>
     </div>
   </div>
 </template>
@@ -119,6 +121,7 @@ export default {
 
 <style lang="scss" scoped>
 .emoji {
+  background-color: #f4f4f4;
   header {
     padding: 0 0.43rem;
     .iconfont {
@@ -133,15 +136,20 @@ export default {
       font-size: 0.43rem;
       padding: 0.27rem 0;
     }
-    .close {
+    .close{
       position: absolute;
-      bottom: 0px;
-      right: 0.43rem;
-      font-size: 0.67rem;
-      width: 2.1rem;
-      height: 0.8rem;
-      line-height: 0.8rem;
-      background-color: #7d837d;
+      bottom: 20px;
+      right: 0.6rem;
+      width: 1.5rem;
+      height: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #ffffff;
+      border-radius: 0.133rem;
+      .svg-icon {
+        height: 0.7rem;
+      }
     }
     .list {
       height: 3.2rem;

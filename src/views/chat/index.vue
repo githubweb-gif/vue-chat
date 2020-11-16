@@ -228,18 +228,6 @@ export default {
         return
       }
       return msg
-      // const list = this.msgList
-      // list.forEach((item, index) => {
-      //   const next = index + 1
-      //   if (next > list.length - 1) {
-      //     item.time = ''
-      //     return
-      //   }
-      //   if (list[next].time - item.time <= 1000 * 60 * 5) {
-      //     item.time = ''
-      //   }
-      // })
-      // this.msgList = list
     },
     // 分页消息处理
     Pagination(data) {

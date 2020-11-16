@@ -66,9 +66,10 @@ export default {
       this.img = value
     },
     setGroup(data) {
-      if (this.name === '' || this.img === '') {
+      const test = /^[\s\S]{2,16}$/
+      if (!test.test(this.name) || this.img === '') {
         this.$dialog.alert({
-          message: '用户名或头像错误'
+          message: '用户名最小长度为2或头像错误'
         })
         return
       }

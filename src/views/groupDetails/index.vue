@@ -1,24 +1,25 @@
 <template>
   <div id="groupDetails">
     <div class="header top">
-      <div class="back">
-        <van-icon name="arrow-left" @click="$router.go(-1)" />
-      </div>
-      <van-uploader v-if="groupInfo.userID === userID" :after-read="afterRead">
-        <van-icon :style="{color:'#1a73e8'}" name="edit" @click="isCrop=!isCrop" />
-      </van-uploader>
+      <van-icon name="arrow-left" @click="$router.go(-1)" />
+      <div class="title">群聊设置</div>
     </div>
-    <div v-if="groupInfo.avatar" class="cover">
-      <img :src="groupInfo.avatar | avatar" alt="">
+    <div v-if="groupInfo" class="bi">
+      <van-uploader v-if="groupInfo.userID === userID" :after-read="afterRead">
+        <div class="cover" @click="isCrop=!isCrop">
+          <img :src="groupInfo.avatar | avatar" alt="">
+        </div>
+      </van-uploader>
+      <div>
+        <div class="group-name">
+          {{ groupInfo.name }}
+        </div>
+        <div class="group-notice">
+          {{ groupInfo.notice }}
+        </div>
+      </div>
     </div>
     <div v-if="groupInfo" class="groupInfo">
-      <div class="header">
-        <div class="name">{{ groupInfo.name }}</div>
-        <div class="time">{{ groupInfo.time | dateFormat }}</div>
-      </div>
-      <div class="Introduction">
-        {{ groupInfo.notice }}
-      </div>
       <div v-if="groupPepole" class="groupPepole">
         <div class="header">
           <div class="title">群成员</div>
@@ -40,6 +41,10 @@
           </div>
         </div>
       </div>
+      <div class="group-date info">
+        <div>创建时间</div>
+        <div class="content">{{ groupInfo.time | dateFormat }}</div>
+      </div>
       <div class="group-name info">
         <div>群名称</div>
         <div class="content">{{ groupInfo.name }}</div>
@@ -53,14 +58,16 @@
       <div class="group-markName info">
         <div>群内昵称</div>
         <div class="content">{{ userinfo.markName }}</div>
-        <van-icon v-if="groupInfo.userID === userID" name="arrow" @click="putInfo(userinfo.markName, 'markName')" />
+        <van-icon name="arrow" @click="putInfo(userinfo.markName, 'markName')" />
       </div>
       <div class="message-setting info">
         <div>消息免打扰</div>
         <van-switch v-model="checked" active-color="#ffe431" size="24px" @change="change" />
       </div>
     </div>
-    <div class="logout-group" @click="deleteGroupUser">{{ groupInfo.userID === userID? '解散群聊': '退出群聊' }}</div>
+    <div class="logout-group" @click="deleteGroupUser">
+      <p>{{ groupInfo.userID === userID? '解散群聊': '退出群聊' }}</p>
+    </div>
     <transition name="fade">
       <dialog-card :value="data" :qn-content="bol" @accomplish="accomplish">
         <template>
@@ -114,7 +121,7 @@
         </template>
       </group-pepole>
     </transition>
-    <cropper-Vue :is-fixed="false" :is-crop="isCrop" :imgurl="imgurl" class="cropper" @upload="upload" />
+    <cropper-Vue :is-fixed="true" :is-crop="isCrop" :imgurl="imgurl" class="cropper" @upload="upload" />
     <van-loading v-if="load" class="loading" type="spinner" />
   </div>
 </template>
@@ -373,8 +380,8 @@ export default {
   position: relative;
   display: flex;
   flex-direction: column;
+  background-color: #f4f4f4;
   .header {
-    background-color: #ffffff;
     border: 0;
     padding: 0 0.426667rem;
     .close {
@@ -395,60 +402,56 @@ export default {
   .top {
     background-color: rgba(255, 255, 255, 0);
     font-size: 0.693rem;
-    color: #ffffff;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
+    .title {
+      position: absolute;
+      font-size: 0.48rem;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%,-50%);
+    }
   }
-  .cover {
-    height: 5.12rem;
+  .bi {
     width: 100%;
-    overflow: hidden;
-    img {
-      width: 100%;
-      height: 5.12rem;
+    padding:0.133rem 0.427rem;
+    margin-bottom: 0.3rem;
+    display: flex;
+    justify-content: flex-start;
+    background-color: #ffffff;
+    .cover {
+      border-radius: 0.16rem;
+      margin-right: 0.267rem;
+      img {
+      border-radius: 0.16rem;
+      width: 1.387rem;
+      height: 1.387rem;
       display: block;
     }
   }
+    .group-name {
+    font-size: 0.427rem;
+    margin-bottom: 0.133rem;
+  }
+  .group-notice {
+    font-size: 0.373rem;
+    color: #c4bcbc;
+  }
+  .group-name,.group-notice {
+    width: 60%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+}
   .groupInfo {
-    flex: 1;
     overflow-x: hidden;
     overflow-y: auto;
-    background-color: #ffffff;
-    border-radius: 0.53rem;
-    padding: 0 0.427rem;
-    .header {
-      margin-top:0.267rem;
-      margin-bottom: 0.267rem;
-      height: auto;
-      padding: 0;
-      font-size: 0.5rem;
-      .name {
-        font-weight: 600;
-        font-size: 0.7rem;
-      }
-      .time {
-        color: rgba(39,40,50,0.50);
-      }
-    }
-    .Introduction {
-      color: #272832;
-      margin-bottom: 0.64rem;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      font-size: 0.373rem;
-      color: #272832;
-      letter-spacing: -0.0128rem;
-      line-height: 0.64rem;
-    }
     .groupPepole {
-      margin-bottom: 0.667rem;
+      background-color: #ffffff;
+      padding: 0 0.427rem;
+      margin-bottom: 0.3rem;
       .header {
         font-size: 0.48rem;
+        padding: 0;
         .title {
           font-weight: 600;
         }
@@ -505,11 +508,13 @@ export default {
       }
     }
     .info {
+      background-color: #ffffff;
+      padding: 0.4rem 0.427rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 0.453rem 0;
       font-size: 0.5rem;
+      border-bottom: 1px solid #e6e3e3;
       .content {
         white-space: nowrap;
         overflow: hidden;
@@ -526,6 +531,9 @@ export default {
     color: red;
     padding: 0.267rem 0;
     font-size: 0.5rem;
+    background-color: #ffffff;
+    overflow: hidden;
+    margin-top: 0.4rem;
   }
   .listPepole {
     position: fixed;

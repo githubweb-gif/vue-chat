@@ -5,13 +5,10 @@
         <router-link to="/registered">注册</router-link>
       </p>
     </header>
-    <div class="logo">
-      <img src="../../assets/img/火.png" alt="">
-    </div>
     <div class="submit">
       <div class="hello">
         <p>登录</p>
-        <span>你好，欢迎来到火火</span>
+        <span>你好，欢迎来到VueChat</span>
       </div>
       <van-form :show-erro="false" @submit="login">
         <van-field
@@ -104,19 +101,12 @@ header {
   height: 1.173333rem;
   line-height: 1.173333rem;
   margin-bottom: 1.066667rem;
+  margin-bottom: 2.666667rem;
   p {
     float: right;
     font-size: 0.48rem;
     margin-right: 0.746667rem;
     font-weight: 600;
-  }
-}
-.logo {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 0.72rem;
-  img {
-    width: 2.56rem;
   }
 }
 .submit {

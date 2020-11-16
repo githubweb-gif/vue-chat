@@ -5,9 +5,6 @@
         <router-link to="/login"><van-icon name="arrow-left" /></router-link>
       </div>
     </header>
-    <div class="logo">
-      <img src="../../assets/img/火.png" alt="">
-    </div>
     <div class="submit">
       <div class="hello">
         <p>注册</p>
@@ -153,7 +150,7 @@ export default {
         .catch(() => {})
     },
     async checkName(value) {
-      const name = /^[a-z0-9_-]{3,12}$/
+      const name = /^[\s\S]{2,12}$/
       if (name.test(value)) {
         const valid = await validName(value)
         if (valid) {
@@ -200,14 +197,6 @@ header {
   font-size: 0.8rem;
   padding: 0 0.426667rem;
   box-sizing: border-box;
-}
-.logo {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  img {
-    width: 2.56rem;
-  }
 }
 .submit {
   padding: 0.72rem 0.6rem 0;

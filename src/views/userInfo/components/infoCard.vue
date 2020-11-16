@@ -3,7 +3,7 @@
     <div class="header">
       <van-icon name="arrow-left" @click="closeBox" />
     </div>
-    <p>请设置密码。你可以用火火绑定的账号+密码登录，比如使用邮箱+密码登录，更快捷。</p>
+    <p>请设置密码。你可以用VueChat绑定的账号+密码登录，比如使用邮箱+密码登录，更快捷。</p>
     <div class="account">
       <div>
         <i class="title">账号</i>

@@ -10,7 +10,7 @@
           <img :src="groupInfo.avatar | avatar" alt="">
         </div>
       </van-uploader>
-      <div>
+      <div class="right">
         <div class="group-name">
           {{ groupInfo.name }}
         </div>
@@ -427,6 +427,8 @@ export default {
       display: block;
     }
   }
+  .right {
+    width: 60%;
     .group-name {
     font-size: 0.427rem;
     margin-bottom: 0.133rem;
@@ -436,10 +438,11 @@ export default {
     color: #c4bcbc;
   }
   .group-name,.group-notice {
-    width: 60%;
+    width: 100%;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+  }
   }
 }
   .groupInfo {

@@ -1,6 +1,6 @@
 <template>
   <div id="group">
-    <group-pepole title="创建" :show="false" :disabled="disabled" :data="data" @checkedPeople="setGroup">
+    <group-pepole title="创建" :show="false" :disabl="disabled" :data="data" @checkedPeople="setGroup">
       <template v-slot:header>
         <div class="header">
           <div class="close" @click="$router.push('/')">取消</div>
@@ -40,13 +40,19 @@ export default {
       name: '',
       isCrop: false,
       imgurl: '',
-      disabled: false,
       img: null
     }
   },
   computed: {
     oneSelf() {
       return this.$store.getters.userInfo
+    },
+    disabled() {
+      const test = /^[\s\S]{2,16}$/
+      if (test.test(this.name) && this.img) {
+        return false
+      }
+      return true
     }
   },
   created() {
@@ -66,14 +72,12 @@ export default {
       this.img = value
     },
     setGroup(data) {
-      const test = /^[\s\S]{2,16}$/
-      if (!test.test(this.name) || this.img === '') {
+      if (this.disabled) {
         this.$dialog.alert({
-          message: '用户名最小长度为2或头像错误'
+          message: '用户名最小长度为2或头像不为空'
         })
         return
       }
-      this.disabled = true
       const obj = { name: this.name, userID: this.oneSelf.id, avatar: this.img, username: this.oneSelf.name, groupFriend: data }
       setGroup(obj).then((res) => {
         this.$router.push('/')
@@ -81,7 +85,6 @@ export default {
         this.$dialog.alert({
           message: '创建失败'
         })
-        this.disabled = false
       })
     }
   }

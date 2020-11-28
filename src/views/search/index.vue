@@ -63,7 +63,7 @@
 </template>
 <script>
 // 添加朋友可以搜索陌生人或者好友
-import { debounce } from '@/until/methods'
+import { debounce } from '@/until/debounce'
 import { searchFriends, searchStranger } from '@/api/user'
 export default {
   data() {

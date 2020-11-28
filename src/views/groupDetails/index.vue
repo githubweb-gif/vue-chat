@@ -131,7 +131,7 @@ import { getGroup, getGroupPepole, putGroup, getGroupPepoleInfo, putGroupPepoleI
 import dialogCard from './components/dialog.vue'
 import cropperVue from '@/components/cropper.vue'
 import groupPepole from '@/components/groupPepole.vue'
-import { debounce } from '@/until/methods'
+import { debounce } from '@/until/debounce'
 export default {
   components: {
     dialogCard,

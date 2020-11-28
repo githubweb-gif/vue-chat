@@ -68,11 +68,9 @@ export default {
     // 所以acceptMessage写在app页
     acceptMessage() {
       this.socket.on('msg', (data) => {
-        console.log(data)
         this.$store.commit('ONE_BY_ONE_MSG', data)
       })
       this.socket.on('groupMsg', (data) => {
-        console.log(data)
         this.$store.commit('GROUP_MSG', data)
       })
       // 接受自己给自己发的消息
@@ -81,7 +79,6 @@ export default {
       })
       // 接受自己给自己发的群消息
       this.socket.on('groupOneSelfMsg', (data) => {
-        console.log(data)
         this.$store.commit('GROUP_MSG', data)
       })
     }

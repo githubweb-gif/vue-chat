@@ -106,8 +106,6 @@ export default {
       ]
     }
   },
-  watch: {},
-  mounted() {},
   methods: {
     copy(e) {
       this.$emit('emojis', e.target.innerHTML)

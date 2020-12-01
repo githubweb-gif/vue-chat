@@ -144,31 +144,23 @@ export default {
     otherMsg() {
       this.addMsg(this.otherMsg)
     },
+    // 路有变化重新滚动到底部和加入群房间
     changeRoute(route) {
       if (route.path === '/groupChat') {
-        const data = {
-          GroupID: this.id,
-          page: 1
-        }
-        this.msgList = []
-        this.getMessage(data).then((res) => {
-          this.msgList = res
-          this.initScroll()
-          this.joinGroup()
-        })
-      }
-      if (route.path === '/chat') {
         this.initScroll()
         this.joinGroup()
       }
+      if (route.path === '/chat') {
+        this.initScroll()
+      }
     },
+    // 页面被缓存，生命周期不会被重新执行，所以需要判断id变化
     id(value) {
       if (this.changeRoute.path === '/chat' || this.changeRoute.path === '/groupChat') {
         if (!value || value === '') {
           return
         }
         const chatId = window.sessionStorage.getItem('chatId')
-        console.log(chatId === value)
         if (chatId === value) {
           return
         }
